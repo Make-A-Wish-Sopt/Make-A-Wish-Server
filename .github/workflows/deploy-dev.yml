@@ -50,7 +50,7 @@ jobs:
       run: aws deploy create-deployment
         --application-name makeawish-codedeploy
         --deployment-config-name CodeDeployDefault.OneAtATime
-        --deployment-group-name makeawish-group
+        --deployment-group-name dev
         --s3-location bucket=${{ secrets.AWS_BUCKET_NAME }},bundleType=zip,key=deploy/$GITHUB_SHA.zip
 
     
