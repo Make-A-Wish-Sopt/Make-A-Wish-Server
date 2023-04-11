@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: dev
   datasource:
     url: jdbc:h2:mem:testdb
     username: sa
