@@ -1,8 +1,8 @@
 spring:
-  profiles:
-    include: dev
+  config:
+    import: application-oauth.yml
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:tcp://localhost/~/testdb
     username: sa
     password:
     driver-class-name: org.h2.Driver
