@@ -38,3 +38,4 @@ out/
 
 application-dev.yml
 application-prod.yml
+application-oauth.yml
