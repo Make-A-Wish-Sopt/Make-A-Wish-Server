@@ -43,9 +43,12 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
 }
 
-
-tasks.named('test') {
-    outputs.dir snippetsDir
+test {
     useJUnitPlatform()
 }
+
+//tasks.named('test') {
+//    outputs.dir snippetsDir
+//    useJUnitPlatform()
+//}
 

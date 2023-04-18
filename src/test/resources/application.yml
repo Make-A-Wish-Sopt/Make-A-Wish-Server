@@ -1,9 +1,7 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/testdb
-    username: sa
-    password:
     driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:internal;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
   jpa:
     hibernate:
       ddl-auto: create
