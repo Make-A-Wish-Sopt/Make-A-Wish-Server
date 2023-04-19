@@ -36,8 +36,6 @@ public class User implements UserDetails {
 
     private String refreshToken;
 
-    private String name;
-
     private String image;
 
     @Column(nullable = false)
