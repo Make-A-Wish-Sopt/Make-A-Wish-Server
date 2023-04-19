@@ -1,5 +1,6 @@
 package com.sopterm.makeawish.domain.wish;
 
+import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 
 import java.time.LocalDateTime;
@@ -7,12 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sopterm.makeawish.domain.Present;
+import com.sopterm.makeawish.domain.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 
@@ -44,7 +48,9 @@ public class Wish {
 
 	private int price;
 
-	// User wisher;
+	@ManyToOne(fetch = LAZY)
+	@JoinColumn(name = "user_id")
+	private User wisher;
 
 	@OneToMany(mappedBy = "wish")
 	private List<Present> presents = new ArrayList<>();
