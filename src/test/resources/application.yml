@@ -1,9 +1,10 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/testdb
+    url: jdbc:h2:mem:testdb
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -16,13 +17,13 @@ social:
   oauth:
     kakao:
       client:
-        id: test
-        secret: test
+        id:
+        secret:
       redirect:
         url: http://localhost:8080/login/oauth2/code/kakao
         user-info-uri: https://kapi.kakao.com/v2/user/me
 
 jwt:
-  secret: testJwt
+  secret:
 logging.level:
   org.hibernate.SQL: debug
