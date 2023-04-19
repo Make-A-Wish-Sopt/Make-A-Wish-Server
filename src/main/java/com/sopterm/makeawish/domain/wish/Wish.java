@@ -1,4 +1,4 @@
-package com.sopterm.makeawish.model.wish;
+package com.sopterm.makeawish.domain.wish;
 
 import static jakarta.persistence.GenerationType.*;
 
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sopterm.makeawish.model.Present;
+import com.sopterm.makeawish.domain.Present;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

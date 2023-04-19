@@ -1,4 +1,4 @@
-package com.sopterm.makeawish.model;
+package com.sopterm.makeawish.domain;
 
 import static jakarta.persistence.GenerationType.*;
 

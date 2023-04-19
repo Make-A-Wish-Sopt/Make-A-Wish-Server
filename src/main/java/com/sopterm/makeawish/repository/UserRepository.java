@@ -1,7 +1,7 @@
 package com.sopterm.makeawish.repository;
 
-import com.sopterm.makeawish.domain.SocialType;
-import com.sopterm.makeawish.domain.User;
+import com.sopterm.makeawish.domain.user.SocialType;
+import com.sopterm.makeawish.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

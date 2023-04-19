@@ -1,4 +1,4 @@
-package com.sopterm.makeawish.model.wish;
+package com.sopterm.makeawish.domain.wish;
 
 import jakarta.persistence.Embeddable;
 

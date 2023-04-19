@@ -1,10 +1,10 @@
-package com.sopterm.makeawish.model;
+package com.sopterm.makeawish.domain;
 
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static java.util.Objects.*;
 
-import com.sopterm.makeawish.model.wish.Wish;
+import com.sopterm.makeawish.domain.wish.Wish;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

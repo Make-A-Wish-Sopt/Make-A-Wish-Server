@@ -1,7 +1,7 @@
 package com.sopterm.makeawish.dto.auth;
 
-import com.sopterm.makeawish.domain.SocialType;
-import com.sopterm.makeawish.domain.User;
+import com.sopterm.makeawish.domain.user.SocialType;
+import com.sopterm.makeawish.domain.user.User;
 import lombok.Builder;
 import lombok.NonNull;
 
