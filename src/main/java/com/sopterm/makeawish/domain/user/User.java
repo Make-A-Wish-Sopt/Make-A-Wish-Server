@@ -1,4 +1,6 @@
-package com.sopterm.makeawish.domain;
+package com.sopterm.makeawish.domain.user;
+
+import static jakarta.persistence.GenerationType.*;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +11,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import com.sopterm.makeawish.domain.wish.AccountInfo;
+import com.sopterm.makeawish.domain.wish.Wish;
 
 @Entity
 @Getter
@@ -18,38 +25,54 @@ import java.util.Collection;
 @NoArgsConstructor
 public class User implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    @Column(name = "social_type", length = 20, nullable = false)
+
+    @Column(length = 20, nullable = false)
     @Enumerated(value = EnumType.STRING)
     private SocialType socialType;
-    @Column
+
     private String email;
+
     @Column(unique = true)
     private String socialId;
-    @Column(name = "refresh_token")
+
     private String refreshToken;
-    @Column
-    private String name;
-    @Column
+
     private String image;
-    @Column(name = "created_at", nullable = false)
+
+    @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    private LocalDateTime birthStartAt;
+
+    private LocalDateTime birthEndAt;
+
+    @Embedded
+    private AccountInfo account;
+
+    private String phoneNumber;
+
+    @OneToMany(mappedBy = "user")
+    private List<Wish> wishes = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
+
     @Override
     public String getPassword() {
         return null;
     }
+
     @Builder
     public User(SocialType socialType, String socialId, LocalDateTime createdAt) {
         this.socialType = socialType;
         this.socialId = socialId;
         this.createdAt = createdAt;
     }
+
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
