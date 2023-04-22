@@ -11,9 +11,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.sopterm.makeawish.domain.wish.AccountInfo;
+import com.sopterm.makeawish.domain.wish.Wish;
 
 @Entity
 @Getter
@@ -49,6 +52,9 @@ public class User implements UserDetails {
     private AccountInfo account;
 
     private String phoneNumber;
+
+    @OneToMany(mappedBy = "user")
+    private List<Wish> wishes = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
