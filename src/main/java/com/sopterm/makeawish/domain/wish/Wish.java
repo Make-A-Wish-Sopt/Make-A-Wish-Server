@@ -49,7 +49,9 @@ public class Wish {
 
 	private String phoneNumber;
 
-	private int price;
+	private int presentPrice;
+
+	private int totalPrice;
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "user_id")
@@ -59,7 +61,7 @@ public class Wish {
 	private final List<Present> presents = new ArrayList<>();
 
 	public Wish(String title, String presentImageUrl, String hint1, String hint2, LocalDateTime startAt,
-		LocalDateTime endAt, AccountInfo account, String phoneNumber, int price, User wisher) {
+		LocalDateTime endAt, AccountInfo account, String phoneNumber, int presentPrice, User wisher) {
 		this.title = title;
 		this.presentImageUrl = presentImageUrl;
 		this.hint1 = hint1;
@@ -68,7 +70,8 @@ public class Wish {
 		this.endAt = endAt;
 		this.account = account;
 		this.phoneNumber = phoneNumber;
-		this.price = price;
+		this.presentPrice = presentPrice;
+		this.totalPrice = 0;
 		setUser(wisher);
 	}
 
