@@ -1,5 +1,7 @@
 package com.sopterm.makeawish.controller;
 
+import static com.sopterm.makeawish.common.message.SuccessMessage.*;
+
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.dto.auth.AuthGetTokenResponseDto;
 import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+
 @Tag(name = "Auth", description = "인증")
 @RestController
 @RequiredArgsConstructor
@@ -25,9 +28,7 @@ public class AuthController {
             @RequestBody AuthSignInRequestDto requestDto
     ) {
         AuthSignInResponseDto responseDto = authService.signIn(requestDto, clientId);
-        ApiResponse apiResponse = ApiResponse.of(
-                HttpStatus.OK.value(), true, "소셜 로그인성공", responseDto
-        );
+        ApiResponse apiResponse = ApiResponse.success(SUCCESS_SIGN_IN.getMessage(), responseDto);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
@@ -36,8 +37,7 @@ public class AuthController {
     {
         Long userId = Long.valueOf(principal.getName());
         AuthGetTokenResponseDto responseDto =  authService.getToken(userId);
-        ApiResponse apiResponse = ApiResponse.of(
-                HttpStatus.OK.value(), true, "토큰 재발급 성공", responseDto);
+        ApiResponse apiResponse = ApiResponse.success(SUCCESS_GET_REFRESH_TOKEN.getMessage(), responseDto);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 }
