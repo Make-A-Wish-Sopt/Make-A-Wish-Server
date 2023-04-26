@@ -29,7 +29,7 @@ public class AuthController {
     ) {
         AuthSignInResponseDto responseDto = authService.signIn(requestDto, clientId);
         ApiResponse apiResponse = ApiResponse.success(SUCCESS_SIGN_IN.getMessage(), responseDto);
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        return ResponseEntity.ok(apiResponse);
     }
 
     @PostMapping("/token")
@@ -38,6 +38,6 @@ public class AuthController {
         Long userId = Long.valueOf(principal.getName());
         AuthGetTokenResponseDto responseDto =  authService.getToken(userId);
         ApiResponse apiResponse = ApiResponse.success(SUCCESS_GET_REFRESH_TOKEN.getMessage(), responseDto);
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        return ResponseEntity.ok(apiResponse);
     }
 }
