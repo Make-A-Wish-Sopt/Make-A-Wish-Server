@@ -1,12 +1,16 @@
 package com.sopterm.makeawish.service;
 
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
+import static java.util.Objects.*;
+
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
+import com.sopterm.makeawish.dto.wish.MainWishResponseDTO;
 import com.sopterm.makeawish.dto.wish.WishRequestDTO;
 import com.sopterm.makeawish.dto.wish.WishResponseDTO;
 import com.sopterm.makeawish.repository.UserRepository;
@@ -31,6 +35,13 @@ public class WishService {
 
 	public WishResponseDTO findWish(Long wishId) {
 		return WishResponseDTO.from(getWish(wishId));
+	}
+
+	public MainWishResponseDTO findMainWish(Long userId) {
+		Wish wish = wishRepository
+			.findMainWish(getUser(userId), LocalDateTime.now())
+			.orElse(null);
+		return nonNull(wish) ? MainWishResponseDTO.from(wish) : null;
 	}
 
 	private Wish getWish(Long id) {
