@@ -53,7 +53,7 @@ public class User implements UserDetails {
 
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "wisher")
     private List<Wish> wishes = new ArrayList<>();
 
     @Override
