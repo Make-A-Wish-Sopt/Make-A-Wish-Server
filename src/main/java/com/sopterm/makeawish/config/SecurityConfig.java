@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth").permitAll()
                 .requestMatchers("/api/v1/cakes/**").permitAll()
+                .requestMatchers("/api/v1/wishes/{wishId}").permitAll()
                 .requestMatchers("/").permitAll()
                 .anyRequest().authenticated().and()
                 .addFilterBefore(
