@@ -15,4 +15,10 @@ public class ErrorHandler {
 		ApiResponse response = ApiResponse.fail(exception.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<ApiResponse> handleIllegalArgumentExceptionException(IllegalArgumentException exception) {
+		ApiResponse response = ApiResponse.fail(exception.getMessage());
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
 }

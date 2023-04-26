@@ -19,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -60,6 +61,7 @@ public class Wish {
 	@OneToMany(mappedBy = "wish")
 	private final List<Present> presents = new ArrayList<>();
 
+	@Builder
 	public Wish(String title, String presentImageUrl, String hint1, String hint2, LocalDateTime startAt,
 		LocalDateTime endAt, AccountInfo account, String phoneNumber, int presentPrice, User wisher) {
 		this.title = title;
