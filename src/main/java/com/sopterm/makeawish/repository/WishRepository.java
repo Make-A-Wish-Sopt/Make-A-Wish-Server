@@ -13,4 +13,7 @@ public interface WishRepository extends JpaRepository<Wish, Long> {
 
 	@Query("select w from Wish w where w.wisher = :wisher and w.startAt <= :now and w.endAt >= :now")
 	Optional<Wish> findMainWish(User wisher, LocalDateTime now);
+
+	@Query("select count(w.id) > 0 from Wish w where w.wisher = :wisher and w.startAt <= :now and w.endAt >= :now")
+	boolean existsMainWish(User wisher, LocalDateTime now);
 }
