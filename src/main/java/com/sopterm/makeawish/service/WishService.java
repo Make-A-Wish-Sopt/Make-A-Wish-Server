@@ -2,6 +2,8 @@ package com.sopterm.makeawish.service;
 
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +27,11 @@ public class WishService {
 
 	@Transactional
 	public Long createWish(Long userId, WishRequestDTO requestDTO) {
-		Wish wish = requestDTO.toEntity(getUser(userId));
+		User wisher = getUser(userId);
+		if (wishRepository.existsMainWish(wisher, LocalDateTime.now())) {
+			throw new IllegalArgumentException(EXIST_MAIN_WISH.getMessage());
+		}
+		Wish wish = requestDTO.toEntity(wisher);
 		return wishRepository.save(wish).getId();
 	}
 
