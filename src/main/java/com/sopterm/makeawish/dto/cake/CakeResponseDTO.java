@@ -4,7 +4,6 @@ import static lombok.AccessLevel.*;
 
 import com.sopterm.makeawish.domain.Cake;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 
 @Builder(access = PRIVATE)

@@ -9,7 +9,6 @@ import com.sopterm.makeawish.dto.auth.AuthSignInResponseDto;
 import com.sopterm.makeawish.service.AuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
