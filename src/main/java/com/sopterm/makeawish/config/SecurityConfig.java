@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth").permitAll()
+                .requestMatchers("/api/v1/cakes/**").permitAll()
                 .requestMatchers("/").permitAll()
                 .anyRequest().authenticated().and()
                 .addFilterBefore(

@@ -23,9 +23,11 @@ import com.sopterm.makeawish.domain.wish.Wish;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "member")
 public class User implements UserDetails {
 
     @Id @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(length = 20, nullable = false)
