@@ -8,6 +8,6 @@ public record CakeReadyResponseDto(
         String next_redirect_app_url,
         String next_redirect_mobile_url,
         String next_redirect_pc_url,
-        String create_at
+        String created_at
 ) {
 }
