@@ -28,7 +28,7 @@ public class CakeController {
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_ALL_CAKE.getMessage(), response));
 	}
 
-	@PostMapping("/ready")
+	@PostMapping("/pay/ready")
 	public ResponseEntity<ApiResponse> getKakaoPayReady(@RequestBody CakeReadyRequestDto request){
 		CakeReadyResponseDto response=cakeService.getKakaoPayReady(request);
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_READY_KAKAOPAY.getMessage(), response));
