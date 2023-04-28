@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.wish.WishRequestDTO;
+import com.sopterm.makeawish.dto.wish.WishResponseDTO;
 import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.repository.WishRepository;
 
@@ -32,6 +33,15 @@ public class WishService {
 		}
 		Wish wish = requestDTO.toEntity(wisher);
 		return wishRepository.save(wish).getId();
+	}
+
+	public WishResponseDTO findWish(Long wishId) {
+		return WishResponseDTO.from(getWish(wishId));
+	}
+
+	private Wish getWish(Long id) {
+		return wishRepository.findById(id)
+			.orElseThrow(() -> new EntityNotFoundException(INVALID_WISH.getMessage()));
 	}
 
 	private User getUser(Long id) {
