@@ -9,6 +9,7 @@ public record CakeReadyRequestDto(
         String item_name,
         String total_amount,
         String tax_free_amount,
+        String vat_amount,
         String approval_url,
         String cancel_url,
         String fail_url
