@@ -21,6 +21,7 @@ import com.sopterm.makeawish.dto.wish.WishRequestDTO;
 import com.sopterm.makeawish.dto.wish.WishResponseDTO;
 import com.sopterm.makeawish.service.WishService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,6 +31,7 @@ public class WishController {
 
 	private final WishService wishService;
 
+	@Operation(description = "소원 링크 생성")
 	@PostMapping
 	public ResponseEntity<ApiResponse> createWish(Principal principal, @RequestBody WishRequestDTO requestDTO) {
 		Long wishId = wishService.createWish(getUserId(principal), requestDTO);
@@ -38,6 +40,7 @@ public class WishController {
 			.body(ApiResponse.success(SUCCESS_CREATE_WISH.getMessage()));
 	}
 
+	@Operation(description = "소원 링크 조회")
 	@GetMapping("/{wishId}")
 	public ResponseEntity<ApiResponse> findWish(@PathVariable Long wishId) {
 		WishResponseDTO response = wishService.findWish(wishId);

@@ -13,6 +13,7 @@ import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.dto.cake.CakeResponseDTO;
 import com.sopterm.makeawish.service.CakeService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -22,6 +23,7 @@ public class CakeController {
 
 	private final CakeService cakeService;
 
+	@Operation(description = "케이크 리스트 조회")
 	@GetMapping
 	public ResponseEntity<ApiResponse> getAllCakes() {
 		List<CakeResponseDTO> response = cakeService.getAllCakes();
