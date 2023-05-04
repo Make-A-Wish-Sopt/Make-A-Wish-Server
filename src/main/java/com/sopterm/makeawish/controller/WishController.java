@@ -49,6 +49,7 @@ public class WishController {
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_FIND_WISH.getMessage(), response));
 	}
 
+	@Operation(description = "메인 화면 조회")
 	@GetMapping("/main")
 	public ResponseEntity<ApiResponse> findMainWish(Principal principal) {
 		MainWishResponseDTO response = wishService.findMainWish(getUserId(principal));
