@@ -17,7 +17,8 @@ public enum SuccessMessage {
 
 	/** cake **/
 	SUCCESS_GET_ALL_CAKE("케이크 전체 조회 성공"),
-	SUCCESS_GET_READY_KAKAOPAY("카카오페이 결제 준비 성공");
-
+	SUCCESS_GET_READY_KAKAOPAY("카카오페이 결제 준비 성공"),
+	SUCCESS_CREATE_CAKE("케이크 저장 성공"),
+	SUCCESS_GET_PGTOKEN("pg 토큰 전달 성공");
 	private final String message;
 }

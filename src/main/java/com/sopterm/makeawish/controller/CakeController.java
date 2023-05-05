@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.sopterm.makeawish.common.message.SuccessMessage.SUCCESS_GET_ALL_CAKE;
-import static com.sopterm.makeawish.common.message.SuccessMessage.SUCCESS_GET_READY_KAKAOPAY;
+import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,11 +42,11 @@ public class CakeController {
         }
         Wish wish = wishService.getWish(request.wishId());
         CakeCreateResponseDto response= cakeService.createPresent(request.name(), cake, wish, request.message());
-        return ResponseEntity.ok(ApiResponse.success("편지 저장 성공", response));
+        return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_CAKE.getMessage(), response));
     }
 
     @GetMapping("/pay/approve")
     public ResponseEntity<ApiResponse> getPgToken(@RequestParam String pg_token) {
-        return ResponseEntity.ok(ApiResponse.success("pg 토큰 전달", pg_token));
+        return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_PGTOKEN.getMessage(), pg_token));
     }
 }
