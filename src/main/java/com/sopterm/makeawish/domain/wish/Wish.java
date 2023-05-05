@@ -84,4 +84,8 @@ public class Wish {
 		this.wisher = user;
 		user.getWishes().add(this);
 	}
+
+	public void updateTotalPrice(int price){
+		this.totalPrice+=price;
+	}
 }

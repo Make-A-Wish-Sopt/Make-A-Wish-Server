@@ -39,7 +39,7 @@ public class WishService {
 		return WishResponseDTO.from(getWish(wishId));
 	}
 
-	private Wish getWish(Long id) {
+	public Wish getWish(Long id) {
 		return wishRepository.findById(id)
 			.orElseThrow(() -> new EntityNotFoundException(INVALID_WISH.getMessage()));
 	}
