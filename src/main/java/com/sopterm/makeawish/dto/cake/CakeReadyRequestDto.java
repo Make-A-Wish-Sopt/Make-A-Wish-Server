@@ -6,8 +6,7 @@ import lombok.Builder;
 public record CakeReadyRequestDto(
         String partner_order_id,
         String partner_user_id,
-        String item_name,
-        String total_amount,
+        Long cake,
         String tax_free_amount,
         String vat_amount,
         String approval_url,
