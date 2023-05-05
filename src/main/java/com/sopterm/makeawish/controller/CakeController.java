@@ -47,7 +47,7 @@ public class CakeController {
     }
 
     @GetMapping("/pay/approve")
-    public String getPgToken(@RequestParam String pg_token) {
-        return pg_token;
+    public ResponseEntity<ApiResponse> getPgToken(@RequestParam String pg_token) {
+        return ResponseEntity.ok(ApiResponse.success("pg 토큰 전달", pg_token));
     }
 }
