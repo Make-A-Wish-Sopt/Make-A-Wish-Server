@@ -4,10 +4,10 @@ import lombok.Builder;
 
 @Builder
 public record CakeApproveRequestDto(
-        String pg_token,
+        String pgToken,
         String tid,
-        String partner_order_id,
-        String partner_user_id,
+        String partnerOrderId,
+        String partnerUserId,
         String name,
         Long cake,
         String message,

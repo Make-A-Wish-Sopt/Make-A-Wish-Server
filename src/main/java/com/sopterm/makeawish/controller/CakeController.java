@@ -41,12 +41,12 @@ public class CakeController {
             CakeApproveResponseDto response = cakeService.getKakaoPayApprove(request);
         }
         Wish wish = wishService.getWish(request.wishId());
-        CakeCreateResponseDto response= cakeService.createPresent(request.name(), cake, wish, request.message());
+        CakeCreateResponseDto response = cakeService.createPresent(request.name(), cake, wish, request.message());
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_CAKE.getMessage(), response));
     }
 
     @GetMapping("/pay/approve")
-    public ResponseEntity<ApiResponse> getPgToken(@RequestParam String pg_token) {
-        return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_PGTOKEN.getMessage(), pg_token));
+    public ResponseEntity<ApiResponse> getPgToken(@RequestParam("pg_token") String pgToken) {
+        return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_PGTOKEN.getMessage(), pgToken));
     }
 }
