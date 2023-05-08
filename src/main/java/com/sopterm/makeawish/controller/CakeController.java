@@ -1,5 +1,9 @@
 package com.sopterm.makeawish.controller;
 
+import java.util.List;
+
+import static com.sopterm.makeawish.common.message.SuccessMessage.*;
+
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.Cake;
 import com.sopterm.makeawish.domain.wish.Wish;
@@ -10,9 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-import static com.sopterm.makeawish.common.message.SuccessMessage.*;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +24,19 @@ public class CakeController {
 
     private final CakeService cakeService;
     private final WishService wishService;
+
+    @Operation(description = "케이크 리스트 조회")
+    @GetMapping
+    public ResponseEntity<ApiResponse> getAllCakes() {
+      List<CakeResponseDTO> response = cakeService.getAllCakes();
+      return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_ALL_CAKE.getMessage(), response));
+    }
+
+    @PostMapping("/pay/ready")
+    public ResponseEntity<ApiResponse> getKakaoPayReady(@RequestBody CakeReadyRequestDto request){
+      CakeReadyResponseDto response=cakeService.getKakaoPayReady(request);
+      return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_READY_KAKAOPAY.getMessage(), response));
+    }
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAllCakes() {

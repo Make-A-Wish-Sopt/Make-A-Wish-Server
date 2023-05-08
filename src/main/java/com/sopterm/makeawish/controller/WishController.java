@@ -3,6 +3,7 @@ package com.sopterm.makeawish.controller;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import static java.util.Objects.*;
+import static org.springframework.http.HttpStatus.*;
 
 import java.net.URI;
 import java.security.Principal;
@@ -17,10 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.sopterm.makeawish.common.ApiResponse;
+import com.sopterm.makeawish.dto.wish.MainWishResponseDTO;
 import com.sopterm.makeawish.dto.wish.WishRequestDTO;
 import com.sopterm.makeawish.dto.wish.WishResponseDTO;
 import com.sopterm.makeawish.service.WishService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,6 +33,7 @@ public class WishController {
 
 	private final WishService wishService;
 
+	@Operation(description = "소원 링크 생성")
 	@PostMapping
 	public ResponseEntity<ApiResponse> createWish(Principal principal, @RequestBody WishRequestDTO requestDTO) {
 		Long wishId = wishService.createWish(getUserId(principal), requestDTO);
@@ -38,10 +42,20 @@ public class WishController {
 			.body(ApiResponse.success(SUCCESS_CREATE_WISH.getMessage()));
 	}
 
+	@Operation(description = "소원 링크 조회")
 	@GetMapping("/{wishId}")
 	public ResponseEntity<ApiResponse> findWish(@PathVariable Long wishId) {
 		WishResponseDTO response = wishService.findWish(wishId);
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_FIND_WISH.getMessage(), response));
+	}
+
+	@Operation(description = "메인 화면 조회")
+	@GetMapping("/main")
+	public ResponseEntity<ApiResponse> findMainWish(Principal principal) {
+		MainWishResponseDTO response = wishService.findMainWish(getUserId(principal));
+		return nonNull(response)
+			? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_MAIN_WISH.getMessage(), response))
+			: ResponseEntity.status(NO_CONTENT).body(ApiResponse.success(NO_WISH.getMessage()));
 	}
 
 	private Long getUserId(Principal principal) {
