@@ -1,11 +1,11 @@
 package com.sopterm.makeawish.config.jwt;
 
-import com.sopterm.makeawish.config.AuthConfig;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,9 @@ public class JwtTokenProvider {
 
     private static final int REFRESH_TOKEN_EXPIRATION_TIME = 1209600000; // 2주
 
-    private final AuthConfig authConfig;
+    @Value("${jwt.secret}")
+    private String jwtSecretKey;
+
     public String                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        generateAccessToken(Authentication authentication) {
         return Jwts.builder()
                 .setSubject(String.valueOf(authentication.getPrincipal()))
@@ -77,7 +79,7 @@ public class JwtTokenProvider {
     }
 
     private Key getSignKey(){
-        byte[] keyBytes = authConfig.getJwtSecretKey().getBytes(StandardCharsets.UTF_8);
+        byte[] keyBytes = jwtSecretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

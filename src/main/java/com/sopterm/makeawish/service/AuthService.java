@@ -2,7 +2,6 @@ package com.sopterm.makeawish.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.gson.JsonArray;
-import com.sopterm.makeawish.config.AuthConfig;
 import com.sopterm.makeawish.config.jwt.JwtTokenProvider;
 import com.sopterm.makeawish.config.jwt.UserAuthentication;
 import com.sopterm.makeawish.domain.user.SocialType;
@@ -13,6 +12,8 @@ import com.sopterm.makeawish.dto.auth.AuthSignInResponseDto;
 import com.sopterm.makeawish.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,9 +30,12 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final AuthConfig authConfig;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
+
+    @Value("${social.oauth.kakao.redirect.user-info-uri}")
+    private String kakaoUserInfoUriAuth;
+
     @Transactional(readOnly = true)
     public AuthSignInResponseDto signIn(AuthSignInRequestDto dto, String socialAccessToken) {
         String socialId = String.valueOf(getKakaoUserData(socialAccessToken));
@@ -69,7 +73,7 @@ public class AuthService {
     private Long getKakaoUserData(String socialAccessToken)  {
         RestTemplate restTemplate = new RestTemplate();
 
-        String kakaoUrl = authConfig.getKakaoUserInfoUriAuth();
+        String kakaoUrl = kakaoUserInfoUriAuth;
 
         try {
             HttpHeaders headers = new HttpHeaders();
