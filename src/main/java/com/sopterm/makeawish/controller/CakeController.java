@@ -6,7 +6,7 @@ import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.cake.*;
 import com.sopterm.makeawish.service.CakeService;
 import com.sopterm.makeawish.service.WishService;
-// import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,7 @@ public class CakeController {
     private final CakeService cakeService;
     private final WishService wishService;
 
-    // @Operation(description = "케이크 리스트 조회")
+    @Operation(description = "케이크 리스트 조회")
     @GetMapping
     public ResponseEntity<ApiResponse> getAllCakes() {
         List<CakeResponseDTO> response = cakeService.getAllCakes();

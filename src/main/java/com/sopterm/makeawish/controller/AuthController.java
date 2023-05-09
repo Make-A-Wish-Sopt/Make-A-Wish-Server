@@ -7,14 +7,14 @@ import com.sopterm.makeawish.dto.auth.AuthGetTokenResponseDto;
 import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
 import com.sopterm.makeawish.dto.auth.AuthSignInResponseDto;
 import com.sopterm.makeawish.service.AuthService;
-// import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
-// @Tag(name = "Auth", description = "인증")
+@Tag(name = "Auth", description = "인증")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/auth")
