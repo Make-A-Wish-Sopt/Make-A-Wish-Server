@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -25,6 +26,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String accessToken = getJwtFromRequest(request);
+            if(Objects.equals(accessToken, "notLoginUser")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             JwtValidationType jwtValidationType = jwtTokenProvider.validateToken(accessToken);
             if (StringUtils.hasText(accessToken) && jwtValidationType == JwtValidationType.VALID_JWT) {
                 Long userId = jwtTokenProvider.getUserFromJwt(accessToken);
@@ -42,7 +47,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+        if (bearerToken == null) {
+            return "notLoginUser";
+        } else if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring("Bearer ".length());
         }
         return null;
