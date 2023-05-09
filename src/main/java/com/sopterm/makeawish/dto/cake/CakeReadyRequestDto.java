@@ -4,15 +4,14 @@ import lombok.Builder;
 
 @Builder
 public record CakeReadyRequestDto(
-        String partner_order_id,
-        String partner_user_id,
-        String item_name,
-        String total_amount,
-        String tax_free_amount,
-        String vat_amount,
-        String approval_url,
-        String cancel_url,
-        String fail_url
+        String partnerOrderId,
+        String partnerUserId,
+        Long cake,
+        String taxFreeAmount,
+        String vatAmount,
+        String approvalUrl,
+        String cancelUrl,
+        String failUrl
 ) {
 
 }

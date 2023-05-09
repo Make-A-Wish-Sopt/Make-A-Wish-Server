@@ -50,7 +50,7 @@ public class WishService {
 		return nonNull(wish) ? MainWishResponseDTO.from(wish) : null;
 	}
 
-	private Wish getWish(Long id) {
+	public Wish getWish(Long id) {
 		return wishRepository.findById(id)
 			.orElseThrow(() -> new EntityNotFoundException(INVALID_WISH.getMessage()));
 	}
