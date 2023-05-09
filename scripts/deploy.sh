@@ -22,4 +22,4 @@ fi
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 echo "> DEPLOY_JAR 배포"    >> /home/ubuntu/makeawish/deploy.log
-nohup java -jar -Dspring.profiles.active-dev $DEPLOY_JAR >> /home/ubuntu/deploy.log 2>/home/ubuntu/makeawish/deploy_err.log &
+nohup java -jar -Dspring.profiles.active=dev /home/ubuntu/makeawish/build/libs/makeawish-0.0.1-SNAPSHOT.jar > /dev/null 2> /dev/null < /dev/null &
