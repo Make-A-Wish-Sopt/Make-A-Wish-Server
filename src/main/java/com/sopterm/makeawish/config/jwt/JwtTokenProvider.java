@@ -2,27 +2,19 @@ package com.sopterm.makeawish.config.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.crypto.spec.SecretKeySpec;
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
@@ -34,48 +26,13 @@ public class JwtTokenProvider {
     private String jwtSecretKey;
 
     public String generateAccessToken(Authentication authentication) {
-        byte[] bytes = DatatypeConverter.parseBase64Binary(jwtSecretKey);
-        SecretKeySpec key = new SecretKeySpec(bytes, SignatureAlgorithm.HS256.getJcaName());
-
-        JwtBuilder jwtBuilder = Jwts.builder()
+        return Jwts.builder()
             .setSubject(String.valueOf(authentication.getPrincipal()))
-            .setHeader(createHeader())
-            .setExpiration(createExpireDate())
-            .signWith(key, SignatureAlgorithm.HS256);
-
-        return jwtBuilder.compact();
+            .setIssuedAt(new Date())
+            .setExpiration(getExpirationDate(ACCESS_TOKEN_EXPIRATION_TIME))
+            .signWith(getSignKey(), SignatureAlgorithm.HS512)
+            .compact();
     }
-
-    private Map<String, Object> createHeader() {
-        Map<String, Object> header = new HashMap<>();
-
-        header.put("typ", "JWT");
-        header.put("alg", "HS256");
-        header.put("regDate", System.currentTimeMillis());
-
-        return header;
-    }
-
-    private Date createExpireDate() {
-        return Date.from(setExpireTime(getCurrentTime()).atZone(ZoneId.systemDefault()).toInstant());
-    }
-
-    private LocalDateTime getCurrentTime() {
-        return LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-    }
-
-    private LocalDateTime setExpireTime(LocalDateTime now) {
-        return now.plusHours(5);
-    }
-
-    // public String                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        generateAccessToken(Authentication authentication) {
-    //     return Jwts.builder()
-    //             .setSubject(String.valueOf(authentication.getPrincipal()))
-    //             .setIssuedAt(new Date())
-    //             .setExpiration(getExpirationDate(ACCESS_TOKEN_EXPIRATION_TIME))
-    //             .signWith(getSignKey(),SignatureAlgorithm.HS512)
-    //             .compact();
-    // }
 
     public String generateRefreshToken(Authentication authentication) {
         return Jwts.builder()
