@@ -7,6 +7,7 @@ import com.sopterm.makeawish.dto.auth.AuthGetTokenResponseDto;
 import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
 import com.sopterm.makeawish.dto.auth.AuthSignInResponseDto;
 import com.sopterm.makeawish.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,11 @@ import java.security.Principal;
 public class AuthController {
 
     private final AuthService authService;
+    @Operation(summary = "카카오 소셜 로그인",
+            description = """
+                    kakao 인증 서버에서 발급받은 accessToken header에 request
+                    """
+    )
     @PostMapping()
     public ResponseEntity<ApiResponse> signIn(
             @RequestHeader(value = "authorization") String clientId,
@@ -31,6 +37,7 @@ public class AuthController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @Operation(summary = "토큰 재발급")
     @PostMapping("/token")
     public ResponseEntity<ApiResponse> getToken(Principal principal)
     {

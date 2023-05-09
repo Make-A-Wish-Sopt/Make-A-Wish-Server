@@ -23,7 +23,7 @@ public class CakeController {
     private final CakeService cakeService;
     private final WishService wishService;
 
-    @Operation(description = "케이크 리스트 조회")
+    @Operation(summary = "케이크 리스트 조회")
     @GetMapping
     public ResponseEntity<ApiResponse> getAllCakes() {
         List<CakeResponseDTO> response = cakeService.getAllCakes();
