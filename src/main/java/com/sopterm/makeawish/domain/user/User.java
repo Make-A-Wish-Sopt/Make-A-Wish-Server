@@ -56,7 +56,7 @@ public class User implements UserDetails {
     private String phoneNumber;
 
     @OneToMany(mappedBy = "wisher")
-    private List<Wish> wishes = new ArrayList<>();
+    private final List<Wish> wishes = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
