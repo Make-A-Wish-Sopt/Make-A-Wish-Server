@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -24,9 +25,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         try {
             String accessToken = getJwtFromRequest(request);
-            if(Objects.equals(accessToken, "notLoginUser")) {
+            val uri = request.getRequestURI();
+            if(uri.startsWith("/api/v1/auth") || uri.startsWith("/api/v1/cakes") || uri.startsWith("/v3/api-docs") ||
+                    uri.startsWith("/swagger-ui") ||
+                    uri.startsWith("/api/v1/wishes") && request.getHeader("Authorization") == null) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -47,9 +52,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if (bearerToken == null) {
-            return "notLoginUser";
-        } else if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring("Bearer ".length());
         }
         return null;
