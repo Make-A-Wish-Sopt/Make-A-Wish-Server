@@ -28,7 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         try {
             String accessToken = getJwtFromRequest(request);
-            val uri = request.getRequestURI();
+            String uri = request.getRequestURI();
             if(uri.startsWith("/api/v1/auth") || uri.startsWith("/api/v1/cakes") || uri.startsWith("/v3/api-docs") ||
                     uri.startsWith("/swagger-ui") ||
                     uri.startsWith("/api/v1/wishes") && request.getHeader("Authorization") == null) {
