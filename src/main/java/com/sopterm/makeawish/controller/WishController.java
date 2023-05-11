@@ -33,7 +33,7 @@ public class WishController {
 
 	private final WishService wishService;
 
-	@Operation(description = "소원 링크 생성")
+	@Operation(summary = "소원 링크 생성")
 	@PostMapping
 	public ResponseEntity<ApiResponse> createWish(Principal principal, @RequestBody WishRequestDTO requestDTO) {
 		Long wishId = wishService.createWish(getUserId(principal), requestDTO);
@@ -42,14 +42,14 @@ public class WishController {
 			.body(ApiResponse.success(SUCCESS_CREATE_WISH.getMessage()));
 	}
 
-	@Operation(description = "소원 링크 조회")
+	@Operation(summary = "소원 링크 조회")
 	@GetMapping("/{wishId}")
 	public ResponseEntity<ApiResponse> findWish(@PathVariable Long wishId) {
 		WishResponseDTO response = wishService.findWish(wishId);
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_FIND_WISH.getMessage(), response));
 	}
 
-	@Operation(description = "메인 화면 조회")
+	@Operation(summary = "메인 화면 조회")
 	@GetMapping("/main")
 	public ResponseEntity<ApiResponse> findMainWish(Principal principal) {
 		MainWishResponseDTO response = wishService.findMainWish(getUserId(principal));
