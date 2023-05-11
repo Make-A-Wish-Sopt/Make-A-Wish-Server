@@ -18,4 +18,4 @@ else
 fi
 
 echo "> $JAR_PATH 배포"
-nohup java -jar -DSpring.profiles.active=dev /home/ubuntu/build/build/libs/makeawish-0.0.1-SNAPSHOT.jar > /dev/null 2> /dev/null < /dev/null &
+nohup java -jar -DSpring.profiles.active=dev /home/ubuntu/makeawish/build/libs/makeawish-0.0.1-SNAPSHOT.jar > /dev/null 2> /dev/null < /dev/null &
