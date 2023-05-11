@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
+                .requestMatchers("/health").permitAll()
                 .requestMatchers("/api/v1/auth").permitAll()
                 .requestMatchers("/api/v1/cakes/**").permitAll()
                 .requestMatchers("/api/v1/wishes/{wishId}").permitAll()
