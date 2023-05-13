@@ -103,4 +103,24 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return false;
     }
+
+    public void updateMemberProfile(
+            LocalDateTime birthStartAt,
+            LocalDateTime birthEndAt,
+            String name,
+            String bank,
+            String account,
+            String phoneNumber) {
+        this.birthEndAt = birthEndAt == null ? this.birthEndAt : birthEndAt;
+        this.birthStartAt = birthStartAt == null ? this.birthStartAt : birthStartAt;
+        this.phoneNumber = phoneNumber == null ? this.phoneNumber : phoneNumber;
+        this.account = updateAccount(name,bank,account);
+    }
+
+    private AccountInfo updateAccount(String name, String bank, String account) {
+        if(name == null) name = this.account.getName();
+        if(bank == null) bank = this.account.getBank();
+        if(account == null) account = this.account.getAccount();
+        return new AccountInfo(name,bank,account);
+    }
 }
