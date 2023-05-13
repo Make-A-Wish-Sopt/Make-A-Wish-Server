@@ -1,8 +1,8 @@
 package com.sopterm.makeawish.controller;
 
 import com.sopterm.makeawish.common.ApiResponse;
-import com.sopterm.makeawish.dto.wish.MypageWishResponseDTO;
-import com.sopterm.makeawish.dto.wish.WishUpdateRequestDTO;
+import com.sopterm.makeawish.dto.wish.MypageWishUpdateResponseDTO;
+import com.sopterm.makeawish.dto.wish.MypageWishUpdateRequestDTO;
 import com.sopterm.makeawish.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,15 +27,15 @@ public class UserController {
     private final WishService wishService;
     @Operation(summary = "내 정보 수정")
     @PostMapping("")
-    public ResponseEntity<ApiResponse> updateWish(Principal principal, @RequestBody WishUpdateRequestDTO requestDTO) {
-        MypageWishResponseDTO wish = wishService.updateWish(getUserId(principal), requestDTO);
+    public ResponseEntity<ApiResponse> updateWish(Principal principal, @RequestBody MypageWishUpdateRequestDTO requestDTO) {
+        MypageWishUpdateResponseDTO wish = wishService.updateWish(getUserId(principal), requestDTO);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_UPDATE_USER_INFO.getMessage(), wish));
     }
 
     @Operation(summary = "내 정보 가져오기")
     @GetMapping("")
     public ResponseEntity<ApiResponse> getUserWish(Principal principal) {
-        MypageWishResponseDTO response = wishService.getMypageWish(getUserId(principal));
+        MypageWishUpdateResponseDTO response = wishService.getMypageWish(getUserId(principal));
         return nonNull(response)
                 ? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_INFO.getMessage(), response))
                 : ResponseEntity.status(NO_CONTENT).body(ApiResponse.success(NO_WISH.getMessage()));
