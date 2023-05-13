@@ -49,8 +49,6 @@ public class WishService {
 		if (nonNull(userWish)) {
 			userWish.updateWish(convertToTime(request.birthStartAt()), convertToTime(request.birthEndAt()), request.name(), request.bankName(), request.account(), request.phone());
 		}
-		System.out.println("HDISFJIEWOF");
-		System.out.println(userWish.getEndAt());
 		return MypageWishUpdateResponseDTO.from(wishRepository.save(userWish));
 	}
 
