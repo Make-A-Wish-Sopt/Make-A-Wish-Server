@@ -4,6 +4,7 @@ import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.Cake;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.cake.*;
+import com.sopterm.makeawish.dto.present.PresentDto;
 import com.sopterm.makeawish.service.CakeService;
 import com.sopterm.makeawish.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,9 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
+import static com.sopterm.makeawish.common.message.ErrorMessage.NULL_PRINCIPAL;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
+import static java.util.Objects.isNull;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,5 +54,26 @@ public class CakeController {
     @GetMapping("/pay/approve")
     public ResponseEntity<ApiResponse> getPgToken(@RequestParam("pg_token") String pgToken) {
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_PGTOKEN.getMessage(), pgToken));
+    }
+
+    @GetMapping("/{wishId}")
+    public ResponseEntity<ApiResponse> getPresents(Principal principal, @PathVariable("wishId") Long wishId) {
+        Wish wish = wishService.getWish(wishId);
+        Long userId = getUserId(principal);
+        if (!isRightWisher(userId, wish))
+            return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_PGTOKEN.getMessage(), ""));
+        List<PresentDto> response = cakeService.getPresents(wish);
+        return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_PGTOKEN.getMessage(), response));
+    }
+
+    private Long getUserId(Principal principal) {
+        if (isNull(principal)) {
+            throw new IllegalArgumentException(NULL_PRINCIPAL.getMessage());
+        }
+        return Long.valueOf(principal.getName());
+    }
+
+    private boolean isRightWisher(Long userId, Wish wish) {
+        return userId.equals(wish.getWisher().getId());
     }
 }
