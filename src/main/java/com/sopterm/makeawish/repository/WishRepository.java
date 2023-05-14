@@ -19,5 +19,5 @@ public interface WishRepository extends JpaRepository<Wish, Long> {
 
 	Wish findFirstByWisherOrderByEndAtDesc(User wisher);
 
-	boolean existsWishByWisherOrderByEndAtDesc(User wisher);
+	boolean existsWishByWisher(User wisher);
 }
