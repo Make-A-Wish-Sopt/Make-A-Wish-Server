@@ -48,7 +48,7 @@ public class WishService {
 		if (nonNull(userWish)) {
 			userWish.updateWish(convertToTime(request.birthStartAt()), convertToTime(request.birthEndAt()), request.name(), request.bankName(), request.account(), request.phone());
 		}
-		return MypageWishUpdateResponseDTO.from(wishRepository.save(userWish));
+		return MypageWishUpdateResponseDTO.from(userWish);
 	}
 
 	public WishResponseDTO findWish(Long wishId) {
@@ -58,7 +58,6 @@ public class WishService {
 	public MypageWishUpdateResponseDTO getMypageWish(Long userId) {
 		Wish wish = wishRepository
 				.findFirstByWisherOrderByEndAtDesc(getUser(userId));
-		System.out.println(wish.getEndAt());
 		return MypageWishUpdateResponseDTO.from(wish);
 	}
 
