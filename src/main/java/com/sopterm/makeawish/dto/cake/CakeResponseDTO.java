@@ -17,4 +17,13 @@ public record CakeResponseDTO(Long cakeId, String name, String imageUrl, int pri
 			.price(cake.getPrice())
 			.build();
 	}
+
+	public Cake toEntity(){
+		return Cake.builder()
+				.id(cakeId)
+				.name(name)
+				.imageUrl(imageUrl)
+				.price(price)
+				.build();
+	}
 }
