@@ -11,7 +11,8 @@ public enum ErrorMessage {
 	EXIST_MAIN_WISH("이미 진행 중인 소원 링크가 있습니다."),
 	INVALID_USER("인증되지 않은 회원입니다."),
 	NULL_PRINCIPAL("principal 이 null 일 수 없습니다."),
-	INVALID_CAKE("존재하지 않는 케이크입니다.");
+	INVALID_CAKE("존재하지 않는 케이크입니다."),
+	INCORRECT_WISH("본인의 소원 링크가 아닙니다");
 
 	private final String message;
 }

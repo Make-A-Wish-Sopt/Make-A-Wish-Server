@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
+import static com.sopterm.makeawish.common.message.ErrorMessage.INCORRECT_WISH;
 import static com.sopterm.makeawish.common.message.ErrorMessage.NULL_PRINCIPAL;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import static java.util.Objects.isNull;
@@ -60,10 +61,9 @@ public class CakeController {
     public ResponseEntity<ApiResponse> getPresents(Principal principal, @PathVariable("wishId") Long wishId) {
         Wish wish = wishService.getWish(wishId);
         Long userId = getUserId(principal);
-        if (!isRightWisher(userId, wish))
-            return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_PGTOKEN.getMessage(), ""));
+        isRightWisher(userId, wish);
         List<PresentDto> response = cakeService.getPresents(wish);
-        return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_PGTOKEN.getMessage(), response));
+        return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_ALL_PRESENT.getMessage(), response));
     }
 
     private Long getUserId(Principal principal) {
@@ -73,7 +73,8 @@ public class CakeController {
         return Long.valueOf(principal.getName());
     }
 
-    private boolean isRightWisher(Long userId, Wish wish) {
-        return userId.equals(wish.getWisher().getId());
+    private void isRightWisher(Long userId, Wish wish) {
+        if (!userId.equals(wish.getWisher().getId()))
+            throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
     }
 }
