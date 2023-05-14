@@ -118,9 +118,15 @@ public class User implements UserDetails {
     }
 
     private AccountInfo updateAccount(String name, String bank, String account) {
-        if(name == null) name = this.account.getName();
-        if(bank == null) bank = this.account.getBank();
-        if(account == null) account = this.account.getAccount();
+        if(name == null) {
+            name = this.account.getName();
+        }
+        if(bank == null) {
+            bank = this.account.getBank();
+        }
+        if(account == null) {
+            account = this.account.getAccount();
+        }
         return new AccountInfo(name,bank,account);
     }
 }
