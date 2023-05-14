@@ -43,7 +43,6 @@ public class WishService {
 			throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
 		}
 		user.updateMemberProfile(convertToTime(request.birthStartAt()), convertToTime(request.birthEndAt()), request.name(), request.bankName(), request.account(), request.phone());
-		userRepository.save(user);
 
 		Wish userWish = getUserWish(userId);
 		if (nonNull(userWish)) {
