@@ -127,8 +127,7 @@ public class CakeService {
                         CakeResponseDTO::toEntity,
                         count -> 0L));
 
-        Map<Cake, Long> cakes = wish.getPresents().stream()
-                .collect(Collectors.groupingBy(Present::getCake, Collectors.counting()));
+        Map<Cake, Long> cakes = getAllPresent(wish);
 
         allCake.putAll(cakes);
 
@@ -138,5 +137,12 @@ public class CakeService {
                 .toList();
 
         return response;
+    }
+
+    private Map<Cake, Long> getAllPresent(Wish wish) {
+        Map<Cake, Long> cakes = wish.getPresents().stream()
+                .collect(Collectors.groupingBy(Present::getCake, Collectors.counting()));
+
+        return cakes;
     }
 }

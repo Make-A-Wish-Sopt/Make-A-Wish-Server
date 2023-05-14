@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -29,7 +31,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         try {
             String accessToken = getJwtFromRequest(request);
             String uri = request.getRequestURI();
-            if(uri.startsWith("/api/v1/auth") || uri.startsWith("/api/v1/cakes") || uri.startsWith("/v3/api-docs") ||
+
+            if(uri.equals("/api/v1/cakes")){
+                filterChain.doFilter(request, response);
+                return;
+            }
+            if(uri.startsWith("/api/v1/auth") || (uri.startsWith("/api/v1/cakes") && request.getMethod().equals(HttpMethod.POST)) || uri.startsWith("/v3/api-docs") ||
                 uri.startsWith("/swagger-ui") || uri.startsWith("/api/v1/wishes") || uri.startsWith("/health")) {
                 filterChain.doFilter(request, response);
                 return;
