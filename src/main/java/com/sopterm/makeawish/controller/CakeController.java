@@ -61,9 +61,11 @@ public class CakeController {
     public ResponseEntity<ApiResponse> getPresents(Principal principal, @PathVariable("wishId") Long wishId) {
         Wish wish = wishService.getWish(wishId);
         Long userId = getUserId(principal);
-        isRightWisher(userId, wish);
-        List<PresentDto> response = cakeService.getPresents(wish);
-        return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_ALL_PRESENT.getMessage(), response));
+        if (isRightWisher(userId, wish)) {
+            List<PresentDto> response = cakeService.getPresents(wish);
+            return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_ALL_PRESENT.getMessage(), response));
+        }
+        throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
     }
 
     private Long getUserId(Principal principal) {
@@ -73,8 +75,9 @@ public class CakeController {
         return Long.valueOf(principal.getName());
     }
 
-    private void isRightWisher(Long userId, Wish wish) {
+    private boolean isRightWisher(Long userId, Wish wish) {
         if (!userId.equals(wish.getWisher().getId()))
-            throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
+            return false;
+        return true;
     }
 }
