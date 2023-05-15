@@ -1,7 +1,9 @@
 package com.sopterm.makeawish.config;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,9 +12,13 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
 public class SwaggerConfig {
+
+	@Value("${swagger.server.url}")
+	private String serverUrl;
 
 	@Bean
 	public OpenAPI openAPI() {
@@ -27,9 +33,16 @@ public class SwaggerConfig {
 
 		SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
 
+		List<Server> servers = new ArrayList<>();
+		Server server = new Server();
+		server.description("실서버");
+		server.setUrl(serverUrl);
+		servers.add(server);
+
 		return new OpenAPI()
 			.components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
 			.security(List.of(securityRequirement))
+			.servers(servers)
 			.info(info);
 
 	}
