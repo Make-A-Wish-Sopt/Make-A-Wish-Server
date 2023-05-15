@@ -57,12 +57,12 @@ public class WishService {
 
 	public MypageWishUpdateResponseDTO getMypageWish(Long userId) {
 		Wish wish = wishRepository
-				.findFirstByWisherOrderByEndAtDesc(getUser(userId));
-		return MypageWishUpdateResponseDTO.from(wish);
+				.findFirstByWisherOrderByEndAtDesc(getUser(userId)).orElse(null);
+		return nonNull(wish) ? MypageWishUpdateResponseDTO.from(wish) : null;
 	}
 
 	public Wish getUserWish(Long userId) {
-		return wishRepository.findFirstByWisherOrderByEndAtDesc(getUser(userId));
+		return wishRepository.findFirstByWisherOrderByEndAtDesc(getUser(userId)).orElse(null);
 	}
 
 	public MainWishResponseDTO findMainWish(Long userId) {
