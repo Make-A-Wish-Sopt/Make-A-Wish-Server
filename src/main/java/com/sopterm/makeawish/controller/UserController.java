@@ -29,14 +29,14 @@ public class UserController {
             description = """
                     수정되지 않은 정보는 null 또는 원래의 정보 그대로 request로 전달부탁드립니다!
                     """)
-    @PostMapping("")
+    @PutMapping
     public ResponseEntity<ApiResponse> updateWish(Principal principal, @RequestBody MypageWishUpdateRequestDTO requestDTO) {
         MypageWishUpdateResponseDTO wish = wishService.updateWish(getUserId(principal), requestDTO);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_UPDATE_USER_INFO.getMessage(), wish));
     }
 
     @Operation(summary = "내 정보 가져오기")
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<ApiResponse> getUserWish(Principal principal) {
         MypageWishUpdateResponseDTO response = wishService.getMypageWish(getUserId(principal));
         return nonNull(response)
