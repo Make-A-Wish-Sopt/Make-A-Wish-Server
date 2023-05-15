@@ -4,15 +4,14 @@ import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 import static java.util.Objects.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+import com.sopterm.makeawish.dto.wish.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
-import com.sopterm.makeawish.dto.wish.MainWishResponseDTO;
-import com.sopterm.makeawish.dto.wish.WishRequestDTO;
-import com.sopterm.makeawish.dto.wish.WishResponseDTO;
 import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.repository.WishRepository;
 
@@ -37,8 +36,33 @@ public class WishService {
 		return wishRepository.save(wish).getId();
 	}
 
+	@Transactional
+	public MypageWishUpdateResponseDTO updateWish(Long userId, MypageWishUpdateRequestDTO request) {
+		User user = getUser(userId);
+		if (!wishRepository.existsWishByWisher(user)) {
+			throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
+		}
+		user.updateMemberProfile(convertToTime(request.birthStartAt()), convertToTime(request.birthEndAt()), request.name(), request.bankName(), request.account(), request.phone());
+
+		Wish userWish = getUserWish(userId);
+		if (nonNull(userWish)) {
+			userWish.updateWish(convertToTime(request.birthStartAt()), convertToTime(request.birthEndAt()), request.name(), request.bankName(), request.account(), request.phone());
+		}
+		return MypageWishUpdateResponseDTO.from(userWish);
+	}
+
 	public WishResponseDTO findWish(Long wishId) {
 		return WishResponseDTO.from(getWish(wishId));
+	}
+
+	public MypageWishUpdateResponseDTO getMypageWish(Long userId) {
+		Wish wish = wishRepository
+				.findFirstByWisherOrderByEndAtDesc(getUser(userId)).orElse(null);
+		return nonNull(wish) ? MypageWishUpdateResponseDTO.from(wish) : null;
+	}
+
+	public Wish getUserWish(Long userId) {
+		return wishRepository.findFirstByWisherOrderByEndAtDesc(getUser(userId)).orElse(null);
 	}
 
 	public MainWishResponseDTO findMainWish(Long userId) {
@@ -56,5 +80,10 @@ public class WishService {
 	private User getUser(Long id) {
 		return userRepository.findById(id)
 			.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
+	}
+
+	private LocalDateTime convertToTime(String date) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+		return LocalDateTime.parse(date + " 00:00", formatter);
 	}
 }

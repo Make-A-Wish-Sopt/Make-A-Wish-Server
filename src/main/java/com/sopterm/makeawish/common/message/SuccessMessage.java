@@ -11,6 +11,10 @@ public enum SuccessMessage {
 	SUCCESS_SIGN_IN("소셜 로그인 성공"),
 	SUCCESS_GET_REFRESH_TOKEN("토큰 재발급 성공"),
 
+	/** user **/
+	SUCCESS_UPDATE_USER_INFO("유저 소원 정보 수정 성공"),
+	SUCCESS_GET_USER_INFO("유저 소원 정보 가져오기 성공"),
+
 	/** wish **/
 	SUCCESS_CREATE_WISH("소원 링크 생성 성공"),
 	SUCCESS_FIND_WISH("소원 링크 조회 성공"),

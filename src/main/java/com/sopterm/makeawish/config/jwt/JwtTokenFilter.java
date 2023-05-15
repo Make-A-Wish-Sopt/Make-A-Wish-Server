@@ -30,7 +30,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             String accessToken = getJwtFromRequest(request);
             String uri = request.getRequestURI();
             if(uri.startsWith("/api/v1/auth") || uri.startsWith("/api/v1/cakes") || uri.startsWith("/v3/api-docs") ||
-                uri.startsWith("/swagger-ui") || uri.startsWith("/api/v1/wishes") || uri.startsWith("/health")) {
+                uri.startsWith("/swagger-ui") || (uri.startsWith("/api/v1/wishes") && request.getMethod().equals("GET")) || uri.startsWith("/health")) {
                 filterChain.doFilter(request, response);
                 return;
             }

@@ -81,4 +81,19 @@ public class Wish {
     public void updateTotalPrice(int price) {
         this.totalPrice += price;
     }
+
+    @Builder
+    public void updateWish(LocalDateTime startAt, LocalDateTime endAt, String name, String bank, String account, String phoneNumber) {
+        this.startAt = startAt == null ? this.startAt : startAt;
+        this.endAt = endAt == null ? this.endAt : endAt;
+        this.account = updateAccount(name,bank,account);
+        this.phoneNumber = phoneNumber == null ? this.phoneNumber : phoneNumber;
+    }
+
+    private AccountInfo updateAccount(String name, String bank, String account) {
+        if(name == null) name = this.account.getName();
+        if(bank == null) bank = this.account.getBank();
+        if(account == null) account = this.account.getAccount();
+        return new AccountInfo(name,bank,account);
+    }
 }
