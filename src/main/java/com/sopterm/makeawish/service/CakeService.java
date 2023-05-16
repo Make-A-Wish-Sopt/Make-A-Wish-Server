@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Comparator;
@@ -41,14 +42,17 @@ public class CakeService {
 
     public CakeReadyResponseDto getKakaoPayReady(CakeReadyRequestDto request) {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(this.getReadyParameters(request), this.getHeaders());
-
-        RestTemplate restTemplate = new RestTemplate();
-        CakeReadyResponseDto response = restTemplate.postForObject(
-                KakaoPayProperties.readyUrl,
-                requestEntity,
-                CakeReadyResponseDto.class
-        );
-        return response;
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            CakeReadyResponseDto response = restTemplate.postForObject(
+                    KakaoPayProperties.readyUrl,
+                    requestEntity,
+                    CakeReadyResponseDto.class
+            );
+            return response;
+        } catch (HttpClientErrorException e) {
+            throw new HttpClientErrorException(e.getStatusCode(), e.getStatusText());
+        }
     }
 
     private HttpHeaders getHeaders() {
@@ -95,13 +99,16 @@ public class CakeService {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(this.getApproveParameters(request), this.getHeaders());
 
         RestTemplate restTemplate = new RestTemplate();
-
-        CakeApproveResponseDto response = restTemplate.postForObject(
-                KakaoPayProperties.approveUrl,
-                requestEntity,
-                CakeApproveResponseDto.class
-        );
-        return response;
+        try {
+            CakeApproveResponseDto response = restTemplate.postForObject(
+                    KakaoPayProperties.approveUrl,
+                    requestEntity,
+                    CakeApproveResponseDto.class
+            );
+            return response;
+        } catch (HttpClientErrorException e) {
+            throw new HttpClientErrorException(e.getStatusCode(), e.getStatusText());
+        }
     }
 
     @Transactional
