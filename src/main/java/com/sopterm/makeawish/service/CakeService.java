@@ -1,11 +1,11 @@
 package com.sopterm.makeawish.service;
 
 import com.sopterm.makeawish.common.KakaoPayProperties;
-import com.sopterm.makeawish.common.message.ErrorMessage.*;
 import com.sopterm.makeawish.domain.Cake;
 import com.sopterm.makeawish.domain.Present;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.cake.*;
+import com.sopterm.makeawish.dto.present.PresentDto;
 import com.sopterm.makeawish.repository.CakeRepository;
 import com.sopterm.makeawish.repository.PresentRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,14 +18,19 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import static com.sopterm.makeawish.common.message.ErrorMessage.INCORRECT_WISH;
 import static com.sopterm.makeawish.common.message.ErrorMessage.INVALID_CAKE;
 
 @Service
 @RequiredArgsConstructor
 public class CakeService {
 
+    private final WishService wishService;
     private final CakeRepository cakeRepository;
     private final PresentRepository presentRepository;
 
@@ -116,5 +121,37 @@ public class CakeService {
 
     public Cake findById(Long id) {
         return cakeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(INVALID_CAKE.getMessage()));
+    }
+
+    public List<PresentDto> getPresents(Long userId, Long wishId) {
+        Wish wish = wishService.getWish(wishId);
+        if (!isRightWisher(userId, wish))
+            throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
+
+        Map<Cake, Long> allCake = getAllCakes().stream()
+                .collect(Collectors.toMap(
+                        CakeResponseDTO::toEntity,
+                        count -> 0L));
+
+        Map<Cake, Long> cakes = getAllPresent(wish);
+        allCake.putAll(cakes);
+
+        List<PresentDto> response = allCake.entrySet().stream()
+                .map(cake -> PresentDto.from(cake.getKey(), cake.getValue()))
+                .sorted(Comparator.comparing(PresentDto::cakeId))
+                .toList();
+        return response;
+    }
+
+    private Map<Cake, Long> getAllPresent(Wish wish) {
+        Map<Cake, Long> cakes = wish.getPresents().stream()
+                .collect(Collectors.groupingBy(Present::getCake, Collectors.counting()));
+        return cakes;
+    }
+
+    private boolean isRightWisher(Long userId, Wish wish) {
+        if (!userId.equals(wish.getWisher().getId()))
+            return false;
+        return true;
     }
 }
