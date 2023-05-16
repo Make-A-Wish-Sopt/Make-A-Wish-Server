@@ -51,7 +51,7 @@ public class CakeService {
             );
             return response;
         } catch (HttpClientErrorException e) {
-            throw new HttpClientErrorException(e.getStatusCode(), e.getStatusText());
+            throw new HttpClientErrorException(e.getStatusCode(), e.getMessage());
         }
     }
 
@@ -107,7 +107,7 @@ public class CakeService {
             );
             return response;
         } catch (HttpClientErrorException e) {
-            throw new HttpClientErrorException(e.getStatusCode(), e.getStatusText());
+            throw new HttpClientErrorException(e.getStatusCode(), e.getMessage());
         }
     }
 
