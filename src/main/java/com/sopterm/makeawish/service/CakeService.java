@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.sopterm.makeawish.common.message.ErrorMessage.INCORRECT_WISH;
-import static com.sopterm.makeawish.common.message.ErrorMessage.INVALID_CAKE;
+import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +62,7 @@ public class CakeService {
     }
 
     private MultiValueMap<String, String> getReadyParameters(CakeReadyRequestDto request) {
-        Cake cake = cakeRepository.findById(request.cake()).orElseThrow(EntityNotFoundException::new);
+        Cake cake = getCake(request.cake());
 
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
         parameters.add("cid", KakaoPayProperties.cid);
@@ -153,5 +152,13 @@ public class CakeService {
         if (!userId.equals(wish.getWisher().getId()))
             return false;
         return true;
+    }
+
+    public Cake getCake(Long cakeId) {
+        if (cakeId.equals(1L)) {
+            throw new IllegalArgumentException(NOT_PAID_CAKE.getMessage());
+        }
+        Cake cake = findById(cakeId);
+        return cake;
     }
 }
