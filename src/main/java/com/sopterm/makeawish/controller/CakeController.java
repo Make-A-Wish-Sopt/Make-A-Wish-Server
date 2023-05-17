@@ -5,6 +5,7 @@ import com.sopterm.makeawish.domain.Cake;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.cake.*;
 import com.sopterm.makeawish.dto.present.PresentDto;
+import com.sopterm.makeawish.dto.present.PresentResponseDto;
 import com.sopterm.makeawish.service.CakeService;
 import com.sopterm.makeawish.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,6 +66,14 @@ public class CakeController {
         Long userId = getUserId(principal);
         List<PresentDto> response = cakeService.getPresents(userId, wishId);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_ALL_PRESENT.getMessage(), response));
+    }
+
+    @Operation(summary = "해당 소원에 대한 케이크 조회")
+    @GetMapping("{wishId}/{cakeId}")
+    public ResponseEntity<ApiResponse> getEachPresent(Principal principal, @PathVariable("wishId") Long wishId, @PathVariable("cakeId") Long cakeId) {
+        Long userId = getUserId(principal);
+        List<PresentResponseDto> response = cakeService.getEachPresent(userId, wishId, cakeId);
+        return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_PRESENT_MESSAGE.getMessage(), response));
     }
 
 

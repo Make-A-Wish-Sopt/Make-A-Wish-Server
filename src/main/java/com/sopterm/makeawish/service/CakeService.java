@@ -6,6 +6,7 @@ import com.sopterm.makeawish.domain.Present;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.cake.*;
 import com.sopterm.makeawish.dto.present.PresentDto;
+import com.sopterm.makeawish.dto.present.PresentResponseDto;
 import com.sopterm.makeawish.repository.CakeRepository;
 import com.sopterm.makeawish.repository.PresentRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -167,5 +168,14 @@ public class CakeService {
         }
         Cake cake = findById(cakeId);
         return cake;
+    }
+
+    public List<PresentResponseDto> getEachPresent(Long userId, Long wishId, Long cakeId) {
+        Wish wish = wishService.getWish(wishId);
+        if (!isRightWisher(userId, wish))
+            throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
+        List<Present> cakes = presentRepository.findPresentsByWishIdAndCakeId(wishId, cakeId);
+        List<PresentResponseDto> response = cakes.stream().map(PresentResponseDto::from).collect(Collectors.toList());
+        return response;
     }
 }
