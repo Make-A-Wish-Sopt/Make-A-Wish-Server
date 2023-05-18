@@ -3,10 +3,13 @@ package com.sopterm.makeawish.service;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 import static java.util.Objects.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.sopterm.makeawish.dto.wish.*;
+
+import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +20,9 @@ import com.sopterm.makeawish.repository.WishRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -75,6 +80,13 @@ public class WishService {
 	public Wish getWish(Long id) {
 		return wishRepository.findById(id)
 			.orElseThrow(() -> new EntityNotFoundException(INVALID_WISH.getMessage()));
+	}
+
+	public String getPresentInfo(String url, String tag) throws IOException {
+		return Jsoup.connect(url)
+			.timeout(5000).get()
+			.select("." + tag)
+			.toString();
 	}
 
 	private User getUser(Long id) {

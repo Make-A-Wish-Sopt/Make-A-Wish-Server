@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -56,6 +57,13 @@ public class WishController {
 		return nonNull(response)
 			? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_MAIN_WISH.getMessage(), response))
 			: ResponseEntity.status(NO_CONTENT).body(ApiResponse.success(NO_WISH.getMessage()));
+	}
+
+	@GetMapping("/present/info")
+	public ResponseEntity<ApiResponse> getPresentInfo(
+		@RequestParam String url, @RequestParam String tag) throws Exception {
+		String response = wishService.getPresentInfo(url, tag);
+		return ResponseEntity.ok(ApiResponse.success(SUCCESS_PARSE_HTML.getMessage(), response));
 	}
 
 	private Long getUserId(Principal principal) {
