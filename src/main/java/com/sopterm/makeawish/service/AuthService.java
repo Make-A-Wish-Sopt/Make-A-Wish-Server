@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
+import static com.sopterm.makeawish.common.message.ErrorMessage.INVALID_USER;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -36,7 +36,7 @@ public class AuthService {
     @Value("${social.oauth.kakao.redirect.user-info-uri}")
     private String kakaoUserInfoUriAuth;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public AuthSignInResponseDto signIn(AuthSignInRequestDto dto, String socialAccessToken) {
         String socialId = String.valueOf(getKakaoUserData(socialAccessToken));
 
@@ -64,6 +64,9 @@ public class AuthService {
         Authentication authentication = new UserAuthentication(newUser.getId(), null, null);
         String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
         String accessToken = jwtTokenProvider.generateAccessToken(authentication);
+        if(refreshToken == null || accessToken == null) {
+            throw new EntityNotFoundException(INVALID_USER.getMessage());
+        }
         newUser.updateRefreshToken(refreshToken);
         userRepository.save(newUser);
 
@@ -75,26 +78,23 @@ public class AuthService {
 
         String kakaoUrl = kakaoUserInfoUriAuth;
 
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", socialAccessToken);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", socialAccessToken);
 
-            HttpEntity<JsonArray> httpEntity = new HttpEntity<>(headers);
+        HttpEntity<JsonArray> httpEntity = new HttpEntity<>(headers);
 
-            ResponseEntity<Object> responseData = restTemplate.exchange(
-                    kakaoUrl,
-                    HttpMethod.GET,
-                    httpEntity,
-                    Object.class
-            );
+        ResponseEntity<Object> responseData = restTemplate.exchange(
+                kakaoUrl,
+                HttpMethod.GET,
+                httpEntity,
+                Object.class
+        );
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, Object> map = objectMapper.convertValue(responseData.getBody(), Map.class);
-            Long id = (Long) map.get("id");
-            return id;
-        } catch (HttpClientErrorException e ) {
-            throw e;
-        }
+        if(!responseData.hasBody()) throw new EntityNotFoundException(INVALID_USER.getMessage());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> map = objectMapper.convertValue(responseData.getBody(), Map.class);
+        return (Long) map.get("id");
     }
 
     public AuthGetTokenResponseDto getToken(Long userId) {
