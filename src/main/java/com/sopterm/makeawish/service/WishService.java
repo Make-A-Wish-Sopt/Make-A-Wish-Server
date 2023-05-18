@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 import com.sopterm.makeawish.dto.wish.*;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,9 +82,11 @@ public class WishService {
 			.orElseThrow(() -> new EntityNotFoundException(INVALID_WISH.getMessage()));
 	}
 
-	public String getPresentInfo(String url) throws IOException {
-		Document document = Jsoup.connect(url).timeout(5000).get();
-		return document.toString();
+	public String getPresentInfo(String url, String tag) throws IOException {
+		return Jsoup.connect(url)
+			.timeout(5000).get()
+			.select("." + tag)
+			.toString();
 	}
 
 	private User getUser(Long id) {

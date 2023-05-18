@@ -60,9 +60,10 @@ public class WishController {
 	}
 
 	@GetMapping("/present/info")
-	public ResponseEntity<ApiResponse> getPresentInfo(@RequestParam String url) throws Exception {
-		String response = wishService.getPresentInfo(url);
-		return ResponseEntity.ok(ApiResponse.success("HTML 파싱 성공", response));
+	public ResponseEntity<ApiResponse> getPresentInfo(
+		@RequestParam String url, @RequestParam String tag) throws Exception {
+		String response = wishService.getPresentInfo(url, tag);
+		return ResponseEntity.ok(ApiResponse.success(SUCCESS_PARSE_HTML.getMessage(), response));
 	}
 
 	private Long getUserId(Principal principal) {
