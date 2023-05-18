@@ -36,7 +36,7 @@ public class AuthService {
     @Value("${social.oauth.kakao.redirect.user-info-uri}")
     private String kakaoUserInfoUriAuth;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public AuthSignInResponseDto signIn(AuthSignInRequestDto dto, String socialAccessToken) {
         String socialId = String.valueOf(getKakaoUserData(socialAccessToken));
 
