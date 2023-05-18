@@ -69,7 +69,7 @@ public class CakeController {
     }
 
     @Operation(summary = "해당 소원에 대한 케이크 조회")
-    @GetMapping("{wishId}/{cakeId}")
+    @GetMapping("/{wishId}/{cakeId}")
     public ResponseEntity<ApiResponse> getEachPresent(Principal principal, @PathVariable("wishId") Long wishId, @PathVariable("cakeId") Long cakeId) {
         Long userId = getUserId(principal);
         List<PresentResponseDto> response = cakeService.getEachPresent(userId, wishId, cakeId);

@@ -172,10 +172,11 @@ public class CakeService {
 
     public List<PresentResponseDto> getEachPresent(Long userId, Long wishId, Long cakeId) {
         Wish wish = wishService.getWish(wishId);
-        if (!isRightWisher(userId, wish))
+        if (!isRightWisher(userId, wish)){
             throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
-        List<Present> cakes = presentRepository.findPresentsByWishIdAndCakeId(wishId, cakeId);
-        List<PresentResponseDto> response = cakes.stream().map(PresentResponseDto::from).collect(Collectors.toList());
+        }
+        List<Present> presents = presentRepository.findPresentsByWishIdAndCakeId(wishId, cakeId);
+        List<PresentResponseDto> response = presents.stream().map(PresentResponseDto::from).collect(Collectors.toList());
         return response;
     }
 }
