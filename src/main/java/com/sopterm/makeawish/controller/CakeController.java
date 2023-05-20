@@ -54,12 +54,6 @@ public class CakeController {
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_CAKE.getMessage(), response));
     }
 
-    @Operation(summary = "카카오페이 결제 준비 후 pg 토큰 발급")
-    @GetMapping("/pay/approve")
-    public ResponseEntity<ApiResponse> getPgToken(@RequestParam("pg_token") String pgToken) {
-        return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_PGTOKEN.getMessage(), pgToken));
-    }
-
     @Operation(summary = "해당 소원에 대한 케이크 결과 조회")
     @GetMapping("/{wishId}")
     public ResponseEntity<ApiResponse> getPresents(Principal principal, @PathVariable("wishId") Long wishId) {
