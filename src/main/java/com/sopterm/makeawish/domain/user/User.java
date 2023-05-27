@@ -2,6 +2,7 @@ package com.sopterm.makeawish.domain.user;
 
 import static jakarta.persistence.GenerationType.*;
 
+import com.sopterm.makeawish.dto.auth.SignupRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +35,11 @@ public class User implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private SocialType socialType;
 
+    @Column
     private String email;
+
+    @Column
+    private String nickname;
 
     @Column(unique = true)
     private String socialId;
@@ -68,13 +73,6 @@ public class User implements UserDetails {
         return null;
     }
 
-    @Builder
-    public User(SocialType socialType, String socialId, LocalDateTime createdAt) {
-        this.socialType = socialType;
-        this.socialId = socialId;
-        this.createdAt = createdAt;
-    }
-
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
@@ -104,6 +102,15 @@ public class User implements UserDetails {
         return false;
     }
 
+    @Builder
+    public User(SignupRequest signupRequest) {
+        this.email = signupRequest.getEmail();
+        this.socialType = signupRequest.getSocialType();
+        this.socialId = signupRequest.getSocialId();
+        this.nickname = signupRequest.getNickname();
+        this.createdAt = signupRequest.getCreatedAt();
+    }
+
     public void updateMemberProfile(
             LocalDateTime birthStartAt,
             LocalDateTime birthEndAt,
@@ -114,6 +121,7 @@ public class User implements UserDetails {
         this.birthEndAt = birthEndAt == null ? this.birthEndAt : birthEndAt;
         this.birthStartAt = birthStartAt == null ? this.birthStartAt : birthStartAt;
         this.phoneNumber = phoneNumber == null ? this.phoneNumber : phoneNumber;
+        this.nickname = name == null ? this.nickname : name;
         this.account = updateAccount(name,bank,account);
     }
 
