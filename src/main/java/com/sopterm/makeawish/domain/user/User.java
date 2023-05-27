@@ -121,7 +121,6 @@ public class User implements UserDetails {
         this.birthEndAt = birthEndAt == null ? this.birthEndAt : birthEndAt;
         this.birthStartAt = birthStartAt == null ? this.birthStartAt : birthStartAt;
         this.phoneNumber = phoneNumber == null ? this.phoneNumber : phoneNumber;
-        this.nickname = name == null ? this.nickname : name;
         this.account = updateAccount(name,bank,account);
     }
 
