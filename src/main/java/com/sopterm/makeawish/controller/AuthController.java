@@ -18,7 +18,7 @@ import java.security.Principal;
 @Tag(name = "Auth", description = "인증")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -27,23 +27,12 @@ public class AuthController {
                     kakao 인증 서버에서 발급받은 accessToken header에 request
                     """
     )
-    @PostMapping()
+    @PostMapping("/kakao/callback")
     public ResponseEntity<ApiResponse> signIn(
-            @RequestHeader(value = "authorization") String clientId,
-            @RequestBody AuthSignInRequestDto requestDto
+            @RequestParam String code
     ) {
-        AuthSignInResponseDto responseDto = authService.signIn(requestDto, clientId);
+        AuthSignInResponseDto responseDto = authService.socialLogin("KAKAO", code);
         ApiResponse apiResponse = ApiResponse.success(SUCCESS_SIGN_IN.getMessage(), responseDto);
-        return ResponseEntity.ok(apiResponse);
-    }
-
-    @Operation(summary = "토큰 재발급")
-    @PostMapping("/token")
-    public ResponseEntity<ApiResponse> getToken(Principal principal)
-    {
-        Long userId = Long.valueOf(principal.getName());
-        AuthGetTokenResponseDto responseDto =  authService.getToken(userId);
-        ApiResponse apiResponse = ApiResponse.success(SUCCESS_GET_REFRESH_TOKEN.getMessage(), responseDto);
         return ResponseEntity.ok(apiResponse);
     }
 }
