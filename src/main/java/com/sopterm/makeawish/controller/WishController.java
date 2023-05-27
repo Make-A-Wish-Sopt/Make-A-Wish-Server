@@ -40,7 +40,7 @@ public class WishController {
 		Long wishId = wishService.createWish(getUserId(principal), requestDTO);
 		return ResponseEntity
 			.created(getURI(wishId))
-			.body(ApiResponse.success(SUCCESS_CREATE_WISH.getMessage()));
+			.body(ApiResponse.success(SUCCESS_CREATE_WISH.getMessage(), wishId));
 	}
 
 	@Operation(summary = "소원 링크 조회")
