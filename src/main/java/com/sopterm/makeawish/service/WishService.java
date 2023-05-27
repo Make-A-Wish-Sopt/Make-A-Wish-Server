@@ -90,7 +90,7 @@ public class WishService {
 	}
 
 	private User getUser(Long id) {
-		return userRepository.findById(id)
+		return userRepository.findBySocialId(String.valueOf(id))
 			.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
 	}
 
