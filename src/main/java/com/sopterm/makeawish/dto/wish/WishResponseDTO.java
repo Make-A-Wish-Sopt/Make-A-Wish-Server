@@ -14,7 +14,7 @@ public record WishResponseDTO(String name, long dayCount, String title, String h
 
 	public static WishResponseDTO from(Wish wish) {
 		return WishResponseDTO.builder()
-			.name(wish.getWisher().getAccount().getName())
+			.name(wish.getAccount().getName())
 			.dayCount(getRemainDay(wish.getEndAt()))
 			.title(wish.getTitle())
 			.hint(wish.getHint1())
