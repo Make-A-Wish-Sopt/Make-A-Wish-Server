@@ -1,19 +1,18 @@
 package com.sopterm.makeawish.controller;
 
-import static com.sopterm.makeawish.common.message.SuccessMessage.*;
-
 import com.sopterm.makeawish.common.ApiResponse;
-import com.sopterm.makeawish.dto.auth.AuthGetTokenResponseDto;
-import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
 import com.sopterm.makeawish.dto.auth.AuthSignInResponseDto;
 import com.sopterm.makeawish.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
+import static com.sopterm.makeawish.common.message.SuccessMessage.SUCCESS_SIGN_IN;
 
 @Tag(name = "Auth", description = "인증")
 @RestController
