@@ -11,7 +11,7 @@ import com.sopterm.makeawish.domain.user.SocialType;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.dto.auth.AuthGetTokenResponseDto;
 import com.sopterm.makeawish.dto.auth.AuthSignInResponseDto;
-import com.sopterm.makeawish.dto.auth.SignupRequest;
+import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
 import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.service.SocialLoginService;
 import jakarta.persistence.EntityNotFoundException;
@@ -52,12 +52,9 @@ public class KakaoLoginService implements SocialLoginService {
 
     @Override
     public AuthSignInResponseDto socialLogin(String code) {
-        System.out.println(code);
         String kakaoAccessToken = null;
         try {
             kakaoAccessToken = getAccessToken(code);
-            System.out.println("KAKAOTOKEN");
-            System.out.println(kakaoAccessToken);
         } catch (JsonProcessingException j) {
             throw new IllegalArgumentException(CODE_PARSE_ERROR.getMessage());
         }
@@ -65,8 +62,6 @@ public class KakaoLoginService implements SocialLoginService {
         JsonElement element = JsonParser.parseString(kakaoInfo.toString());
         validateHasEmail(element);
         String socialId = getAccessToken(element);
-        System.out.println("SOCIALID");
-        System.out.println(socialId);
         Authentication authentication = new UserAuthentication(socialId, null, null);
         String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
         String accessToken = jwtTokenProvider.generateAccessToken(authentication);
@@ -160,15 +155,15 @@ public class KakaoLoginService implements SocialLoginService {
         String socialId = element
                 .getAsJsonObject().get("id")
                 .getAsString();
-        return issueAccessToken(new SignupRequest(email, SocialType.KAKAO, socialId, name, LocalDateTime.now()));
+        return issueAccessToken(new AuthSignInRequestDto(email, SocialType.KAKAO, socialId, name, LocalDateTime.now()));
     }
 
-    private String issueAccessToken(SignupRequest request) {
-        User user = userRepository.findBySocialId(request.getSocialId())
+    private String issueAccessToken(AuthSignInRequestDto request) {
+        User user = userRepository.findBySocialId(request.socialId())
                 .orElseGet(() -> signup(request));
         return user.getSocialId();
     }
-    private User signup(SignupRequest request) {
+    private User signup(AuthSignInRequestDto request) {
         return userRepository.save(new User(request));
     }
 }
