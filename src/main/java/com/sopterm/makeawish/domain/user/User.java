@@ -109,6 +109,7 @@ public class User implements UserDetails {
         this.socialId = signupRequest.getSocialId();
         this.nickname = signupRequest.getNickname();
         this.createdAt = signupRequest.getCreatedAt();
+        this.account = new AccountInfo(null, null, null);
     }
 
     public void updateMemberProfile(
