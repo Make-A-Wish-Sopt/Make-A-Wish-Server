@@ -1,21 +1,31 @@
 package com.sopterm.makeawish.dto.auth;
 
 import com.sopterm.makeawish.domain.user.SocialType;
-import com.sopterm.makeawish.domain.user.User;
 import lombok.Builder;
 import lombok.NonNull;
 
-@Builder
-public record AuthSignInRequestDto (
-        @NonNull SocialType socialType
-){
-    public static AuthSignInRequestDto from(User user) {
-        return AuthSignInRequestDto.builder().socialType(user.getSocialType()).build();
-    }
+import java.time.LocalDateTime;
 
-    public User toEntity() {
-        return User.builder()
-                .socialType(this.socialType)
-                .build();
-    }
+@Builder
+public record AuthSignInRequestDto(
+        @NonNull
+        String email,
+        @NonNull
+        SocialType socialType,
+        @NonNull
+        String socialId,
+        @NonNull
+        String nickname,
+        @NonNull
+        LocalDateTime createdAt
+){
+        public static AuthSignInRequestDto to(String email, SocialType socialType, String socialId, String nickname, LocalDateTime createdAt) {
+                return AuthSignInRequestDto.builder()
+                        .email(email)
+                        .socialType(socialType)
+                        .nickname(nickname)
+                        .socialId(socialId)
+                        .createdAt(createdAt)
+                        .build();
+        }
 }
