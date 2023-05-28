@@ -2,7 +2,7 @@ package com.sopterm.makeawish.domain.user;
 
 import static jakarta.persistence.GenerationType.*;
 
-import com.sopterm.makeawish.dto.auth.SignupRequest;
+import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -103,12 +103,12 @@ public class User implements UserDetails {
     }
 
     @Builder
-    public User(SignupRequest signupRequest) {
-        this.email = signupRequest.getEmail();
-        this.socialType = signupRequest.getSocialType();
-        this.socialId = signupRequest.getSocialId();
-        this.nickname = signupRequest.getNickname();
-        this.createdAt = signupRequest.getCreatedAt();
+    public User(AuthSignInRequestDto authSignInRequestDto) {
+        this.email = authSignInRequestDto.email();
+        this.socialType = authSignInRequestDto.socialType();
+        this.socialId = authSignInRequestDto.socialId();
+        this.nickname = authSignInRequestDto.nickname();
+        this.createdAt = authSignInRequestDto.createdAt();
         this.account = new AccountInfo(null, null, null);
     }
 
