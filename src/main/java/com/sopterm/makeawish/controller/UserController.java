@@ -41,7 +41,7 @@ public class UserController {
         MypageWishUpdateResponseDTO response = wishService.getMypageWish(getUserSocialId(principal));
         return nonNull(response)
                 ? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_INFO.getMessage(), response))
-                : ResponseEntity.status(NO_CONTENT).body(ApiResponse.success(NO_WISH.getMessage()));
+                : ResponseEntity.ok(ApiResponse.fail(NO_WISH.getMessage()));
     }
 
     private Long getUserSocialId(Principal principal) {
