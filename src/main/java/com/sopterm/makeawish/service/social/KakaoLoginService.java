@@ -68,20 +68,6 @@ public class KakaoLoginService implements SocialLoginService {
         return new AuthSignInResponseDto(accessToken, refreshToken);
     }
 
-    public AuthGetTokenResponseDto getToken(Long userId) {
-        Authentication authentication = new UserAuthentication(userId, null, null);
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
-        String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
-        user.updateRefreshToken(refreshToken);
-        String accessToken = jwtTokenProvider.generateAccessToken(authentication);
-        AuthGetTokenResponseDto responseDto = AuthGetTokenResponseDto.builder().
-                refreshToken(refreshToken)
-                .accessToken(accessToken)
-                .build();
-        return responseDto;
-    }
-
     private String getAccessToken(String code) throws JsonProcessingException {
         // HTTP Header 생성
         System.out.println(code);
@@ -128,7 +114,6 @@ public class KakaoLoginService implements SocialLoginService {
                 result.append(line);
             }
             br.close();
-            System.out.println(result);
             return result;
         } catch (IOException e) {
             throw new IllegalArgumentException(FAILED_VALIDATE_KAKAO_LOGIN.getMessage());

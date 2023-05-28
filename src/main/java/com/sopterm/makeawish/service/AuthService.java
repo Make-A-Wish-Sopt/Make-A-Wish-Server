@@ -19,8 +19,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthService {
     private final Map<SocialType, SocialLoginService> socialLogins = new EnumMap<>(SocialType.class);
-    private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
     private final KakaoLoginService kakaoLoginService;
 
 
