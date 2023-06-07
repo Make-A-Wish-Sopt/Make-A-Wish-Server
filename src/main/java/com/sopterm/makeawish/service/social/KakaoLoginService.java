@@ -68,7 +68,6 @@ public class KakaoLoginService implements SocialLoginService {
 
     private String getAccessToken(String code) throws JsonProcessingException {
         // HTTP Header 생성
-        System.out.println(code);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -88,11 +87,8 @@ public class KakaoLoginService implements SocialLoginService {
                 kakaoTokenRequest,
                 String.class
         );
-        System.out.println(response);
-
         // HTTP 응답 (JSON) -> 액세스 토큰 파싱
         String responseBody = response.getBody();
-        System.out.println(responseBody);
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         return jsonNode.get("access_token").asText();

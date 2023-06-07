@@ -1,6 +1,7 @@
 package com.sopterm.makeawish.domain.user;
 
 import static jakarta.persistence.GenerationType.*;
+import static java.util.Objects.isNull;
 
 import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
 import jakarta.persistence.*;
@@ -73,10 +74,6 @@ public class User implements UserDetails {
         return null;
     }
 
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
     @Override
     public String getUsername() {
         return null;
@@ -119,21 +116,21 @@ public class User implements UserDetails {
             String bank,
             String account,
             String phoneNumber) {
-        this.birthEndAt = birthEndAt == null ? this.birthEndAt : birthEndAt;
-        this.birthStartAt = birthStartAt == null ? this.birthStartAt : birthStartAt;
-        this.phoneNumber = phoneNumber == null ? this.phoneNumber : phoneNumber;
-        this.nickname = name == null ? this.nickname : name;
+        this.birthEndAt = isNull(birthEndAt) ? this.birthEndAt : birthEndAt;
+        this.birthStartAt = isNull(birthStartAt) ? this.birthStartAt : birthStartAt;
+        this.phoneNumber = isNull(phoneNumber) ? this.phoneNumber : phoneNumber;
+        this.nickname = isNull(name) ? this.nickname : name;
         this.account = updateAccount(name,bank,account);
     }
 
     private AccountInfo updateAccount(String name, String bank, String account) {
-        if(name == null) {
+        if(isNull(name)) {
             name = this.account.getName();
         }
-        if(bank == null) {
+        if(isNull(bank)) {
             bank = this.account.getBank();
         }
-        if(account == null) {
+        if(isNull(account)) {
             account = this.account.getAccount();
         }
         return new AccountInfo(name,bank,account);
