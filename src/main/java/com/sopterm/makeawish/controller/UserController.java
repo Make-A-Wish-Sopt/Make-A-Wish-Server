@@ -30,20 +30,20 @@ public class UserController {
                     """)
     @PutMapping
     public ResponseEntity<ApiResponse> updateWish(Principal principal, @RequestBody MypageWishUpdateRequestDTO requestDTO) {
-        MypageWishUpdateResponseDTO wish = wishService.updateWish(getUserSocialId(principal), requestDTO);
+        MypageWishUpdateResponseDTO wish = wishService.updateWish(getUserId(principal), requestDTO);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_UPDATE_USER_INFO.getMessage(), wish));
     }
 
     @Operation(summary = "내 정보 가져오기")
     @GetMapping
     public ResponseEntity<ApiResponse> getUserWish(Principal principal) {
-        MypageWishUpdateResponseDTO response = wishService.getMypageWish(getUserSocialId(principal));
+        MypageWishUpdateResponseDTO response = wishService.getMypageWish(getUserId(principal));
         return nonNull(response)
                 ? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_INFO.getMessage(), response))
                 : ResponseEntity.ok(ApiResponse.fail(NO_WISH.getMessage()));
     }
 
-    private Long getUserSocialId(Principal principal) {
+    private Long getUserId(Principal principal) {
         if (isNull(principal)) {
             throw new IllegalArgumentException(NULL_PRINCIPAL.getMessage());
         }

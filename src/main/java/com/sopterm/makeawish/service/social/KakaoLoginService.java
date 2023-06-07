@@ -59,8 +59,8 @@ public class KakaoLoginService implements SocialLoginService {
         StringBuilder kakaoInfo = getKakaoInfo(kakaoAccessToken);
         JsonElement element = JsonParser.parseString(kakaoInfo.toString());
         validateHasEmail(element);
-        String socialId = getAccessToken(element);
-        Authentication authentication = new UserAuthentication(socialId, null, null);
+        Long userId = getAccessToken(element);
+        Authentication authentication = new UserAuthentication(userId, null, null);
         String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
         String accessToken = jwtTokenProvider.generateAccessToken(authentication);
         return new AuthSignInResponseDto(accessToken, refreshToken);
@@ -122,7 +122,7 @@ public class KakaoLoginService implements SocialLoginService {
             throw new IllegalArgumentException(DISAGREE_KAKAO_EMAIL.getMessage());
         }
     }
-    private String getAccessToken(JsonElement element) {
+    private Long getAccessToken(JsonElement element) {
         String email = element
                 .getAsJsonObject().get("kakao_account")
                 .getAsJsonObject().get("email")
@@ -137,10 +137,10 @@ public class KakaoLoginService implements SocialLoginService {
         return issueAccessToken(new AuthSignInRequestDto(email, SocialType.KAKAO, socialId, name, LocalDateTime.now()));
     }
 
-    private String issueAccessToken(AuthSignInRequestDto request) {
+    private Long issueAccessToken(AuthSignInRequestDto request) {
         User user = userRepository.findBySocialId(request.socialId())
                 .orElseGet(() -> signup(request));
-        return user.getSocialId();
+        return user.getId();
     }
     private User signup(AuthSignInRequestDto request) {
         return userRepository.save(new User(request));
