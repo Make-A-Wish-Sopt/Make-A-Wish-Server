@@ -1,9 +1,7 @@
 package com.sopterm.makeawish.service;
 
-import com.sopterm.makeawish.config.jwt.JwtTokenProvider;
 import com.sopterm.makeawish.domain.user.SocialType;
 import com.sopterm.makeawish.dto.auth.AuthSignInResponseDto;
-import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.service.social.KakaoLoginService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +18,6 @@ import java.util.Map;
 public class AuthService {
     private final Map<SocialType, SocialLoginService> socialLogins = new EnumMap<>(SocialType.class);
     private final KakaoLoginService kakaoLoginService;
-
 
     @Transactional
     public AuthSignInResponseDto socialLogin(String social, String code){
