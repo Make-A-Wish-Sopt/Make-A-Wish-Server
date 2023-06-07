@@ -1,6 +1,7 @@
 package com.sopterm.makeawish.dto.auth;
 
 import com.sopterm.makeawish.domain.user.SocialType;
+import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.NonNull;
 
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record AuthSignInRequestDto(
-        @NonNull
+        @Email
         String email,
         @NonNull
         SocialType socialType,

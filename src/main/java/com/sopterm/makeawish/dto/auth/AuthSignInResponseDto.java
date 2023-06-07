@@ -10,7 +10,7 @@ public record AuthSignInResponseDto(
         @NonNull
         String refreshToken
 ) {
-        public static AuthSignInResponseDto from (String accessToken, String refreshToken, boolean isRegistered) {
+        public static AuthSignInResponseDto from (String accessToken, String refreshToken) {
             return AuthSignInResponseDto.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
