@@ -60,9 +60,9 @@ public class WishService {
 		return WishResponseDTO.from(getWish(wishId));
 	}
 
-	public MypageWishUpdateResponseDTO getMypageWish(Long userSocialId) {
+	public MypageWishUpdateResponseDTO getMypageWish(Long userId) {
 		Wish wish = wishRepository
-				.findFirstByWisherOrderByEndAtDesc(getUser(userSocialId)).orElse(null);
+				.findFirstByWisherOrderByEndAtDesc(getUser(userId)).orElse(null);
 		return nonNull(wish) ? MypageWishUpdateResponseDTO.from(wish) : null;
 	}
 
@@ -89,8 +89,8 @@ public class WishService {
 			.toString();
 	}
 
-	private User getUser(Long socialId) {
-		return userRepository.findBySocialId(String.valueOf(socialId))
+	private User getUser(Long userId) {
+		return userRepository.findById(userId)
 				.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
 	}
 
