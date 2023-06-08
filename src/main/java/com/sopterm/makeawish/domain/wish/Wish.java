@@ -38,9 +38,6 @@ public class Wish {
 
     private LocalDateTime endAt;
 
-    @Embedded
-    private AccountInfo account;
-
     private String phoneNumber;
 
     private int presentPrice;
@@ -56,14 +53,13 @@ public class Wish {
 
     @Builder
     public Wish(String title, String presentImageUrl, String hint1, String hint2, LocalDateTime startAt,
-                LocalDateTime endAt, AccountInfo account, String phoneNumber, int presentPrice, User wisher) {
+                LocalDateTime endAt, String phoneNumber, int presentPrice, User wisher) {
         this.title = title;
         this.presentImageUrl = presentImageUrl;
         this.hint1 = hint1;
         this.hint2 = hint2;
         this.startAt = startAt;
         this.endAt = endAt;
-        this.account = account;
         this.phoneNumber = phoneNumber;
         this.presentPrice = presentPrice;
         this.totalPrice = 0;
@@ -82,18 +78,9 @@ public class Wish {
         this.totalPrice += price;
     }
 
-    @Builder
-    public void updateWish(LocalDateTime startAt, LocalDateTime endAt, String name, String bank, String account, String phoneNumber) {
+    public void updateWish(LocalDateTime startAt, LocalDateTime endAt, String phoneNumber) {
         this.startAt = startAt == null ? this.startAt : startAt;
         this.endAt = endAt == null ? this.endAt : endAt;
-        this.account = updateAccount(name,bank,account);
         this.phoneNumber = phoneNumber == null ? this.phoneNumber : phoneNumber;
-    }
-
-    private AccountInfo updateAccount(String name, String bank, String account) {
-        if(name == null) name = this.account.getName();
-        if(bank == null) bank = this.account.getBank();
-        if(account == null) account = this.account.getAccount();
-        return new AccountInfo(name,bank,account);
     }
 }

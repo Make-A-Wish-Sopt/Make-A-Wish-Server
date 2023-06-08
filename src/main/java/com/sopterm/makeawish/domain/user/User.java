@@ -61,6 +61,8 @@ public class User implements UserDetails {
 
     private String phoneNumber;
 
+    private String comment;
+
     @OneToMany(mappedBy = "wisher")
     private final List<Wish> wishes = new ArrayList<>();
 
