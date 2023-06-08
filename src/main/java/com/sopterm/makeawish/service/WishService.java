@@ -89,9 +89,9 @@ public class WishService {
 			.toString();
 	}
 
-	private User getUser(Long id) {
-		return userRepository.findById(id)
-			.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
+	private User getUser(Long userId) {
+		return userRepository.findById(userId)
+				.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
 	}
 
 	private LocalDateTime convertToTime(String date) {

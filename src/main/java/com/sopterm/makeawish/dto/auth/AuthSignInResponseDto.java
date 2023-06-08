@@ -8,14 +8,12 @@ public record AuthSignInResponseDto(
         @NonNull
         String accessToken,
         @NonNull
-        String refreshToken,
-        boolean isRegistered
+        String refreshToken
 ) {
-        public static AuthSignInResponseDto from (String accessToken, String refreshToken, boolean isRegistered) {
+        public static AuthSignInResponseDto from (String accessToken, String refreshToken) {
             return AuthSignInResponseDto.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
-                    .isRegistered(isRegistered)
                     .build();
         }
 }

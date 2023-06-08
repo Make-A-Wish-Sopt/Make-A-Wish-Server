@@ -1,113 +1,32 @@
 package com.sopterm.makeawish.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.shaded.gson.JsonArray;
-import com.sopterm.makeawish.config.jwt.JwtTokenProvider;
-import com.sopterm.makeawish.config.jwt.UserAuthentication;
 import com.sopterm.makeawish.domain.user.SocialType;
-import com.sopterm.makeawish.domain.user.User;
-import com.sopterm.makeawish.dto.auth.AuthGetTokenResponseDto;
-import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
 import com.sopterm.makeawish.dto.auth.AuthSignInResponseDto;
-import com.sopterm.makeawish.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.sopterm.makeawish.service.social.KakaoLoginService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static com.sopterm.makeawish.common.message.ErrorMessage.INVALID_USER;
-import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
+import java.util.EnumMap;
 import java.util.Map;
 
 @Service
+@Component
 @RequiredArgsConstructor
 public class AuthService {
-    private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-
-    @Value("${social.oauth.kakao.redirect.user-info-uri}")
-    private String kakaoUserInfoUriAuth;
+    private final Map<SocialType, SocialLoginService> socialLogins = new EnumMap<>(SocialType.class);
+    private final KakaoLoginService kakaoLoginService;
 
     @Transactional
-    public AuthSignInResponseDto signIn(AuthSignInRequestDto dto, String socialAccessToken) {
-        String socialId = String.valueOf(getKakaoUserData(socialAccessToken));
-
-        if (userRepository.existsBySocialId(socialId)) {
-            boolean isRegistered = true;
-            Long userId = userRepository.findIdBySocialId(socialId);
-            Authentication authentication = new UserAuthentication(userId, null, null);
-            String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
-            String accessToken = jwtTokenProvider.generateAccessToken(authentication);
-            return new AuthSignInResponseDto(accessToken, refreshToken, isRegistered);
-        }
-
-        boolean isRegistered = false;
-
-        User user = User.
-                builder()
-                .socialType(SocialType.KAKAO)
-                .socialId(socialId)
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        userRepository.save(user);
-
-        User newUser = userRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, socialId);
-        Authentication authentication = new UserAuthentication(newUser.getId(), null, null);
-        String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
-        String accessToken = jwtTokenProvider.generateAccessToken(authentication);
-        if(refreshToken == null || accessToken == null) {
-            throw new EntityNotFoundException(INVALID_USER.getMessage());
-        }
-        newUser.updateRefreshToken(refreshToken);
-        userRepository.save(newUser);
-
-        return new AuthSignInResponseDto(accessToken, refreshToken, isRegistered);
+    public AuthSignInResponseDto socialLogin(String social, String code){
+        SocialType socialType = SocialType.from(social);
+        SocialLoginService socialLoginService = socialLogins.get(socialType);
+        return socialLoginService.socialLogin(code);
     }
-
-    private Long getKakaoUserData(String socialAccessToken)  {
-        RestTemplate restTemplate = new RestTemplate();
-
-        String kakaoUrl = kakaoUserInfoUriAuth;
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", socialAccessToken);
-
-        HttpEntity<JsonArray> httpEntity = new HttpEntity<>(headers);
-
-        ResponseEntity<Object> responseData = restTemplate.exchange(
-                kakaoUrl,
-                HttpMethod.GET,
-                httpEntity,
-                Object.class
-        );
-
-        if(!responseData.hasBody()) throw new EntityNotFoundException(INVALID_USER.getMessage());
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> map = objectMapper.convertValue(responseData.getBody(), Map.class);
-        return (Long) map.get("id");
-    }
-
-    public AuthGetTokenResponseDto getToken(Long userId) {
-        Authentication authentication = new UserAuthentication(userId, null, null);
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
-        String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
-        user.updateRefreshToken(refreshToken);
-        String accessToken = jwtTokenProvider.generateAccessToken(authentication);
-        AuthGetTokenResponseDto responseDto = AuthGetTokenResponseDto.builder().
-                refreshToken(refreshToken)
-                .accessToken(accessToken)
-                .build();
-        return responseDto;
+    @PostConstruct
+    private void init() {
+        socialLogins.put(SocialType.KAKAO, kakaoLoginService);
     }
 }

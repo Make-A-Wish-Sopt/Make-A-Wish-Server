@@ -1,7 +1,9 @@
 package com.sopterm.makeawish.domain.user;
 
 import static jakarta.persistence.GenerationType.*;
+import static java.util.Objects.isNull;
 
+import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +36,11 @@ public class User implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private SocialType socialType;
 
+    @Column
     private String email;
+
+    @Column
+    private String nickname;
 
     @Column(unique = true)
     private String socialId;
@@ -68,17 +74,6 @@ public class User implements UserDetails {
         return null;
     }
 
-    @Builder
-    public User(SocialType socialType, String socialId, LocalDateTime createdAt) {
-        this.socialType = socialType;
-        this.socialId = socialId;
-        this.createdAt = createdAt;
-    }
-
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
     @Override
     public String getUsername() {
         return null;
@@ -104,6 +99,16 @@ public class User implements UserDetails {
         return false;
     }
 
+    @Builder
+    public User(AuthSignInRequestDto authSignInRequestDto) {
+        this.email = authSignInRequestDto.email();
+        this.socialType = authSignInRequestDto.socialType();
+        this.socialId = authSignInRequestDto.socialId();
+        this.nickname = authSignInRequestDto.nickname();
+        this.createdAt = authSignInRequestDto.createdAt();
+        this.account = new AccountInfo(null, null, null);
+    }
+
     public void updateMemberProfile(
             LocalDateTime birthStartAt,
             LocalDateTime birthEndAt,
@@ -111,20 +116,21 @@ public class User implements UserDetails {
             String bank,
             String account,
             String phoneNumber) {
-        this.birthEndAt = birthEndAt == null ? this.birthEndAt : birthEndAt;
-        this.birthStartAt = birthStartAt == null ? this.birthStartAt : birthStartAt;
-        this.phoneNumber = phoneNumber == null ? this.phoneNumber : phoneNumber;
+        this.birthEndAt = isNull(birthEndAt) ? this.birthEndAt : birthEndAt;
+        this.birthStartAt = isNull(birthStartAt) ? this.birthStartAt : birthStartAt;
+        this.phoneNumber = isNull(phoneNumber) ? this.phoneNumber : phoneNumber;
+        this.nickname = isNull(name) ? this.nickname : name;
         this.account = updateAccount(name,bank,account);
     }
 
     private AccountInfo updateAccount(String name, String bank, String account) {
-        if(name == null) {
+        if(isNull(name)) {
             name = this.account.getName();
         }
-        if(bank == null) {
+        if(isNull(bank)) {
             bank = this.account.getBank();
         }
-        if(account == null) {
+        if(isNull(account)) {
             account = this.account.getAccount();
         }
         return new AccountInfo(name,bank,account);

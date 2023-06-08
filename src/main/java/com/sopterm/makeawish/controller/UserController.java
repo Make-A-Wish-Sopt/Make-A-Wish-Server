@@ -1,8 +1,8 @@
 package com.sopterm.makeawish.controller;
 
 import com.sopterm.makeawish.common.ApiResponse;
-import com.sopterm.makeawish.dto.wish.MypageWishUpdateResponseDTO;
 import com.sopterm.makeawish.dto.wish.MypageWishUpdateRequestDTO;
+import com.sopterm.makeawish.dto.wish.MypageWishUpdateResponseDTO;
 import com.sopterm.makeawish.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +16,6 @@ import static com.sopterm.makeawish.common.message.ErrorMessage.NULL_PRINCIPAL;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @Tag(name = "User", description = "마이페이지")
 @RestController
@@ -41,7 +40,7 @@ public class UserController {
         MypageWishUpdateResponseDTO response = wishService.getMypageWish(getUserId(principal));
         return nonNull(response)
                 ? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_INFO.getMessage(), response))
-                : ResponseEntity.status(NO_CONTENT).body(ApiResponse.success(NO_WISH.getMessage()));
+                : ResponseEntity.ok(ApiResponse.fail(NO_WISH.getMessage()));
     }
 
     private Long getUserId(Principal principal) {
