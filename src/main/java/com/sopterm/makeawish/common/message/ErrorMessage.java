@@ -20,6 +20,7 @@ public enum ErrorMessage {
 	FAILED_VALIDATE_KAKAO_LOGIN("카카오 로그인 오류입니다."),
 	WRONG_SIGNATURE("잘못된 서명이 사용되었습니다."),
 	INVALID_TOKEN("토큰이 만료되었습니다."),
+	INVALID_CODE("코드가 잘못되었습니다"),
 	WRONG_TOKEN("토큰이 비어있거나 잘못된 토큰입니다.");
 
 	private final String message;
