@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.sopterm.makeawish.config.jwt.JwtTokenProvider;
-import com.sopterm.makeawish.config.jwt.UserAuthentication;
+import com.sopterm.makeawish.domain.user.InternalTokenManager;
 import com.sopterm.makeawish.domain.user.SocialType;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
@@ -19,7 +18,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -39,14 +37,14 @@ import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 public class KakaoLoginService implements SocialLoginService {
 
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final InternalTokenManager tokenManager;
 
     @Value("${social.kakao-url}")
     private String kakaoUrl;
     @Value("${social.client-id}")
-    private String CLIENT_ID;
+    private String clientId;
     @Value("${social.redirect-uri}")
-    private String REDIRECT_URI;
+    private String redirectUri;
 
     @Override
     public AuthSignInResponseDto socialLogin(String code) {
@@ -59,11 +57,9 @@ public class KakaoLoginService implements SocialLoginService {
         StringBuilder kakaoInfo = getKakaoInfo(kakaoAccessToken);
         JsonElement element = JsonParser.parseString(kakaoInfo.toString());
         validateHasEmail(element);
-        Long userId = getAccessToken(element);
-        Authentication authentication = new UserAuthentication(userId, null, null);
-        String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
-        String accessToken = jwtTokenProvider.generateAccessToken(authentication);
-        return new AuthSignInResponseDto(accessToken, refreshToken);
+        User user = getAccessToken(element);
+        String token = tokenManager.createAuthToken(user.getId());
+        return new AuthSignInResponseDto(token);
     }
 
     private String getAccessToken(String code) throws JsonProcessingException {
@@ -74,8 +70,8 @@ public class KakaoLoginService implements SocialLoginService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", CLIENT_ID);
-        body.add("redirect_uri", REDIRECT_URI);
+        body.add("client_id", clientId);
+        body.add("redirect_uri", redirectUri);
         body.add("code", code);
 
         // HTTP 요청 보내기
@@ -122,7 +118,7 @@ public class KakaoLoginService implements SocialLoginService {
             throw new IllegalArgumentException(DISAGREE_KAKAO_EMAIL.getMessage());
         }
     }
-    private Long getAccessToken(JsonElement element) {
+    private User getAccessToken(JsonElement element) {
         String email = element
                 .getAsJsonObject().get("kakao_account")
                 .getAsJsonObject().get("email")
@@ -137,10 +133,9 @@ public class KakaoLoginService implements SocialLoginService {
         return issueAccessToken(new AuthSignInRequestDto(email, SocialType.KAKAO, socialId, name, LocalDateTime.now()));
     }
 
-    private Long issueAccessToken(AuthSignInRequestDto request) {
-        User user = userRepository.findBySocialId(request.socialId())
+    private User issueAccessToken(AuthSignInRequestDto request) {
+        return userRepository.findBySocialId(request.socialId())
                 .orElseGet(() -> signup(request));
-        return user.getId();
     }
     private User signup(AuthSignInRequestDto request) {
         return userRepository.save(new User(request));
