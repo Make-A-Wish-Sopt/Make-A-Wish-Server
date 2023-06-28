@@ -17,7 +17,10 @@ public enum ErrorMessage {
 	NOT_PAID_CAKE("결제가 필요한 케이크가 아닙니다"),
 	DISAGREE_KAKAO_EMAIL("카카오 이메일 항목에 동의하지 않았습니다."),
 	CODE_PARSE_ERROR("인가코드를 통해 카카오에서 정보를 가져올때 오류가 생겼습니다"),
-	FAILED_VALIDATE_KAKAO_LOGIN("카카오 로그인 오류입니다.");
+	FAILED_VALIDATE_KAKAO_LOGIN("카카오 로그인 오류입니다."),
+	WRONG_SIGNATURE("잘못된 서명이 사용되었습니다."),
+	INVALID_TOKEN("토큰이 만료되었습니다."),
+	WRONG_TOKEN("토큰이 비어있거나 잘못된 토큰입니다.");
 
 	private final String message;
 }
