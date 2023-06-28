@@ -109,6 +109,7 @@ public class KakaoLoginService implements SocialLoginService {
             throw new IllegalArgumentException(FAILED_VALIDATE_KAKAO_LOGIN.getMessage());
         }
     }
+
     private void validateHasEmail(JsonElement element) {
         boolean hasEmail = element
                 .getAsJsonObject().get("kakao_account")
@@ -118,19 +119,19 @@ public class KakaoLoginService implements SocialLoginService {
             throw new IllegalArgumentException(DISAGREE_KAKAO_EMAIL.getMessage());
         }
     }
+
     private User getAccessToken(JsonElement element) {
-        String email = element
-                .getAsJsonObject().get("kakao_account")
-                .getAsJsonObject().get("email")
-                .getAsString();
-        String name = element
-                .getAsJsonObject().get("properties")
-                .getAsJsonObject().get("nickname")
-                .getAsString();
-        String socialId = element
-                .getAsJsonObject().get("id")
-                .getAsString();
+        String email = validateEmail(element.getAsJsonObject().get("kakao_account"));
+        String name = element.getAsJsonObject().get("properties")
+                .getAsJsonObject().get("nickname").getAsString();
+        String socialId = element.getAsJsonObject().get("id").getAsString();
         return issueAccessToken(new AuthSignInRequestDto(email, SocialType.KAKAO, socialId, name, LocalDateTime.now()));
+    }
+
+    private String validateEmail(JsonElement element) {
+        boolean ifEmailIsNotAgreed = element.getAsJsonObject().get("email_needs_agreement").getAsBoolean();
+        if (ifEmailIsNotAgreed) return null;
+        return element.getAsJsonObject().get("email").getAsString();
     }
 
     private User issueAccessToken(AuthSignInRequestDto request) {
