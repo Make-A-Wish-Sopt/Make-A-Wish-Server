@@ -1,31 +1,23 @@
 package com.sopterm.makeawish.controller;
 
-import static com.sopterm.makeawish.common.message.ErrorMessage.*;
-import static com.sopterm.makeawish.common.message.SuccessMessage.*;
-import static java.util.Objects.*;
-import static org.springframework.http.HttpStatus.*;
+import com.sopterm.makeawish.common.ApiResponse;
+import com.sopterm.makeawish.dto.wish.MainWishResponseDTO;
+import com.sopterm.makeawish.dto.wish.WishRequestDTO;
+import com.sopterm.makeawish.service.WishService;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.security.Principal;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import com.sopterm.makeawish.common.ApiResponse;
-import com.sopterm.makeawish.dto.wish.MainWishResponseDTO;
-import com.sopterm.makeawish.dto.wish.WishRequestDTO;
-import com.sopterm.makeawish.dto.wish.WishResponseDTO;
-import com.sopterm.makeawish.service.WishService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.RequiredArgsConstructor;
+import static com.sopterm.makeawish.common.message.ErrorMessage.NULL_PRINCIPAL;
+import static com.sopterm.makeawish.common.message.SuccessMessage.*;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,13 +35,6 @@ public class WishController {
 			.body(ApiResponse.success(SUCCESS_CREATE_WISH.getMessage(), wishId));
 	}
 
-	@Operation(summary = "소원 링크 조회")
-	@GetMapping("/{wishId}")
-	public ResponseEntity<ApiResponse> findWish(@PathVariable Long wishId) {
-		WishResponseDTO response = wishService.findWish(wishId);
-		return ResponseEntity.ok(ApiResponse.success(SUCCESS_FIND_WISH.getMessage(), response));
-	}
-
 	@Operation(summary = "메인 화면 조회")
 	@GetMapping("/main")
 	public ResponseEntity<ApiResponse> findMainWish(Principal principal) {
@@ -59,6 +44,7 @@ public class WishController {
 			: ResponseEntity.status(NO_CONTENT).body(ApiResponse.success(NO_WISH.getMessage()));
 	}
 
+	@Operation(summary = "선물 url 정보 조회")
 	@GetMapping("/present/info")
 	public ResponseEntity<ApiResponse> getPresentInfo(
 		@RequestParam String url, @RequestParam String tag) throws Exception {
