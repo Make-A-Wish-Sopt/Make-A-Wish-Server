@@ -42,20 +42,16 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeHttpRequests()
-                .requestMatchers("/health").permitAll()
-                .requestMatchers("/cakes/approve").permitAll()
-                .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/api/v1/cakes/**").permitAll()
-                .requestMatchers("/api/v1/wishes/{wishId}").permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/").permitAll()
-                .anyRequest().authenticated().and()
-                .addFilterBefore(
-                        jwtTokenFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                )
-                .build(); // 권한 설정
+                    .authorizeHttpRequests()
+                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/health",
+                            "/api/v1/auth/**", "/api/v1/present/**").permitAll()
+                .and()
+                    .authorizeHttpRequests()
+                    .requestMatchers("/api/v1/cakes/**", "/api/v1/wishes/**", "/api/v1/user/**").hasAuthority("MEMBER")
+                .and()
+                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class)
+                .build();
     }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
