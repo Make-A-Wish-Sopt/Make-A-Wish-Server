@@ -45,9 +45,9 @@ public class ErrorHandler {
 		return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 	}
 
-	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity<ApiResponse> unknownException(RuntimeException exception) {
-		ApiResponse response = ApiResponse.fail(exception.getMessage());
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ApiResponse> allException() {
+		ApiResponse response = ApiResponse.fail(SERVER_INTERNAL_ERROR.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
