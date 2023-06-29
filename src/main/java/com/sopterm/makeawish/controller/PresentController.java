@@ -18,21 +18,21 @@ import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/present")
+@RequestMapping("/api/v1/presents")
 public class PresentController {
 
     private final CakeService cakeService;
     private final WishService wishService;
 
     @Operation(summary = "케이크 리스트 조회")
-    @GetMapping
+    @GetMapping("/cakes")
     public ResponseEntity<ApiResponse> getAllCakes() {
         List<CakeResponseDTO> response = cakeService.getAllCakes();
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_ALL_CAKE.getMessage(), response));
     }
 
     @Operation(summary = "친구 소원 링크 조회")
-    @GetMapping("/{wishId}")
+    @GetMapping("/wish/{wishId}")
     public ResponseEntity<ApiResponse> findWish(@PathVariable Long wishId) {
         WishResponseDTO response = wishService.findWish(wishId);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_FIND_WISH.getMessage(), response));
