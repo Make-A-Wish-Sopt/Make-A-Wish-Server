@@ -1,6 +1,7 @@
 package com.sopterm.makeawish.controller.filter;
 
 import com.sopterm.makeawish.exception.WrongAccessTokenException;
+import com.sopterm.makeawish.exception.WrongTokenException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         try {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
-        } catch(WrongAccessTokenException e){
+        } catch(WrongAccessTokenException | WrongTokenException e ){
             httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
             httpServletResponse.setCharacterEncoding("UTF-8");
