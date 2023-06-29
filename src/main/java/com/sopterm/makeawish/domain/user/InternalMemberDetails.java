@@ -8,13 +8,13 @@ import java.util.Collection;
 import java.util.List;
 
 public class InternalMemberDetails implements UserDetails {
-    private Collection<? extends GrantedAuthority> authorities;
-    private final Long id;
+    private final Collection<? extends GrantedAuthority> authorities;
+    private final Long userId;
     private final String username;
     private final String authUserId;
 
     public InternalMemberDetails(User user) {
-        this.id = user.getId();
+        this.userId = user.getId();
         this.username = user.getUsername();
         this.authUserId = user.getSocialId();
         this.authorities = List.of(new SimpleGrantedAuthority("MEMBER"));
@@ -25,7 +25,7 @@ public class InternalMemberDetails implements UserDetails {
         return authorities;
     }
 
-    public Long getId() { return id; }
+    public Long getId() { return userId; }
 
     @Override
     public String getPassword() {

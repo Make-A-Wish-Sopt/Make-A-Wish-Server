@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         val jwtToken = parseJwt(request);
         val isTokenAvailable = checkJwtAvailable(jwtToken);
         val uri = request.getRequestURI();
-        if (uri.startsWith("/api") && (!uri.contains("present") && !uri.contains("auth"))) {
+        if (uri.startsWith("/api") && (!uri.contains("presents") && !uri.contains("auth"))) {
             if (!isTokenAvailable){
                 throw new WrongAccessTokenException(WRONG_TOKEN.getMessage());
             }

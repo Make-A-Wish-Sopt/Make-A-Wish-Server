@@ -60,7 +60,9 @@ public class InternalTokenManager {
             val claims = getClaimsFromToken(token);
             val now = LocalDateTime.now(KST);
             val exp = claims.getExpiration().toInstant().atZone(KST).toLocalDateTime();
-            if (exp.isBefore(now)) throw new WrongTokenException(INVALID_TOKEN.getMessage());
+            if (exp.isBefore(now)) {
+                throw new WrongTokenException(INVALID_TOKEN.getMessage());
+            }
             return claims.getSubject();
         } catch (SignatureException e) {
             throw new SignatureException(WRONG_SIGNATURE.getMessage());
