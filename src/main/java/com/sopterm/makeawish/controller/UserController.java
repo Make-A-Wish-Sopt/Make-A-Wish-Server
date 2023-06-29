@@ -20,6 +20,8 @@ import static java.util.Objects.nonNull;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
+@SecurityRequirement(name = "Authorization")
+@Tag(name = "User", description = "마이페이지")
 public class UserController {
 
     private final WishService wishService;

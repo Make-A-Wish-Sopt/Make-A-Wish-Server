@@ -8,6 +8,7 @@ import com.sopterm.makeawish.dto.wish.WishResponseDTO;
 import com.sopterm.makeawish.service.CakeService;
 import com.sopterm.makeawish.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/presents")
+@Tag(name = "Presents", description = "유저의 친구들이 사용하는 API")
 public class PresentController {
 
     private final CakeService cakeService;

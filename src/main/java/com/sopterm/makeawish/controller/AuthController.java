@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.sopterm.makeawish.common.message.SuccessMessage.SUCCESS_SIGN_IN;
 
-@Tag(name = "Auth", description = "인증")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
+@Tag(name = "Auth", description = "인증")
 public class AuthController {
 
     private final AuthService authService;
