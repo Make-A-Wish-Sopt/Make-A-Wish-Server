@@ -47,12 +47,9 @@ public class InternalTokenManager {
     public boolean verifyAuthToken (String token) {
         try {
             val claims = getClaimsFromToken(token);
-
             val now = LocalDateTime.now(KST);
             val exp = claims.getExpiration().toInstant().atZone(KST).toLocalDateTime();
-            if (exp.isBefore(now)) return false;
-
-            return true;
+            return !exp.isBefore(now);
         } catch (SignatureException | ExpiredJwtException e) {
             throw new WrongTokenException(INVALID_TOKEN.getMessage());
         }
@@ -61,11 +58,9 @@ public class InternalTokenManager {
     public String getUserIdFromAuthToken (String token) {
         try {
             val claims = getClaimsFromToken(token);
-
             val now = LocalDateTime.now(KST);
             val exp = claims.getExpiration().toInstant().atZone(KST).toLocalDateTime();
             if (exp.isBefore(now)) throw new WrongTokenException(INVALID_TOKEN.getMessage());
-
             return claims.getSubject();
         } catch (SignatureException e) {
             throw new SignatureException(WRONG_SIGNATURE.getMessage());
@@ -75,14 +70,15 @@ public class InternalTokenManager {
     public Authentication getAuthentication(String token) {
         val userId = getUserIdFromAuthToken(token);
         val userDetails = memberDetailsService.loadUserByUsername(userId);
-        return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(
+            userDetails, userDetails.getPassword(), userDetails.getAuthorities());
     }
 
     private Claims getClaimsFromToken (String token) throws SignatureException {
         return Jwts.parserBuilder()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecretKey))
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJws(token.split("Bearer ")[1])
                 .getBody();
     }
 }

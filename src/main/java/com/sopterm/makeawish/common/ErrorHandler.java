@@ -1,5 +1,8 @@
 package com.sopterm.makeawish.common;
 
+import static com.sopterm.makeawish.common.message.ErrorMessage.*;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sopterm.makeawish.exception.WrongAccessTokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,18 +33,21 @@ public class ErrorHandler {
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(JsonProcessingException.class)
+	public ResponseEntity<ApiResponse> jsonProcessingException() {
+		ApiResponse response = ApiResponse.fail(CODE_PARSE_ERROR.getMessage());
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+
 	@ExceptionHandler(WrongAccessTokenException.class)
-	public ResponseEntity<String> wrongAccessTokenException (WrongAccessTokenException ex) {
-		return ResponseEntity
-				.status(HttpStatus.UNAUTHORIZED)
-				.body(ex.getMessage());
+	public ResponseEntity<ApiResponse> wrongAccessTokenException(WrongAccessTokenException exception) {
+		ApiResponse response = ApiResponse.fail(exception.getMessage());
+		return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 	}
 
 	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity<String> unknownException (RuntimeException ex) {
-		ex.printStackTrace();
-		return ResponseEntity
-				.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body(ex.getMessage());
+	public ResponseEntity<ApiResponse> unknownException(RuntimeException exception) {
+		ApiResponse response = ApiResponse.fail(exception.getMessage());
+		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

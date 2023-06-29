@@ -45,15 +45,10 @@ public class KakaoLoginService implements SocialLoginService {
     private String redirectUri;
 
     @Override
-    public AuthSignInResponseDto socialLogin(String code) {
-        String kakaoAccessToken = null;
-        try {
-            kakaoAccessToken = getAccessToken(code);
-        } catch (JsonProcessingException j) {
-            throw new IllegalArgumentException(CODE_PARSE_ERROR.getMessage());
-        }
-        StringBuilder kakaoInfo = getKakaoInfo(kakaoAccessToken);
-        JsonElement element = JsonParser.parseString(kakaoInfo.toString());
+    public AuthSignInResponseDto socialLogin(String code) throws JsonProcessingException {
+        String kakaoAccessToken = getAccessToken(code);
+        String kakaoInfo = getKakaoInfo(kakaoAccessToken);
+        JsonElement element = JsonParser.parseString(kakaoInfo);
         validateHasEmail(element);
         User user = getAccessToken(element);
         String token = tokenManager.createAuthToken(user.getId());
@@ -82,15 +77,18 @@ public class KakaoLoginService implements SocialLoginService {
                 kakaoTokenRequest,
                 String.class
         );
+
         // HTTP 응답 (JSON) -> 액세스 토큰 파싱
         String responseBody = response.getBody();
-        if(Objects.isNull(responseBody)) throw new IllegalArgumentException(INVALID_CODE.getMessage());
+        if (Objects.isNull(responseBody)) {
+            throw new IllegalArgumentException(INVALID_CODE.getMessage());
+        }
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         return jsonNode.get("access_token").asText();
     }
 
-    private StringBuilder getKakaoInfo(String socialToken) {
+    private String getKakaoInfo(String socialToken) {
         try {
             URL url = new URL(kakaoUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -98,13 +96,13 @@ public class KakaoLoginService implements SocialLoginService {
             connection.setDoOutput(true);
             connection.setRequestProperty("Authorization", "Bearer " + socialToken);
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String line = "";
+            String line;
             StringBuilder result = new StringBuilder();
             while ((line = br.readLine()) != null) {
                 result.append(line);
             }
             br.close();
-            return result;
+            return result.toString();
         } catch (IOException e) {
             throw new IllegalArgumentException(FAILED_VALIDATE_KAKAO_LOGIN.getMessage());
         }
@@ -130,8 +128,7 @@ public class KakaoLoginService implements SocialLoginService {
 
     private String validateEmail(JsonElement element) {
         boolean ifEmailIsNotAgreed = element.getAsJsonObject().get("email_needs_agreement").getAsBoolean();
-        if (ifEmailIsNotAgreed) return null;
-        return element.getAsJsonObject().get("email").getAsString();
+        return ifEmailIsNotAgreed ? element.getAsJsonObject().get("email").getAsString() : null;
     }
 
     private User issueAccessToken(AuthSignInRequestDto request) {
