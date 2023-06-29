@@ -1,23 +1,23 @@
 package com.sopterm.makeawish.controller;
 
 import com.sopterm.makeawish.common.ApiResponse;
-import com.sopterm.makeawish.domain.Cake;
-import com.sopterm.makeawish.domain.wish.Wish;
-import com.sopterm.makeawish.dto.cake.*;
 import com.sopterm.makeawish.dto.present.PresentDto;
 import com.sopterm.makeawish.dto.present.PresentResponseDto;
 import com.sopterm.makeawish.service.CakeService;
-import com.sopterm.makeawish.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.util.List;
 
 import static com.sopterm.makeawish.common.message.ErrorMessage.NULL_PRINCIPAL;
-import static com.sopterm.makeawish.common.message.SuccessMessage.*;
+import static com.sopterm.makeawish.common.message.SuccessMessage.SUCCESS_GET_ALL_PRESENT;
+import static com.sopterm.makeawish.common.message.SuccessMessage.SUCCESS_GET_PRESENT_MESSAGE;
 import static java.util.Objects.isNull;
 
 @RestController
@@ -26,33 +26,6 @@ import static java.util.Objects.isNull;
 public class CakeController {
 
     private final CakeService cakeService;
-    private final WishService wishService;
-
-    @Operation(summary = "케이크 리스트 조회")
-    @GetMapping
-    public ResponseEntity<ApiResponse> getAllCakes() {
-        List<CakeResponseDTO> response = cakeService.getAllCakes();
-        return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_ALL_CAKE.getMessage(), response));
-    }
-
-    @Operation(summary = "카카오페이 결제 준비")
-    @PostMapping("/pay/ready")
-    public ResponseEntity<ApiResponse> getKakaoPayReady(@RequestBody CakeReadyRequestDto request) {
-        CakeReadyResponseDto response = cakeService.getKakaoPayReady(request);
-        return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_READY_KAKAOPAY.getMessage(), response));
-    }
-
-    @Operation(summary = "카카오페이 결제 승인 및 선물 저장")
-    @PostMapping("/pay/approve")
-    public ResponseEntity<ApiResponse> createCake(@RequestBody CakeApproveRequestDto request) {
-        Cake cake = cakeService.findById(request.cake());
-        if (cake.getId() != 1) {
-            CakeApproveResponseDto response = cakeService.getKakaoPayApprove(request);
-        }
-        Wish wish = wishService.getWish(request.wishId());
-        CakeCreateResponseDto response = cakeService.createPresent(request.name(), cake, wish, request.message());
-        return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_CAKE.getMessage(), response));
-    }
 
     @Operation(summary = "해당 소원에 대한 케이크 결과 조회")
     @GetMapping("/{wishId}")

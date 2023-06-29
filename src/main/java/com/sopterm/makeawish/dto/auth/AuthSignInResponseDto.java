@@ -6,14 +6,11 @@ import lombok.NonNull;
 @Builder
 public record AuthSignInResponseDto(
         @NonNull
-        String accessToken,
-        @NonNull
-        String refreshToken
+        String accessToken
 ) {
-        public static AuthSignInResponseDto from (String accessToken, String refreshToken) {
+        public static AuthSignInResponseDto from (String accessToken) {
             return AuthSignInResponseDto.builder()
                     .accessToken(accessToken)
-                    .refreshToken(refreshToken)
                     .build();
         }
 }

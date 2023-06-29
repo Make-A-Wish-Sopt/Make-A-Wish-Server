@@ -1,5 +1,6 @@
 package com.sopterm.makeawish.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.dto.auth.AuthSignInResponseDto;
 import com.sopterm.makeawish.service.AuthService;
@@ -27,9 +28,7 @@ public class AuthController {
                     """
     )
     @PostMapping("/kakao/callback")
-    public ResponseEntity<ApiResponse> signIn(
-            @RequestParam String code
-    ) {
+    public ResponseEntity<ApiResponse> signIn(@RequestParam String code) throws JsonProcessingException {
         AuthSignInResponseDto responseDto = authService.socialLogin("KAKAO", code);
         ApiResponse apiResponse = ApiResponse.success(SUCCESS_SIGN_IN.getMessage(), responseDto);
         return ResponseEntity.ok(apiResponse);

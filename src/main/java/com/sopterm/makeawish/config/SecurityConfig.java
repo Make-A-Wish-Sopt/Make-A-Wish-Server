@@ -1,16 +1,13 @@
 package com.sopterm.makeawish.config;
 
-import com.sopterm.makeawish.config.jwt.CustomJwtAuthenticationEntryPoint;
-import com.sopterm.makeawish.config.jwt.JwtTokenFilter;
+import com.sopterm.makeawish.controller.filter.JwtAuthenticationFilter;
+import com.sopterm.makeawish.controller.filter.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -20,51 +17,40 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfig {
-    private final CustomJwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtTokenFilter jwtTokenFilter;
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(
             HttpSecurity http
     ) throws Exception {
-        return http
+        return http.csrf().disable().securityMatcher("/**")
                 .httpBasic().disable()
-                .cors().configurationSource(corsConfigurationSource()).and()
-                .csrf().disable() //csrf
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint).and()// 예외처리
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .formLogin().disable()
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
-                .authorizeHttpRequests()
-                .requestMatchers("/health").permitAll()
-                .requestMatchers("/cakes/approve").permitAll()
-                .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/api/v1/cakes/**").permitAll()
-                .requestMatchers("/api/v1/wishes/{wishId}").permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/").permitAll()
-                .anyRequest().authenticated().and()
-                .addFilterBefore(
-                        jwtTokenFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                )
-                .build(); // 권한 설정
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                    .authorizeHttpRequests()
+                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/health",
+                            "/api/v1/auth/**", "/api/v1/present/**").permitAll()
+                .and()
+                    .authorizeHttpRequests()
+                    .requestMatchers("/api/v1/cakes/**", "/api/v1/wishes/**", "/api/v1/user/**").hasAuthority("MEMBER")
+                .and()
+                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class)
+                .build();
     }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
-        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
