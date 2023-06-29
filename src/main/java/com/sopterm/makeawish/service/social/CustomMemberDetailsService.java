@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import static com.sopterm.makeawish.common.message.ErrorMessage.INVALID_USER;
+
 @RequiredArgsConstructor
 @Service
 public class CustomMemberDetailsService implements UserDetailsService {
@@ -18,7 +20,7 @@ public class CustomMemberDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userIdStr) {
         val userId = Long.parseLong(userIdStr);
-        val member = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("MEMBER"));
+        val member = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
         return new InternalMemberDetails(member);
     }
 }
