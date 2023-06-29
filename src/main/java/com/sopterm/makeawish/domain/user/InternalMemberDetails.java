@@ -10,12 +10,12 @@ import java.util.List;
 public class InternalMemberDetails implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
     private final Long userId;
-    private final String username;
+    private final String userNickName;
     private final String authUserId;
 
     public InternalMemberDetails(User user) {
         this.userId = user.getId();
-        this.username = user.getUsername();
+        this.userNickName = user.getNickname();
         this.authUserId = user.getSocialId();
         this.authorities = List.of(new SimpleGrantedAuthority("MEMBER"));
     }
@@ -34,7 +34,7 @@ public class InternalMemberDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return userNickName;
     }
 
     @Override
