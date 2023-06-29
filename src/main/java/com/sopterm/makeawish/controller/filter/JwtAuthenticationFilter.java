@@ -49,7 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String parseJwt (HttpServletRequest request) {
         val headerAuth = request.getHeader("Authorization");
-        if (StringUtils.hasText(headerAuth)) return headerAuth;
-        return null;
+        return (StringUtils.hasText(headerAuth)) ? headerAuth : null;
     }
 }
