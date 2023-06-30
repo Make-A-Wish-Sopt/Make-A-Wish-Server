@@ -35,7 +35,9 @@ public class KakaoLoginService implements SocialLoginService {
         JsonElement element = JsonParser.parseString(kakaoInfo.toString());
         User user = issueAccessToken(kakaoTokenManager.getAccessTokenByCode(element));
         String token = tokenManager.createAuthToken(user.getId());
-        return new AuthSignInResponseDto(token);
+        String refreshToken = tokenManager.createAuthRefreshToken(user.getId());
+        user.updateRefreshToken(refreshToken);
+        return new AuthSignInResponseDto(token,refreshToken);
     }
 
     private User issueAccessToken(AuthSignInRequestDto request) {
