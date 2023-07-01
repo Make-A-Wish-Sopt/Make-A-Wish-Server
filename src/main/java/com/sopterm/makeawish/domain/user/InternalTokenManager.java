@@ -31,12 +31,25 @@ public class InternalTokenManager {
 
     private final ZoneId KST = ZoneId.of("Asia/Seoul");
 
-    public String createAuthToken(Long userId) {
+    public String createAuthAccessToken(Long userId) {
         val signatureAlgorithm= SignatureAlgorithm.HS256;
         val secretKeyBytes = DatatypeConverter.parseBase64Binary(jwtSecretKey);
         val signingKey = new SecretKeySpec(secretKeyBytes, signatureAlgorithm.getJcaName());
         val exp = new Date().toInstant().atZone(KST)
-                .toLocalDateTime().plusHours(4).atZone(KST).toInstant();
+                .toLocalDateTime().plusHours(2).atZone(KST).toInstant();
+        return Jwts.builder()
+                .setSubject(Long.toString(userId))
+                .setExpiration(Date.from(exp))
+                .signWith(signingKey, signatureAlgorithm)
+                .compact();
+    }
+
+    public String createAuthRefreshToken(Long userId) {
+        val signatureAlgorithm= SignatureAlgorithm.HS256;
+        val secretKeyBytes = DatatypeConverter.parseBase64Binary(jwtSecretKey);
+        val signingKey = new SecretKeySpec(secretKeyBytes, signatureAlgorithm.getJcaName());
+        val exp = new Date().toInstant().atZone(KST)
+                .toLocalDateTime().plusDays(14).atZone(KST).toInstant();
         return Jwts.builder()
                 .setSubject(Long.toString(userId))
                 .setExpiration(Date.from(exp))
@@ -80,7 +93,7 @@ public class InternalTokenManager {
         return Jwts.parserBuilder()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecretKey))
                 .build()
-                .parseClaimsJws(token.split("Bearer ")[1])
+                .parseClaimsJws(token)
                 .getBody();
     }
 }
