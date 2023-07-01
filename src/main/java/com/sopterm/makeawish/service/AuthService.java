@@ -22,19 +22,21 @@ import java.util.Map;
 @Service
 @Component
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class AuthService {
     private final Map<SocialType, SocialLoginService> socialLogins = new EnumMap<>(SocialType.class);
     private final KakaoLoginService kakaoLoginService;
     private final InternalTokenManager tokenManager;
     private final UserRepository userRepository;
 
+    @Transactional
     public AuthSignInResponseDto socialLogin(String social, String code) throws JsonProcessingException {
         SocialType socialType = SocialType.from(social);
         SocialLoginService socialLoginService = socialLogins.get(socialType);
         return socialLoginService.socialLogin(code);
     }
 
+    @Transactional
     public AuthGetTokenResponseDto getToken(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.INVALID_USER.getMessage()));
