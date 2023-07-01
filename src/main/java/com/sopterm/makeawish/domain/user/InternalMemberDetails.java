@@ -10,12 +10,12 @@ import java.util.List;
 public class InternalMemberDetails implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
     private final Long userId;
-    private final String userNickName;
+    private final String nickname;
     private final String authUserId;
 
     public InternalMemberDetails(User user) {
         this.userId = user.getId();
-        this.userNickName = user.getNickname();
+        this.nickname = user.getNickname();
         this.authUserId = user.getSocialId();
         this.authorities = List.of(new SimpleGrantedAuthority("MEMBER"));
     }
