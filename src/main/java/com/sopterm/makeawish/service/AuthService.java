@@ -42,7 +42,7 @@ public class AuthService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.INVALID_USER.getMessage()));
         String refreshToken = tokenManager.createAuthRefreshToken(userId);
         user.updateRefreshToken(refreshToken);
-        String accessToken = tokenManager.createAuthToken(userId);
+화        String accessToken = tokenManager.createAuthAccessToken(userId);
         return AuthGetTokenResponseDto.builder().
                 refreshToken(refreshToken)
                 .accessToken(accessToken)

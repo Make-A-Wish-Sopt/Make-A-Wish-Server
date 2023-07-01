@@ -31,7 +31,7 @@ public class InternalTokenManager {
 
     private final ZoneId KST = ZoneId.of("Asia/Seoul");
 
-    public String createAuthToken(Long userId) {
+    public String createAuthAccessToken(Long userId) {
         val signatureAlgorithm= SignatureAlgorithm.HS256;
         val secretKeyBytes = DatatypeConverter.parseBase64Binary(jwtSecretKey);
         val signingKey = new SecretKeySpec(secretKeyBytes, signatureAlgorithm.getJcaName());
