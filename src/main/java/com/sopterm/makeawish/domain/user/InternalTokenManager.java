@@ -93,7 +93,7 @@ public class InternalTokenManager {
         return Jwts.parserBuilder()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecretKey))
                 .build()
-                .parseClaimsJws(token.split("Bearer ")[1])
+                .parseClaimsJws(token)
                 .getBody();
     }
 }

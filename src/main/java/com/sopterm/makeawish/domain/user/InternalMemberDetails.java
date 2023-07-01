@@ -34,7 +34,7 @@ public class InternalMemberDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userNickName;
+        return nickname;
     }
 
     @Override
