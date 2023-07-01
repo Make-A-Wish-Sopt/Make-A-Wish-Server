@@ -43,7 +43,6 @@ public class AuthController {
     @PostMapping("/token")
     public ResponseEntity<ApiResponse> getToken(@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails)
     {
-        System.out.println(memberDetails.getId());
         AuthGetTokenResponseDto responseDto =  authService.getToken(memberDetails.getId());
         ApiResponse apiResponse = ApiResponse.success(SUCCESS_GET_REFRESH_TOKEN.getMessage(), responseDto);
         return ResponseEntity.ok(apiResponse);
