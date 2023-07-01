@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .and()
                     .authorizeHttpRequests()
                     .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/health",
-                            "/api/v1/auth/**", "/api/v1/present/**").permitAll()
+                            "/api/v1/auth/**", "/api/v1/presents/**").permitAll()
                 .and()
                     .authorizeHttpRequests()
                     .requestMatchers("/api/v1/cakes/**", "/api/v1/wishes/**", "/api/v1/user/**").hasAuthority("MEMBER")
