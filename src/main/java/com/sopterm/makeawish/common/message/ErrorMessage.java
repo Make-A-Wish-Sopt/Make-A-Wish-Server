@@ -22,7 +22,8 @@ public enum ErrorMessage {
 	INVALID_TOKEN("토큰이 만료되었습니다."),
 	INVALID_CODE("코드가 잘못되었습니다"),
 	WRONG_TOKEN("토큰이 비어있거나 잘못된 토큰입니다."),
-	SERVER_INTERNAL_ERROR("서버 내부 오류");
+	SERVER_INTERNAL_ERROR("서버 내부 오류"),
+	INVALID_HTTP_REQUEST("지원하지 않는 HTTP Method 요청입니다.");
 
 	private final String message;
 }
