@@ -49,8 +49,8 @@ public class PresentController {
 
     @Operation(summary = "카카오페이 결제 승인 및 선물 저장")
     @PostMapping("/pay/approve")
-    public ResponseEntity<ApiResponse> createCake(@RequestBody CakeApproveRequestDto request) {
-        Cake cake = cakeService.findById(request.cake());
+    public ResponseEntity<ApiResponse> createCake(@RequestBody CakeApproveRequestDTO request) {
+        Cake cake = cakeService.getCake(request.cakeId());
         if (cake.getId() != 1) {
             CakeApproveResponseDto response = cakeService.getKakaoPayApprove(request);
         }
