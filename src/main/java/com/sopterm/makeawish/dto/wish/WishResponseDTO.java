@@ -10,18 +10,18 @@ import com.sopterm.makeawish.domain.wish.Wish;
 import lombok.Builder;
 
 @Builder
-public record WishResponseDTO(String name, long dayCount, String title, String hint) {
+public record WishResponseDTO(String userName, long dayCount, String title, String hint) {
 
 	public static WishResponseDTO from(Wish wish) {
 		return WishResponseDTO.builder()
-			.name(wish.getWisher().getNickname())
-			.dayCount(getRemainDay(wish.getEndAt()))
+			.userName(wish.getWisher().getNickname())
+			.dayCount(getRemainDayCount(wish.getEndAt()))
 			.title(wish.getTitle())
-			.hint(wish.getHint1())
+			.hint(wish.getHint())
 			.build();
 	}
 
-	private static long getRemainDay(LocalDateTime endAt) {
+	private static long getRemainDayCount(LocalDateTime endAt) {
 		LocalDateTime now = LocalDateTime.now();
 		if (now.isAfter(endAt)) {
 			throw new IllegalArgumentException(EXPIRE_WISH.getMessage());
