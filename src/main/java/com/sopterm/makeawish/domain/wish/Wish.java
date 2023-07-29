@@ -1,5 +1,6 @@
 package com.sopterm.makeawish.domain.wish;
 
+import com.sopterm.makeawish.domain.BaseEntity;
 import com.sopterm.makeawish.domain.Present;
 import com.sopterm.makeawish.domain.user.User;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ import static java.util.Objects.nonNull;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Wish {
+public class Wish extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -30,16 +31,13 @@ public class Wish {
     private String presentImageUrl;
 
     @Column(columnDefinition = "TEXT")
-    private String hint1;
+    private String hint;
 
-    private String hint2;
+    private String initial;
 
     private LocalDateTime startAt;
 
     private LocalDateTime endAt;
-
-    @Embedded
-    private AccountInfo account;
 
     private String phoneNumber;
 
@@ -55,22 +53,21 @@ public class Wish {
     private final List<Present> presents = new ArrayList<>();
 
     @Builder
-    public Wish(String title, String presentImageUrl, String hint1, String hint2, LocalDateTime startAt,
-                LocalDateTime endAt, AccountInfo account, String phoneNumber, int presentPrice, User wisher) {
+    public Wish(String title, String presentImageUrl, String hint, String initial, LocalDateTime startAt,
+                LocalDateTime endAt, String phoneNumber, int presentPrice, User wisher) {
         this.title = title;
         this.presentImageUrl = presentImageUrl;
-        this.hint1 = hint1;
-        this.hint2 = hint2;
+        this.hint = hint;
+        this.initial = initial;
         this.startAt = startAt;
         this.endAt = endAt;
-        this.account = account;
         this.phoneNumber = phoneNumber;
         this.presentPrice = presentPrice;
         this.totalPrice = 0;
-        setUser(wisher);
+        setWisher(wisher);
     }
 
-    private void setUser(User user) {
+    private void setWisher(User user) {
         if (nonNull(this.wisher)) {
             this.wisher.getWishes().remove(this);
         }
@@ -82,18 +79,9 @@ public class Wish {
         this.totalPrice += price;
     }
 
-    @Builder
-    public void updateWish(LocalDateTime startAt, LocalDateTime endAt, String name, String bank, String account, String phoneNumber) {
+    public void updateWish(LocalDateTime startAt, LocalDateTime endAt, String phoneNumber) {
         this.startAt = startAt == null ? this.startAt : startAt;
         this.endAt = endAt == null ? this.endAt : endAt;
-        this.account = updateAccount(name,bank,account);
         this.phoneNumber = phoneNumber == null ? this.phoneNumber : phoneNumber;
-    }
-
-    private AccountInfo updateAccount(String name, String bank, String account) {
-        if(name == null) name = this.account.getName();
-        if(bank == null) bank = this.account.getBank();
-        if(account == null) account = this.account.getAccount();
-        return new AccountInfo(name,bank,account);
     }
 }
