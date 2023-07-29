@@ -1,5 +1,6 @@
 package com.sopterm.makeawish.domain.wish;
 
+import com.sopterm.makeawish.domain.BaseEntity;
 import com.sopterm.makeawish.domain.Present;
 import com.sopterm.makeawish.domain.user.User;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ import static java.util.Objects.nonNull;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Wish {
+public class Wish extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -30,9 +31,9 @@ public class Wish {
     private String presentImageUrl;
 
     @Column(columnDefinition = "TEXT")
-    private String hint1;
+    private String hint;
 
-    private String hint2;
+    private String initial;
 
     private LocalDateTime startAt;
 
@@ -52,12 +53,12 @@ public class Wish {
     private final List<Present> presents = new ArrayList<>();
 
     @Builder
-    public Wish(String title, String presentImageUrl, String hint1, String hint2, LocalDateTime startAt,
+    public Wish(String title, String presentImageUrl, String hint, String initial, LocalDateTime startAt,
                 LocalDateTime endAt, String phoneNumber, int presentPrice, User wisher) {
         this.title = title;
         this.presentImageUrl = presentImageUrl;
-        this.hint1 = hint1;
-        this.hint2 = hint2;
+        this.hint = hint;
+        this.initial = initial;
         this.startAt = startAt;
         this.endAt = endAt;
         this.phoneNumber = phoneNumber;
