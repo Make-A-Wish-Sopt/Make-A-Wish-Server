@@ -45,12 +45,11 @@ public class CakeService {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(this.getReadyParameters(request), this.getHeaders());
         try {
             RestTemplate restTemplate = new RestTemplate();
-            CakeReadyResponseDto response = restTemplate.postForObject(
+            return restTemplate.postForObject(
                     KakaoPayProperties.readyUrl,
                     requestEntity,
                     CakeReadyResponseDto.class
             );
-            return response;
         } catch (HttpClientErrorException e) {
             throw new HttpClientErrorException(e.getStatusCode(), e.getMessage());
         }
@@ -67,7 +66,7 @@ public class CakeService {
     }
 
     private MultiValueMap<String, String> getReadyParameters(CakeReadyRequestDto request) {
-        Cake cake = getCake(request.cake());
+        Cake cake = getPayCake(request.cake());
 
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
         parameters.add("cid", KakaoPayProperties.cid);
@@ -85,7 +84,7 @@ public class CakeService {
         return parameters;
     }
 
-    private MultiValueMap<String, String> getApproveParameters(CakeApproveRequestDto request) {
+    private MultiValueMap<String, String> getApproveParameters(CakeApproveRequestDTO request) {
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
         parameters.add("cid", KakaoPayProperties.cid);
         parameters.add("partner_order_id", request.partnerOrderId());
@@ -96,17 +95,16 @@ public class CakeService {
         return parameters;
     }
 
-    public CakeApproveResponseDto getKakaoPayApprove(CakeApproveRequestDto request) {
+    public CakeApproveResponseDto getKakaoPayApprove(CakeApproveRequestDTO request) {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(this.getApproveParameters(request), this.getHeaders());
 
         RestTemplate restTemplate = new RestTemplate();
         try {
-            CakeApproveResponseDto response = restTemplate.postForObject(
+            return restTemplate.postForObject(
                     KakaoPayProperties.approveUrl,
                     requestEntity,
                     CakeApproveResponseDto.class
             );
-            return response;
         } catch (HttpClientErrorException e) {
             throw new HttpClientErrorException(e.getStatusCode(), e.getMessage());
         }
@@ -118,15 +116,14 @@ public class CakeService {
         presentRepository.save(present);
         wish.updateTotalPrice(cake.getPrice());
         String contribute = calculateContribute(cake.getPrice(), wish.getPresentPrice());
-        CakeCreateResponseDto response = new CakeCreateResponseDto(cake.getId(), wish.getPresentImageUrl(), wish.getHint1(), wish.getHint2(), contribute, wish.getWisher().getAccount().getName());
-        return response;
+        return new CakeCreateResponseDto(cake.getId(), wish.getPresentImageUrl(), wish.getHint1(), wish.getHint2(), contribute, wish.getWisher().getAccount().getName());
     }
 
     private String calculateContribute(int price, int targetPrice) {
         return String.format("%.0f", (double) price / (double) targetPrice * 100);
     }
 
-    public Cake findById(Long id) {
+    public Cake getCake(Long id) {
         return cakeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(INVALID_CAKE.getMessage()));
     }
 
@@ -143,31 +140,26 @@ public class CakeService {
         Map<Cake, Long> cakes = getAllPresent(wish);
         allCake.putAll(cakes);
 
-        List<PresentDto> response = allCake.entrySet().stream()
+        return allCake.entrySet().stream()
                 .map(cake -> PresentDto.from(cake.getKey(), cake.getValue()))
                 .sorted(Comparator.comparing(PresentDto::cakeId))
                 .toList();
-        return response;
     }
 
     private Map<Cake, Long> getAllPresent(Wish wish) {
-        Map<Cake, Long> cakes = wish.getPresents().stream()
+        return wish.getPresents().stream()
                 .collect(Collectors.groupingBy(Present::getCake, Collectors.counting()));
-        return cakes;
     }
 
     private boolean isRightWisher(Long userId, Wish wish) {
-        if (!userId.equals(wish.getWisher().getId()))
-            return false;
-        return true;
+        return userId.equals(wish.getWisher().getId());
     }
 
-    public Cake getCake(Long cakeId) {
+    public Cake getPayCake(Long cakeId) {
         if (cakeId.equals(1L)) {
             throw new IllegalArgumentException(NOT_PAID_CAKE.getMessage());
         }
-        Cake cake = findById(cakeId);
-        return cake;
+        return getCake(cakeId);
     }
 
     public List<PresentResponseDto> getEachPresent(Long userId, Long wishId, Long cakeId) {
@@ -176,7 +168,6 @@ public class CakeService {
             throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
         }
         List<Present> presents = presentRepository.findPresentsByWishIdAndCakeId(wishId, cakeId);
-        List<PresentResponseDto> response = presents.stream().map(PresentResponseDto::from).collect(Collectors.toList());
-        return response;
+        return presents.stream().map(PresentResponseDto::from).collect(Collectors.toList());
     }
 }
