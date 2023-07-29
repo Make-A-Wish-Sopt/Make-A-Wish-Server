@@ -1,7 +1,7 @@
 package com.sopterm.makeawish.config;
 
-import com.sopterm.makeawish.controller.filter.JwtAuthenticationFilter;
-import com.sopterm.makeawish.controller.filter.JwtExceptionFilter;
+import com.sopterm.makeawish.jwt.JwtAuthenticationFilter;
+import com.sopterm.makeawish.jwt.CustomJwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,30 +19,37 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final JwtExceptionFilter jwtExceptionFilter;
+    private final CustomJwtAuthenticationEntryPoint authenticationEntryPoint;
+
+    private static final String[] AUTH_WHITELIST = {
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/swagger-ui.html",
+        "/health",
+        "/api/v1/auth/**",
+        "/api/v1/public/**"
+    };
 
     @Bean
-    SecurityFilterChain defaultSecurityFilterChain(
-            HttpSecurity http
-    ) throws Exception {
-        return http.csrf().disable().securityMatcher("/**")
-                .httpBasic().disable()
-                .formLogin().disable()
-                .cors().configurationSource(corsConfigurationSource())
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                    .authorizeHttpRequests()
-                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/health",
-                            "/api/v1/auth/**", "/api/v1/presents/**").permitAll()
-                .and()
-                    .authorizeHttpRequests()
-                    .requestMatchers("/api/v1/cakes/**", "/api/v1/wishes/**", "/api/v1/user/**").hasAuthority("MEMBER")
-                .and()
-                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                    .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class)
-                .build();
+    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        return http
+            .csrf().disable()
+            .httpBasic().disable()
+            .formLogin().disable()
+            .cors().configurationSource(corsConfigurationSource())
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
+            .and()
+            .authorizeHttpRequests()
+            .requestMatchers(AUTH_WHITELIST).permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -54,6 +61,7 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
 }
