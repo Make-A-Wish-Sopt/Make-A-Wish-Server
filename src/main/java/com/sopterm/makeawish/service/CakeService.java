@@ -118,7 +118,7 @@ public class CakeService {
         presentRepository.save(present);
         wish.updateTotalPrice(cake.getPrice());
         String contribute = calculateContribute(cake.getPrice(), wish.getPresentPrice());
-        CakeCreateResponseDto response = new CakeCreateResponseDto(cake.getId(), wish.getPresentImageUrl(), wish.getHint1(), wish.getHint2(), contribute, wish.getWisher().getAccount().getName());
+        CakeCreateResponseDto response = new CakeCreateResponseDto(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), contribute, wish.getWisher().getAccount().getName());
         return response;
     }
 

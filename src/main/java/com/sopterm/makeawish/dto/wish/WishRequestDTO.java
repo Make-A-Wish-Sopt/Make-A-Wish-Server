@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
 
-public record WishRequestDTO(String imageUrl, int price, String title, String hint1, String hint2, String startDate,
+public record WishRequestDTO(String imageUrl, int price, String title, String hint, String initial, String startDate,
 							 String endDate, String name, String bankName, String account, String phone) {
 
 	public Wish toEntity(User wisher) {
@@ -14,8 +14,8 @@ public record WishRequestDTO(String imageUrl, int price, String title, String hi
 			.presentImageUrl(imageUrl)
 			.presentPrice(price)
 			.title(title)
-			.hint1(hint1)
-			.hint2(hint2)
+			.hint(hint)
+			.initial(initial)
 			.startAt(convertToTime(startDate))
 			.endAt(convertToTime(endDate))
 			.phoneNumber(phone)
