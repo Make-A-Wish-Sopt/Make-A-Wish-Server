@@ -3,11 +3,11 @@ package com.sopterm.makeawish.dto.cake;
 import lombok.Builder;
 
 @Builder
-public record CakeCreateResponseDto(
+public record CakeCreateResponseDTO(
         Long cake,
         String imageUrl,
-        String hint1,
-        String hint2,
+        String hint,
+        String initial,
         String contribute,
         String wisher
 ) {

@@ -111,12 +111,12 @@ public class CakeService {
     }
 
     @Transactional
-    public CakeCreateResponseDto createPresent(String name, Cake cake, Wish wish, String message) {
+    public CakeCreateResponseDTO createPresent(String name, Cake cake, Wish wish, String message) {
         Present present = new Present(name, message, wish, cake);
         presentRepository.save(present);
         wish.updateTotalPrice(cake.getPrice());
         String contribute = calculateContribute(cake.getPrice(), wish.getPresentPrice());
-        return new CakeCreateResponseDto(cake.getId(), wish.getPresentImageUrl(), wish.getHint1(), wish.getHint2(), contribute, wish.getWisher().getAccount().getName());
+        return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), contribute, wish.getWisher().getAccount().getName());
     }
 
     private String calculateContribute(int price, int targetPrice) {
