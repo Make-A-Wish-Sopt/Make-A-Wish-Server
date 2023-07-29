@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.sopterm.makeawish.domain.wish.AccountInfo;
 import com.sopterm.makeawish.domain.wish.Wish;
 
 @Entity
