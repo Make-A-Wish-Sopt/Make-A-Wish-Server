@@ -19,7 +19,7 @@ public enum ErrorMessage {
 	CODE_PARSE_ERROR("인가 코드 오류"),
 	FAILED_VALIDATE_KAKAO_LOGIN("카카오 로그인 오류입니다."),
 	WRONG_SIGNATURE("잘못된 서명이 사용되었습니다."),
-	INVALID_TOKEN("토큰이 만료되었습니다."),
+	INVALID_TOKEN("유효하지 않은 토큰입니다."),
 	INVALID_CODE("코드가 잘못되었습니다"),
 	WRONG_TOKEN("토큰이 비어있거나 잘못된 토큰입니다."),
 	SERVER_INTERNAL_ERROR("서버 내부 오류"),
