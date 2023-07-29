@@ -51,10 +51,4 @@ public class ErrorHandler {
 		ApiResponse response = ApiResponse.fail(INVALID_HTTP_REQUEST.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 	}
-
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ApiResponse> allException() {
-		ApiResponse response = ApiResponse.fail(SERVER_INTERNAL_ERROR.getMessage());
-		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
 }
