@@ -22,17 +22,21 @@ public class WishRepositoryImpl implements WishCustomRepository {
 
 	@Override
 	public Optional<Wish> findMainWish(User wisher, int expiryDay) {
-		val now = LocalDateTime.now();
+		val now = getNowDate(LocalDateTime.now());
 		return Optional.ofNullable(queryFactory
 			.select(wish)
 			.from(wish)
 			.where(
 				wish.wisher.eq(wisher),
 				wish.startAt.before(now),
-				wish.endAt.after(now.minusDays(expiryDay))
+				wish.endAt.goe(now.minusDays(expiryDay))
 			)
 			.fetchFirst()
 		);
+	}
+
+	private LocalDateTime getNowDate(LocalDateTime now) {
+		return LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0);
 	}
 
 	@Override
