@@ -16,11 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.repository.UserRepository;
-import com.sopterm.makeawish.repository.WishRepository;
+import com.sopterm.makeawish.repository.wish.WishRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 @Slf4j
 @Service
@@ -31,10 +32,14 @@ public class WishService {
 	private final WishRepository wishRepository;
 	private final UserRepository userRepository;
 
+	private final int EXPIRY_DAY = 7;
+
 	@Transactional
 	public Long createWish(Long userId, WishRequestDTO requestDTO) {
-		User wisher = getUser(userId);
-		if (wishRepository.existsMainWish(wisher, LocalDateTime.now())) {
+		val wisher = getUser(userId);
+		val from = WishRequestDTO.convertToTime(requestDTO.startDate());
+		val to = WishRequestDTO.convertToTime(requestDTO.endDate());
+		if (wishRepository.existsConflictWish(wisher, from, to, EXPIRY_DAY)) {
 			throw new IllegalArgumentException(EXIST_MAIN_WISH.getMessage());
 		}
 		Wish wish = requestDTO.toEntity(wisher);
@@ -72,7 +77,7 @@ public class WishService {
 
 	public MainWishResponseDTO findMainWish(Long userId) {
 		Wish wish = wishRepository
-			.findMainWish(getUser(userId), LocalDateTime.now())
+			.findMainWish(getUser(userId), EXPIRY_DAY)
 			.orElse(null);
 		return nonNull(wish) ? MainWishResponseDTO.from(wish) : null;
 	}
