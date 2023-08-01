@@ -103,6 +103,11 @@ public class WishService {
 		return UserWishResponseDTO.of(wish);
 	}
 
+	public WishesResponseDTO findWishes(Long userId) {
+		val wishes = wishRepository.findByWisherOrderByStartAtDesc(getUser(userId));
+		return WishesResponseDTO.of(wishes);
+	}
+
 	private User getUser(Long userId) {
 		return userRepository.findById(userId)
 				.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));

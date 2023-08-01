@@ -7,6 +7,7 @@ import com.sopterm.makeawish.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 
+import static com.sopterm.makeawish.common.ApiResponse.*;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.*;
 
+@Tag(name = "Wish", description = "유저 소원 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/wishes")
@@ -38,7 +41,7 @@ public class WishController {
 		val wishId = wishService.createWish(memberDetails.getId(), requestDTO);
 		return ResponseEntity
 			.created(getURI(wishId))
-			.body(ApiResponse.success(SUCCESS_CREATE_WISH.getMessage(), wishId));
+			.body(success(SUCCESS_CREATE_WISH.getMessage(), wishId));
 	}
 
 	@Operation(summary = "메인 화면 조회")
@@ -48,8 +51,8 @@ public class WishController {
 	) {
 		val response = wishService.findMainWish(memberDetails.getId());
 		return nonNull(response)
-			? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_MAIN_WISH.getMessage(), response))
-			: ResponseEntity.status(NO_CONTENT).body(ApiResponse.success(NO_WISH.getMessage()));
+			? ResponseEntity.ok(success(SUCCESS_GET_MAIN_WISH.getMessage(), response))
+			: ResponseEntity.status(NO_CONTENT).body(success(NO_WISH.getMessage()));
 	}
 
 	@Operation(summary = "선물 링크 정보 조회")
@@ -59,7 +62,7 @@ public class WishController {
 		@RequestParam String tag
 	) throws Exception {
 		val response = wishService.getPresentInfo(url, tag);
-		return ResponseEntity.ok(ApiResponse.success(SUCCESS_PARSE_HTML.getMessage(), response));
+		return ResponseEntity.ok(success(SUCCESS_PARSE_HTML.getMessage(), response));
 	}
 
 	@Operation(summary = "소원 단건 조회")
@@ -69,7 +72,16 @@ public class WishController {
 		@PathVariable Long wishId
 	) throws AccessDeniedException {
 		val response = wishService.findWish(memberDetails.getId(), wishId);
-		return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_WISH.getMessage(), response));
+		return ResponseEntity.ok(success(SUCCESS_GET_WISH.getMessage(), response));
+	}
+
+	@Operation(summary = "소원 모아보기")
+	@GetMapping
+	public ResponseEntity<ApiResponse> findWishes(
+		@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
+	) {
+		val response = wishService.findWishes(memberDetails.getId());
+		return ResponseEntity.ok(success(SUCCESS_GET_WISHES.getMessage(), response));
 	}
 
 	private URI getURI(Long id) {
