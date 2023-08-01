@@ -1,8 +1,6 @@
 package com.sopterm.makeawish.dto.wish;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import lombok.val;
 
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
@@ -33,7 +31,6 @@ public record WishRequestDTO(
 	}
 
 	public static LocalDateTime convertToTime(String date) {
-		val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
-		return LocalDateTime.parse(date + " 00:00", formatter);
+		return LocalDateTime.parse(date);
 	}
 }
