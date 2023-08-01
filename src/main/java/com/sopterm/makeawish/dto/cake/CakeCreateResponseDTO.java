@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record CakeCreateResponseDTO(
-        Long cake,
+        Long cakeId,
         String imageUrl,
         String hint,
         String initial,
