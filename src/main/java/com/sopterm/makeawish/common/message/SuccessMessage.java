@@ -21,6 +21,7 @@ public enum SuccessMessage {
 	NO_WISH("진행 중인 소원이 없습니다."),
 	SUCCESS_GET_MAIN_WISH("진행 중인 소원 조회 성공"),
 	SUCCESS_PARSE_HTML("HTML 파싱 성공"),
+	SUCCESS_GET_WISH("소원 단건 조회 성공"),
 
 	/** cake **/
 	SUCCESS_GET_ALL_CAKE("케이크 전체 조회 성공"),

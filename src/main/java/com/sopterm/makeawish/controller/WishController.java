@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.nio.file.AccessDeniedException;
 
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import static java.util.Objects.nonNull;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,6 +60,16 @@ public class WishController {
 	) throws Exception {
 		val response = wishService.getPresentInfo(url, tag);
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_PARSE_HTML.getMessage(), response));
+	}
+
+	@Operation(summary = "소원 단건 조회")
+	@GetMapping("/{wishId}")
+	public ResponseEntity<ApiResponse> findWish(
+		@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
+		@PathVariable Long wishId
+	) throws AccessDeniedException {
+		val response = wishService.findWish(memberDetails.getId(), wishId);
+		return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_WISH.getMessage(), response));
 	}
 
 	private URI getURI(Long id) {

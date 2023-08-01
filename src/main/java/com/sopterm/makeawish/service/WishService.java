@@ -4,6 +4,7 @@ import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 import static java.util.Objects.*;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -92,6 +93,14 @@ public class WishService {
 			.timeout(5000).get()
 			.select("." + tag)
 			.toString();
+	}
+
+	public UserWishResponseDTO findWish(Long userId, Long wishId) throws AccessDeniedException {
+		Wish wish = getWish(wishId);
+		if (!wish.getWisher().getId().equals(userId)) {
+			throw new AccessDeniedException(FORBIDDEN.getMessage());
+		}
+		return UserWishResponseDTO.of(wish);
 	}
 
 	private User getUser(Long userId) {

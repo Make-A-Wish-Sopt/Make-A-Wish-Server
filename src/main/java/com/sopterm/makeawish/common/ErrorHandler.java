@@ -2,6 +2,8 @@ package com.sopterm.makeawish.common;
 
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 
+import java.nio.file.AccessDeniedException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sopterm.makeawish.exception.WrongAccessTokenException;
 import org.springframework.http.HttpStatus;
@@ -50,5 +52,11 @@ public class ErrorHandler {
 	public ResponseEntity<ApiResponse> httpRequestMethodNotSupportedException() {
 		ApiResponse response = ApiResponse.fail(INVALID_HTTP_REQUEST.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<ApiResponse> accessDeniedException(AccessDeniedException exception) {
+		ApiResponse response = ApiResponse.fail(exception.getMessage());
+		return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 	}
 }
