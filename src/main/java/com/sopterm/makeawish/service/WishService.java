@@ -51,7 +51,7 @@ public class WishService {
 
 		Wish userWish = getUserWish(userId);
 		if (nonNull(userWish)) {
-			userWish.updateWish(convertToTime(request.birthStartAt()), convertToTime(request.birthEndAt()), request.name(), request.bankName(), request.account(), request.phone());
+			userWish.updateWish(convertToTime(request.birthStartAt()), convertToTime(request.birthEndAt()), request.phone());
 		}
 		return MypageWishUpdateResponseDTO.from(userWish);
 	}

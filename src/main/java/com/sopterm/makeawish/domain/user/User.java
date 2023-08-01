@@ -1,6 +1,5 @@
 package com.sopterm.makeawish.domain.user;
 
-import com.sopterm.makeawish.domain.wish.AccountInfo;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
 import jakarta.persistence.*;
