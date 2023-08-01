@@ -43,19 +43,19 @@ public class WishService {
 		if (wishRepository.existsConflictWish(wisher, from, to, EXPIRY_DAY)) {
 			throw new IllegalArgumentException(EXIST_MAIN_WISH.getMessage());
 		}
-		Wish wish = requestDTO.toEntity(wisher);
+		val wish = requestDTO.toEntity(wisher);
 		return wishRepository.save(wish).getId();
 	}
 
 	@Transactional
 	public MypageWishUpdateResponseDTO updateWish(Long userId, MypageWishUpdateRequestDTO request) {
-		User user = getUser(userId);
+		val user = getUser(userId);
 		if (!wishRepository.existsWishByWisher(user)) {
 			throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
 		}
 		user.updateMemberProfile(convertToTime(request.birthStartAt()), convertToTime(request.birthEndAt()), request.name(), request.bankName(), request.account(), request.phone());
 
-		Wish userWish = getUserWish(userId);
+		val userWish = getUserWish(userId);
 		if (nonNull(userWish)) {
 			userWish.updateWish(convertToTime(request.birthStartAt()), convertToTime(request.birthEndAt()), request.phone());
 		}
@@ -67,7 +67,7 @@ public class WishService {
 	}
 
 	public MypageWishUpdateResponseDTO getMypageWish(Long userId) {
-		Wish wish = wishRepository
+		val wish = wishRepository
 				.findFirstByWisherOrderByEndAtDesc(getUser(userId)).orElse(null);
 		return nonNull(wish) ? MypageWishUpdateResponseDTO.from(wish) : null;
 	}
@@ -77,7 +77,7 @@ public class WishService {
 	}
 
 	public MainWishResponseDTO findMainWish(Long userId) {
-		Wish wish = wishRepository
+		val wish = wishRepository
 			.findMainWish(getUser(userId), EXPIRY_DAY)
 			.orElse(null);
 		return nonNull(wish) ? MainWishResponseDTO.from(wish) : null;
@@ -96,7 +96,7 @@ public class WishService {
 	}
 
 	public UserWishResponseDTO findWish(Long userId, Long wishId) throws AccessDeniedException {
-		Wish wish = getWish(wishId);
+		val wish = getWish(wishId);
 		if (!wish.getWisher().getId().equals(userId)) {
 			throw new AccessDeniedException(FORBIDDEN.getMessage());
 		}
@@ -109,7 +109,7 @@ public class WishService {
 	}
 
 	private LocalDateTime convertToTime(String date) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+		val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
 		return LocalDateTime.parse(date + " 00:00", formatter);
 	}
 }
