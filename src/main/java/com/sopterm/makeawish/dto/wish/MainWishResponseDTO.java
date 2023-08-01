@@ -1,6 +1,6 @@
 package com.sopterm.makeawish.dto.wish;
 
-import static com.sopterm.makeawish.common.message.ErrorMessage.*;
+import static com.sopterm.makeawish.common.Util.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -24,24 +24,15 @@ public record MainWishResponseDTO(
 		val name = Objects.nonNull(wish.getWisher().getAccount())
 			? wish.getWisher().getAccount().getName()
 			: wish.getWisher().getNickname();
-		val realTotalPrice = getTotalPriceAppliedFee(wish.getTotalPrice());
 
 		return MainWishResponseDTO.builder()
 			.wishId(wish.getId())
 			.name(name)
 			.cakeCount(wish.getPresents().size())
 			.dayCount(getRemainDay(wish.getEndAt()))
-			.price(realTotalPrice)
-			.percent(getPercent(wish.getPresentPrice(), realTotalPrice))
+			.price(getPriceAppliedFee(wish.getTotalPrice()))
+			.percent(getPricePercent(wish.getTotalPrice(), wish.getPresentPrice()))
 			.build();
-	}
-
-	private static int getTotalPriceAppliedFee(int price) {
-		return (int)Math.floor(price * (1 - 3.4));
-	}
-
-	private static int getPercent(int presentPrice, int totalPrice) {
-		return (totalPrice / presentPrice) * 100;
 	}
 
 	private static long getRemainDay(LocalDateTime endAt) {
