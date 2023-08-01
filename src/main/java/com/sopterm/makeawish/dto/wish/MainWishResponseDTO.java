@@ -46,9 +46,6 @@ public record MainWishResponseDTO(
 
 	private static long getRemainDay(LocalDateTime endAt) {
 		val now = LocalDateTime.now();
-		if (now.isAfter(endAt)) {
-			throw new IllegalArgumentException(EXPIRE_WISH.getMessage());
-		}
 		return ChronoUnit.DAYS.between(now, endAt);
 	}
 }

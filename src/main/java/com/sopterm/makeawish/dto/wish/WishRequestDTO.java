@@ -32,7 +32,7 @@ public record WishRequestDTO(
 			.build();
 	}
 
-	private LocalDateTime convertToTime(String date) {
+	public static LocalDateTime convertToTime(String date) {
 		val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
 		return LocalDateTime.parse(date + " 00:00", formatter);
 	}
