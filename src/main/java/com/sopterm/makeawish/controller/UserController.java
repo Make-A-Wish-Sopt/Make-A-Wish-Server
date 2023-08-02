@@ -32,8 +32,8 @@ public class UserController {
                     """)
     @PutMapping
     public ResponseEntity<ApiResponse> updateWish(@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
-                                                  @RequestBody MypageWishUpdateRequestDTO requestDTO) {
-        MypageWishResponseDTO wish = wishService.updateWish(memberDetails.getId(), requestDTO);
+                                                  @RequestBody UserWishUpdateRequestDTO requestDTO) {
+        val wish = wishService.updateWish(memberDetails.getId(), requestDTO);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_UPDATE_USER_INFO.getMessage(), wish));
     }
 
