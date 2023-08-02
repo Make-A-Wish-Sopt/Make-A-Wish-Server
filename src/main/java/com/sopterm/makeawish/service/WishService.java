@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import com.sopterm.makeawish.dto.wish.*;
 
@@ -101,6 +102,12 @@ public class WishService {
 			throw new AccessDeniedException(FORBIDDEN.getMessage());
 		}
 		return UserWishResponseDTO.of(wish);
+	}
+
+	@Transactional
+	public void deleteWishes(WishIdRequestDTO requestDTO) {
+		val wishId = requestDTO.wishes();
+		wishRepository.deleteAllById(wishId);
 	}
 
 	public WishesResponseDTO findWishes(Long userId) {

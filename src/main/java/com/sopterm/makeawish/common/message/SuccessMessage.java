@@ -23,6 +23,7 @@ public enum SuccessMessage {
 	SUCCESS_PARSE_HTML("HTML 파싱 성공"),
 	SUCCESS_GET_WISH("소원 단건 조회 성공"),
 	SUCCESS_GET_WISHES("소원 리스트 조회 성공"),
+	SUCCESS_DELETE_WISHES("소원 다중 삭제 성공"),
 
 	/** cake **/
 	SUCCESS_GET_ALL_CAKE("케이크 전체 조회 성공"),
