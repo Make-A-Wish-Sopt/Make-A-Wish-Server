@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class UserController {
     @Operation(summary = "내 정보 가져오기")
     @GetMapping
     public ResponseEntity<ApiResponse> getUserWish(@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails) {
-        MypageWishUpdateResponseDTO response = wishService.getMypageWish(memberDetails.getId());
+        val response = wishService.getMypageWish(memberDetails.getId());
         return nonNull(response)
                 ? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_INFO.getMessage(), response))
                 : ResponseEntity.ok(ApiResponse.fail(NO_WISH.getMessage()));
