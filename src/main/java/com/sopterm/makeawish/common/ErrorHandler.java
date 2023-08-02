@@ -39,8 +39,8 @@ public class ErrorHandler {
 	}
 
 	@ExceptionHandler(JsonProcessingException.class)
-	public ResponseEntity<ApiResponse> jsonProcessingException() {
-		val response = ApiResponse.fail(CODE_PARSE_ERROR.getMessage());
+	public ResponseEntity<ApiResponse> jsonProcessingException(JsonProcessingException ex) {
+		val response = ApiResponse.fail(ex.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
