@@ -32,7 +32,7 @@ public class UserController {
     @PutMapping
     public ResponseEntity<ApiResponse> updateWish(@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
                                                   @RequestBody MypageWishUpdateRequestDTO requestDTO) {
-        MypageWishUpdateResponseDTO wish = wishService.updateWish(memberDetails.getId(), requestDTO);
+        MypageWishResponseDTO wish = wishService.updateWish(memberDetails.getId(), requestDTO);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_UPDATE_USER_INFO.getMessage(), wish));
     }
 

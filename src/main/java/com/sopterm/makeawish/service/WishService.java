@@ -69,7 +69,7 @@ public class WishService {
 	public MypageWishUpdateResponseDTO getMypageWish(Long userId) {
 		val wish = wishRepository
 				.findFirstByWisherOrderByEndAtDesc(getUser(userId)).orElse(null);
-		return nonNull(wish) ? MypageWishUpdateResponseDTO.from(wish) : null;
+		return nonNull(wish) ? MypageWishResponseDTO.from(wish, wisher) : null;
 	}
 
 	public Wish getUserWish(Long userId) {
