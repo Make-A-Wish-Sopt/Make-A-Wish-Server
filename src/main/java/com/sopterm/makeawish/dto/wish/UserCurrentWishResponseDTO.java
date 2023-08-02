@@ -8,11 +8,15 @@ import lombok.Builder;
 @Builder
 public record UserCurrentWishResponseDTO(String startDate, String endDate, String phone, AccountInfo accountInfo) {
 
-	public static MypageWishResponseDTO from(Wish wish, User user) {
-		return MypageWishResponseDTO.builder()
+	private static AccountInfo createAccount(User user) {
+		return new AccountInfo(user.getAccount().getName(),user.getAccount().getBank(),user.getAccount().getAccount());
+	}
+
+	public static UserCurrentWishResponseDTO from(Wish wish, User user) {
+		return UserCurrentWishResponseDTO.builder()
 			.startDate(wish.getStartAt().toString())
 			.endDate(wish.getEndAt().toString())
-			.accountInfo(new AccountInfo(user.getAccount().getName(),user.getAccount().getBank(),user.getAccount().getAccount()))
+			.accountInfo(createAccount(user))
 			.phone(wish.getPhoneNumber())
 			.build();
 	}
