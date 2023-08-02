@@ -1,7 +1,7 @@
 package com.sopterm.makeawish.domain.user;
 
 import com.sopterm.makeawish.domain.wish.Wish;
-import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
+import com.sopterm.makeawish.dto.auth.AuthSignInRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,7 +60,7 @@ public class User {
     private final List<Wish> wishes = new ArrayList<>();
 
     @Builder
-    public User(AuthSignInRequestDto authSignInRequestDto) {
+    public User(AuthSignInRequestDTO authSignInRequestDto) {
         this.email = authSignInRequestDto.email();
         this.socialType = authSignInRequestDto.socialType();
         this.socialId = authSignInRequestDto.socialId();

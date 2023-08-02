@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.NonNull;
 
 @Builder
-public record AuthSignInResponseDto(
+public record AuthSignInResponseDTO(
         @NonNull
         String accessToken,
         @NonNull
         String refreshToken
 ) {
-        public static AuthSignInResponseDto from (String accessToken, String refreshToken) {
-            return AuthSignInResponseDto.builder()
+        public static AuthSignInResponseDTO from (String accessToken, String refreshToken) {
+            return AuthSignInResponseDTO.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .build();

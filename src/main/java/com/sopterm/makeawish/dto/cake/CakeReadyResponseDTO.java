@@ -3,7 +3,7 @@ package com.sopterm.makeawish.dto.cake;
 import lombok.Builder;
 
 @Builder
-public record CakeReadyResponseDto(
+public record CakeReadyResponseDTO(
         String tid,
         String next_redirect_app_url,
         String next_redirect_mobile_url,

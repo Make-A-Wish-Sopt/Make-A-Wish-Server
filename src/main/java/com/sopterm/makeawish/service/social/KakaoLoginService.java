@@ -1,16 +1,15 @@
 package com.sopterm.makeawish.service.social;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.sopterm.makeawish.domain.user.InternalTokenManager;
 import com.sopterm.makeawish.domain.user.KakaoTokenManager;
 import com.sopterm.makeawish.domain.user.User;
-import com.sopterm.makeawish.dto.auth.AuthSignInRequestDto;
-import com.sopterm.makeawish.dto.auth.AuthSignInResponseDto;
+import com.sopterm.makeawish.dto.auth.AuthSignInRequestDTO;
+import com.sopterm.makeawish.dto.auth.AuthSignInResponseDTO;
 import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.service.SocialLoginService;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Service;
 
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
@@ -24,27 +23,27 @@ public class KakaoLoginService implements SocialLoginService {
     private final KakaoTokenManager kakaoTokenManager;
 
     @Override
-    public AuthSignInResponseDto socialLogin(String code) {
+    public AuthSignInResponseDTO socialLogin(String code) {
         String kakaoAccessToken = null;
         try {
             kakaoAccessToken = kakaoTokenManager.getAccessTokenByCode(code);
         } catch (JsonProcessingException j) {
             throw new IllegalArgumentException(CODE_PARSE_ERROR.getMessage());
         }
-        StringBuilder kakaoInfo = kakaoTokenManager.getKakaoInfo(kakaoAccessToken);
-        JsonElement element = JsonParser.parseString(kakaoInfo.toString());
-        User user = issueAccessToken(kakaoTokenManager.getAccessTokenByCode(element));
-        String accessToken = tokenManager.createAuthAccessToken(user.getId());
-        String refreshToken = tokenManager.createAuthRefreshToken(user.getId());
+        val kakaoInfo = kakaoTokenManager.getKakaoInfo(kakaoAccessToken);
+        val element = JsonParser.parseString(kakaoInfo.toString());
+        val user = issueAccessToken(kakaoTokenManager.getAccessTokenByCode(element));
+        val accessToken = tokenManager.createAuthAccessToken(user.getId());
+        val refreshToken = tokenManager.createAuthRefreshToken(user.getId());
         user.updateRefreshToken(refreshToken);
-        return new AuthSignInResponseDto(accessToken,refreshToken);
+        return new AuthSignInResponseDTO(accessToken,refreshToken);
     }
 
-    private User issueAccessToken(AuthSignInRequestDto request) {
+    private User issueAccessToken(AuthSignInRequestDTO request) {
         return userRepository.findBySocialId(request.socialId())
                 .orElseGet(() -> signup(request));
     }
-    private User signup(AuthSignInRequestDto request) {
+    private User signup(AuthSignInRequestDTO request) {
         return userRepository.save(new User(request));
     }
 }

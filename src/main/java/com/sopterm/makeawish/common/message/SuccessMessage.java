@@ -33,5 +33,6 @@ public enum SuccessMessage {
 	/** present **/
 	SUCCESS_GET_ALL_PRESENT("선물 전체 조회 성공"),
 	SUCCESS_GET_PRESENT_MESSAGE("케이크에 대한 편지 조회 성공");
+
 	private final String message;
 }

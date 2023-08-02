@@ -11,7 +11,6 @@ public class TestController {
 
 	@GetMapping("/health")
 	public ResponseEntity<ApiResponse> test() {
-		ApiResponse response = ApiResponse.success("서버 연결");
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(ApiResponse.success("서버 연결"));
 	}
 }

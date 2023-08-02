@@ -1,6 +1,6 @@
 package com.sopterm.makeawish.dto.cake;
 
-public record CakeApproveResponseDto(
+public record CakeApproveResponseDTO(
     String aid,
     String tid,
     String cid,

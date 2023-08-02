@@ -8,7 +8,7 @@ import lombok.NonNull;
 import java.time.LocalDateTime;
 
 @Builder
-public record AuthSignInRequestDto(
+public record AuthSignInRequestDTO(
         @Email
         String email,
         @NonNull
@@ -20,8 +20,8 @@ public record AuthSignInRequestDto(
         @NonNull
         LocalDateTime createdAt
 ){
-        public static AuthSignInRequestDto to(String email, SocialType socialType, String socialId, String nickname, LocalDateTime createdAt) {
-                return AuthSignInRequestDto.builder()
+        public static AuthSignInRequestDTO to(String email, SocialType socialType, String socialId, String nickname, LocalDateTime createdAt) {
+                return AuthSignInRequestDTO.builder()
                         .email(email)
                         .socialType(socialType)
                         .nickname(nickname)
