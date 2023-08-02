@@ -53,8 +53,10 @@ public class WishService {
 		if (!wishRepository.existsWishByWisher(wisher)) {
 			throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
 		}
-		user.updateMemberProfile(convertToTime(request.birthStartAt()), convertToTime(request.birthEndAt()), request.name(), request.bankName(), request.account(), request.phone());
-
+		if (nonNull(wishRepository.findWishIsNowAvailable(wisher))) {
+			throw new IllegalArgumentException(NOT_AVAILABLE_WISH_DATE.getMessage());
+		}
+		wisher.updateMemberProfile(convertToTime(request.startDate()), convertToTime(request.endDate()), request.name(), request.bankName(), request.account(), request.phone());
 		val userWish = getUserWish(userId);
 		if (nonNull(userWish)) {
 			userWish.updateWish(convertToTime(request.startDate()), convertToTime(request.endDate()), request.phone());
@@ -66,7 +68,14 @@ public class WishService {
 		return WishResponseDTO.from(getWish(wishId));
 	}
 
-	public MypageWishUpdateResponseDTO getMypageWish(Long userId) {
+	public MypageWishResponseDTO getMypageWish(Long userId) {
+		val wisher = getUser(userId);
+		if (!wishRepository.existsWishByWisher(wisher)) {
+			throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
+		}
+		if (!nonNull(wishRepository.findWishIsNowAvailable(wisher))) {
+			throw new IllegalArgumentException(EXPIRE_WISH.getMessage());
+		}
 		val wish = wishRepository
 				.findFirstByWisherOrderByEndAtDesc(getUser(userId)).orElse(null);
 		return nonNull(wish) ? MypageWishResponseDTO.from(wish, wisher) : null;
