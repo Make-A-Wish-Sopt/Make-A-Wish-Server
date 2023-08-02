@@ -48,7 +48,7 @@ public class WishService {
 	}
 
 	@Transactional
-	public MypageWishResponseDTO updateWish(Long userId, MypageWishUpdateRequestDTO request) {
+	public UserCurrentWishResponseDTO updateWish(Long userId, UserWishUpdateRequestDTO request) {
 		val wisher = getUser(userId);
 		val userWish = getUserWish(userId);
 		if (nonNull(wishRepository.findWishIsNowAvailable(wisher))) {
@@ -56,14 +56,14 @@ public class WishService {
 		}
 		wisher.updateMemberProfile(convertToTime(request.startDate()), convertToTime(request.endDate()), request.name(), request.bankName(), request.account(), request.phone());
 		userWish.updateWish(convertToTime(request.startDate()), convertToTime(request.endDate()), request.phone());
-		return MypageWishResponseDTO.from(userWish, wisher);
+		return UserCurrentWishResponseDTO.from(userWish, wisher);
 	}
 
 	public WishResponseDTO findWish(Long wishId) {
 		return WishResponseDTO.from(getWish(wishId));
 	}
 
-	public MypageWishResponseDTO getMypageWish(Long userId) {
+	public UserCurrentWishResponseDTO getCurrentUserWish(Long userId) {
 		val wisher = getUser(userId);
 		if (!wishRepository.existsWishByWisher(wisher)) {
 			throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
@@ -73,7 +73,7 @@ public class WishService {
 		}
 		val wish = wishRepository
 				.findFirstByWisherOrderByEndAtDesc(getUser(userId)).orElse(null);
-		return nonNull(wish) ? MypageWishResponseDTO.from(wish, wisher) : null;
+		return nonNull(wish) ? UserCurrentWishResponseDTO.from(wish, wisher) : null;
 	}
 
 	public Wish getUserWish(Long userId) {

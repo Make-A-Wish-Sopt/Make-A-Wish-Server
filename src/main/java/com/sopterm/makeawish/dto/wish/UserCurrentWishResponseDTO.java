@@ -6,7 +6,7 @@ import com.sopterm.makeawish.domain.wish.Wish;
 import lombok.Builder;
 
 @Builder
-public record MypageWishResponseDTO(String startDate, String endDate, String phone, AccountInfo accountInfo) {
+public record UserCurrentWishResponseDTO(String startDate, String endDate, String phone, AccountInfo accountInfo) {
 
 	public static MypageWishResponseDTO from(Wish wish, User user) {
 		return MypageWishResponseDTO.builder()

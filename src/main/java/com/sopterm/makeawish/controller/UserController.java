@@ -2,8 +2,7 @@ package com.sopterm.makeawish.controller;
 
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.user.InternalMemberDetails;
-import com.sopterm.makeawish.dto.wish.MypageWishResponseDTO;
-import com.sopterm.makeawish.dto.wish.MypageWishUpdateRequestDTO;
+import com.sopterm.makeawish.dto.wish.UserWishUpdateRequestDTO;
 import com.sopterm.makeawish.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -41,7 +40,7 @@ public class UserController {
     @Operation(summary = "내 정보 가져오기")
     @GetMapping
     public ResponseEntity<ApiResponse> getUserWish(@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails) {
-        val response = wishService.getMypageWish(memberDetails.getId());
+        val response = wishService.getCurrentUserWish(memberDetails.getId());
         return nonNull(response)
                 ? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_INFO.getMessage(), response))
                 : ResponseEntity.ok(ApiResponse.fail(EXPIRED_BIRTHDAY_WISH.getMessage()));
