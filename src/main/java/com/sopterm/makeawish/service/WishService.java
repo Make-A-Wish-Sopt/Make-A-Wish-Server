@@ -50,9 +50,7 @@ public class WishService {
 	@Transactional
 	public MypageWishResponseDTO updateWish(Long userId, MypageWishUpdateRequestDTO request) {
 		val wisher = getUser(userId);
-		if (!wishRepository.existsWishByWisher(wisher)) {
-			throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
-		}
+		val userWish = getUserWish(userId);
 		if (nonNull(wishRepository.findWishIsNowAvailable(wisher))) {
 			throw new IllegalArgumentException(NOT_AVAILABLE_WISH_DATE.getMessage());
 		}
@@ -82,6 +80,7 @@ public class WishService {
 	}
 
 	public Wish getUserWish(Long userId) {
+		if(!wishRepository.existsWishByWisher(getUser(userId))) throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
 		return wishRepository.findFirstByWisherOrderByEndAtDesc(getUser(userId)).orElse(null);
 	}
 
