@@ -55,10 +55,7 @@ public class WishService {
 			throw new IllegalArgumentException(NOT_AVAILABLE_WISH_DATE.getMessage());
 		}
 		wisher.updateMemberProfile(convertToTime(request.startDate()), convertToTime(request.endDate()), request.name(), request.bankName(), request.account(), request.phone());
-		val userWish = getUserWish(userId);
-		if (nonNull(userWish)) {
-			userWish.updateWish(convertToTime(request.startDate()), convertToTime(request.endDate()), request.phone());
-		}
+		userWish.updateWish(convertToTime(request.startDate()), convertToTime(request.endDate()), request.phone());
 		return MypageWishResponseDTO.from(userWish, wisher);
 	}
 
