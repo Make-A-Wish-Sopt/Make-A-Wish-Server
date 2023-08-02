@@ -2,6 +2,7 @@ package com.sopterm.makeawish.controller;
 
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.user.InternalMemberDetails;
+import com.sopterm.makeawish.dto.wish.WishIdRequestDTO;
 import com.sopterm.makeawish.dto.wish.WishRequestDTO;
 import com.sopterm.makeawish.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -82,6 +83,13 @@ public class WishController {
 	) {
 		val response = wishService.findWishes(memberDetails.getId());
 		return ResponseEntity.ok(success(SUCCESS_GET_WISHES.getMessage(), response));
+	}
+
+	@Operation(summary = "소원 삭제")
+	@DeleteMapping
+	public ResponseEntity<ApiResponse> deleteWishes(@RequestBody WishIdRequestDTO requestDTO) {
+		wishService.deleteWishes(requestDTO);
+		return ResponseEntity.ok(success(SUCCESS_DELETE_WISHES.getMessage()));
 	}
 
 	private URI getURI(Long id) {
