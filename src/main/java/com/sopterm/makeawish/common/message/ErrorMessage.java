@@ -11,7 +11,7 @@ public enum ErrorMessage {
 	EXPIRE_WISH("주간이 끝난 소원 링크입니다."),
 	INVALID_WISH("존재하지 않는 소원 링크입니다."),
 	EXIST_MAIN_WISH("이미 진행 중인 소원 링크가 있습니다."),
-	NOT_AVAILABLE_WISH_DATE("소원을 수정할 수 있는 기간이 아닙니다."),
+	NOT_CURRENT_WISH("소원을 수정할 수 있는 기간이 아닙니다."),
 	NO_EXIST_MAIN_WISH("수정할 수 있는 소원링크가 없습니다."),
 	INCORRECT_WISH("본인의 소원 링크가 아닙니다"),
 	EXPIRED_BIRTHDAY_WISH("현재 생일 주간이 아닙니다."),

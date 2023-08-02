@@ -52,7 +52,7 @@ public class WishService {
 		val wisher = getUser(userId);
 		val userWish = getUserWish(userId);
 		if (nonNull(wishRepository.findWishIsNowAvailable(wisher))) {
-			throw new IllegalArgumentException(NOT_AVAILABLE_WISH_DATE.getMessage());
+			throw new IllegalArgumentException(NOT_CURRENT_WISH.getMessage());
 		}
 		wisher.updateMemberProfile(convertToTime(request.startDate()), convertToTime(request.endDate()), request.name(), request.bankName(), request.account(), request.phone());
 		userWish.updateWish(convertToTime(request.startDate()), convertToTime(request.endDate()), request.phone());
