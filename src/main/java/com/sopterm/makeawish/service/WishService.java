@@ -77,7 +77,9 @@ public class WishService {
 	}
 
 	public Wish getUserWish(Long userId) {
-		if(!wishRepository.existsWishByWisher(getUser(userId))) throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
+		if(!wishRepository.existsWishByWisher(getUser(userId))) {
+			throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
+		}
 		return wishRepository.findFirstByWisherOrderByEndAtDesc(getUser(userId)).orElse(null);
 	}
 
