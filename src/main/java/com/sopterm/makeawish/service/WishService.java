@@ -106,7 +106,7 @@ public class WishService {
 
 	@Transactional
 	public void deleteWishes(WishIdRequestDTO requestDTO) {
-		List<Long> wishId = requestDTO.wishes();
+		val wishId = requestDTO.wishes();
 		wishRepository.deleteAllById(wishId);
 	}
 
