@@ -2,8 +2,8 @@ package com.sopterm.makeawish.controller;
 
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.user.InternalMemberDetails;
+import com.sopterm.makeawish.dto.wish.MypageWishResponseDTO;
 import com.sopterm.makeawish.dto.wish.MypageWishUpdateRequestDTO;
-import com.sopterm.makeawish.dto.wish.MypageWishUpdateResponseDTO;
 import com.sopterm.makeawish.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import static java.util.Objects.nonNull;
 
@@ -43,6 +44,6 @@ public class UserController {
         val response = wishService.getMypageWish(memberDetails.getId());
         return nonNull(response)
                 ? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_INFO.getMessage(), response))
-                : ResponseEntity.ok(ApiResponse.fail(NO_WISH.getMessage()));
+                : ResponseEntity.ok(ApiResponse.fail(EXPIRED_BIRTHDAY_WISH.getMessage()));
     }
 }
