@@ -2,6 +2,8 @@ package com.sopterm.makeawish.controller;
 
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 
+import java.nio.file.AccessDeniedException;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +39,7 @@ public class PublicController {
 
 	@Operation(summary = "소원 링크 조회")
 	@GetMapping("/wishes/{wishId}")
-	public ResponseEntity<ApiResponse> findWish(@PathVariable Long wishId) {
+	public ResponseEntity<ApiResponse> findWish(@PathVariable Long wishId) throws AccessDeniedException {
 		val response = wishService.findWish(wishId);
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_FIND_WISH.getMessage(), response));
 	}

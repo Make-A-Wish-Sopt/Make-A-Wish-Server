@@ -60,8 +60,12 @@ public class WishService {
 		return UserCurrentWishResponseDTO.from(userWish, wisher);
 	}
 
-	public WishResponseDTO findWish(Long wishId) {
-		return WishResponseDTO.from(getWish(wishId));
+	public WishResponseDTO findWish(Long wishId) throws AccessDeniedException {
+		val wish = getWish(wishId);
+		if (wish.getEndAt().isBefore(LocalDateTime.now())) {
+			throw new AccessDeniedException(EXPIRE_WISH.getMessage());
+		}
+		return WishResponseDTO.from(wish);
 	}
 
 	public UserCurrentWishResponseDTO getCurrentUserWish(Long userId) {
