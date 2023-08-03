@@ -1,6 +1,11 @@
 package com.sopterm.makeawish.dto.wish;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
+import lombok.val;
 
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
@@ -31,6 +36,9 @@ public record WishRequestDTO(
 	}
 
 	public static LocalDateTime convertToTime(String date) {
-		return LocalDateTime.parse(date);
+		val instant = Instant
+			.from(DateTimeFormatter.ISO_DATE_TIME.parse(date))
+			.atZone(ZoneId.of("Asia/Seoul"));
+		return LocalDateTime.from(instant);
 	}
 }
