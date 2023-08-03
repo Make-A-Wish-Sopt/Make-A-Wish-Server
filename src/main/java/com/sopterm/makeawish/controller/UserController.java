@@ -2,19 +2,18 @@ package com.sopterm.makeawish.controller;
 
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.user.InternalMemberDetails;
-import com.sopterm.makeawish.dto.wish.MypageWishUpdateRequestDTO;
+import com.sopterm.makeawish.dto.wish.UserWishUpdateRequestDTO;
 import com.sopterm.makeawish.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import lombok.val;
-
+import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import static java.util.Objects.nonNull;
 
@@ -30,7 +29,7 @@ public class UserController {
     @PutMapping
     public ResponseEntity<ApiResponse> updateWish(
         @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
-        @RequestBody MypageWishUpdateRequestDTO requestDTO
+        @RequestBody UserWishUpdateRequestDTO requestDTO
     ) {
         val wish = wishService.updateWish(memberDetails.getId(), requestDTO);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_UPDATE_USER_INFO.getMessage(), wish));
@@ -41,9 +40,9 @@ public class UserController {
     public ResponseEntity<ApiResponse> getUserWish(
         @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
     ) {
-        val response = wishService.getMypageWish(memberDetails.getId());
+        val response = wishService.getCurrentUserWish(memberDetails.getId());
         return nonNull(response)
                 ? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_INFO.getMessage(), response))
-                : ResponseEntity.ok(ApiResponse.fail(NO_WISH.getMessage()));
+                : ResponseEntity.ok(ApiResponse.fail(EXPIRED_BIRTHDAY_WISH.getMessage()));
     }
 }
