@@ -41,6 +41,10 @@ public class WishService {
 		val wisher = getUser(userId);
 		val from = convertToTime(requestDTO.startDate());
 		val to = convertToTime(requestDTO.endDate());
+		val now = LocalDateTime.now();
+		if (from.isBefore(now) || to.isBefore(now)) {
+			throw new IllegalArgumentException(PAST_WISH.getMessage());
+		}
 		if (wishRepository.existsConflictWish(wisher, from, to, EXPIRY_DAY)) {
 			throw new IllegalArgumentException(EXIST_MAIN_WISH.getMessage());
 		}
