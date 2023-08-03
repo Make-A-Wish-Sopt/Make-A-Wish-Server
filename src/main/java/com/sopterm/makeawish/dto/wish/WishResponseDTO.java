@@ -8,13 +8,13 @@ import java.time.temporal.ChronoUnit;
 
 import com.sopterm.makeawish.domain.wish.Wish;
 
-import lombok.Builder;
+import lombok.*;
 
 @Builder
 public record WishResponseDTO(String name, long dayCount, String title, String hint) {
 
 	public static WishResponseDTO from(Wish wish) {
-		String name = nonNull(wish.getWisher().getAccount())
+		val name = nonNull(wish.getWisher().getAccount())
 			? wish.getWisher().getAccount().getName()
 			: wish.getWisher().getNickname();
 
@@ -27,7 +27,7 @@ public record WishResponseDTO(String name, long dayCount, String title, String h
 	}
 
 	private static long getRemainDayCount(LocalDateTime endAt) {
-		LocalDateTime now = LocalDateTime.now();
+		val now = LocalDateTime.now();
 		if (now.isAfter(endAt)) {
 			throw new IllegalArgumentException(EXPIRE_WISH.getMessage());
 		}

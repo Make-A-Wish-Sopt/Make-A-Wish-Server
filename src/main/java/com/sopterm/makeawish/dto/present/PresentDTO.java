@@ -1,18 +1,18 @@
 package com.sopterm.makeawish.dto.present;
 
 import com.sopterm.makeawish.domain.Cake;
-import com.sopterm.makeawish.domain.Present;
+
 import lombok.Builder;
 
 @Builder
-public record PresentDto(
+public record PresentDTO(
         Long cakeId,
         String name,
         String imageUrl,
         Long count
 ) {
-    public static PresentDto from(Cake cake, Long count){
-        return PresentDto.builder()
+    public static PresentDTO from(Cake cake, Long count){
+        return PresentDTO.builder()
                 .cakeId(cake.getId())
                 .name(cake.getName())
                 .imageUrl(cake.getImageUrl())

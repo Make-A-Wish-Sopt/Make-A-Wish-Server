@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.dto.cake.CakeApproveRequestDTO;
-import com.sopterm.makeawish.dto.cake.CakeReadyRequestDto;
+import com.sopterm.makeawish.dto.cake.CakeReadyRequestDTO;
 import com.sopterm.makeawish.service.CakeService;
 import com.sopterm.makeawish.service.WishService;
 
@@ -44,7 +44,7 @@ public class PublicController {
 
 	@Operation(summary = "카카오페이 결제 준비")
 	@PostMapping("/pay/ready")
-	public ResponseEntity<ApiResponse> getKakaoPayReady(@RequestBody CakeReadyRequestDto request) {
+	public ResponseEntity<ApiResponse> getKakaoPayReady(@RequestBody CakeReadyRequestDTO request) {
 		val response = cakeService.getKakaoPayReady(request);
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_READY_KAKAOPAY.getMessage(), response));
 	}

@@ -4,14 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sopterm.makeawish.common.message.ErrorMessage;
 import com.sopterm.makeawish.domain.user.InternalTokenManager;
 import com.sopterm.makeawish.domain.user.SocialType;
-import com.sopterm.makeawish.domain.user.User;
-import com.sopterm.makeawish.dto.auth.AuthGetTokenResponseDto;
-import com.sopterm.makeawish.dto.auth.AuthSignInResponseDto;
+import com.sopterm.makeawish.dto.auth.AuthGetTokenResponseDTO;
+import com.sopterm.makeawish.dto.auth.AuthSignInResponseDTO;
 import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.service.social.KakaoLoginService;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,20 +29,20 @@ public class AuthService {
     private final UserRepository userRepository;
 
     @Transactional
-    public AuthSignInResponseDto socialLogin(String social, String code) throws JsonProcessingException {
-        SocialType socialType = SocialType.from(social);
-        SocialLoginService socialLoginService = socialLogins.get(socialType);
+    public AuthSignInResponseDTO socialLogin(String social, String code) throws JsonProcessingException {
+        val socialType = SocialType.from(social);
+        val socialLoginService = socialLogins.get(socialType);
         return socialLoginService.socialLogin(code);
     }
 
     @Transactional
-    public AuthGetTokenResponseDto getToken(Long userId) {
-        User user = userRepository.findById(userId)
+    public AuthGetTokenResponseDTO getToken(Long userId) {
+        val user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.INVALID_USER.getMessage()));
-        String refreshToken = tokenManager.createAuthRefreshToken(userId);
+        val refreshToken = tokenManager.createAuthRefreshToken(userId);
         user.updateRefreshToken(refreshToken);
-        String accessToken = tokenManager.createAuthAccessToken(userId);
-        return AuthGetTokenResponseDto.builder().
+        val accessToken = tokenManager.createAuthAccessToken(userId);
+        return AuthGetTokenResponseDTO.builder().
                 refreshToken(refreshToken)
                 .accessToken(accessToken)
                 .build();

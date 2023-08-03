@@ -14,6 +14,8 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 
+import lombok.val;
+
 @Configuration
 public class SwaggerConfig {
 
@@ -22,19 +24,19 @@ public class SwaggerConfig {
 
 	@Bean
 	public OpenAPI openAPI() {
-		Info info = new Info()
+		val info = new Info()
 			.title("선물주 API")
 			.version("1.0")
 			.description("선물주 API Docs");
 
-		SecurityScheme securityScheme = new SecurityScheme()
+		val securityScheme = new SecurityScheme()
 			.type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
 			.in(SecurityScheme.In.HEADER).name("Authorization");
 
-		SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
+		val securityRequirement = new SecurityRequirement().addList("bearerAuth");
 
-		List<Server> servers = new ArrayList<>();
-		Server server = new Server();
+		val servers = new ArrayList<Server>();
+		val server = new Server();
 		server.description("실서버");
 		server.setUrl(serverUrl);
 		servers.add(server);

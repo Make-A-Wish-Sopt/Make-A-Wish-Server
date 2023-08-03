@@ -1,10 +1,10 @@
 package com.sopterm.makeawish.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sopterm.makeawish.dto.auth.AuthSignInResponseDto;
+import com.sopterm.makeawish.dto.auth.AuthSignInResponseDTO;
 
 @FunctionalInterface
 public interface SocialLoginService {
 
-    AuthSignInResponseDto socialLogin(String code) throws JsonProcessingException;
+    AuthSignInResponseDTO socialLogin(String code) throws JsonProcessingException;
 }

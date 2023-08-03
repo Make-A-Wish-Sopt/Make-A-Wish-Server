@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.NonNull;
 
 @Builder
-public record AuthGetTokenResponseDto(
+public record AuthGetTokenResponseDTO(
         @NonNull
         String accessToken,
         @NonNull

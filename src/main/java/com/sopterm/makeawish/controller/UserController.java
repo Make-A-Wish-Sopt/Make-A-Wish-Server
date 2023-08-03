@@ -8,8 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import lombok.val;
+import lombok.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,20 +25,21 @@ import static java.util.Objects.nonNull;
 public class UserController {
 
     private final WishService wishService;
-    @Operation(summary = "내 정보 수정",
-            description = """
-                    수정되지 않은 정보는 null 또는 원래의 정보 그대로 request로 전달부탁드립니다!
-                    """)
+    @Operation(summary = "내 정보 수정", description = "수정되지 않은 정보는 null 또는 원래의 정보 그대로 request로 전달부탁드립니다!")
     @PutMapping
-    public ResponseEntity<ApiResponse> updateWish(@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
-                                                  @RequestBody UserWishUpdateRequestDTO requestDTO) {
+    public ResponseEntity<ApiResponse> updateWish(
+        @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
+        @RequestBody UserWishUpdateRequestDTO requestDTO
+    ) {
         val wish = wishService.updateWish(memberDetails.getId(), requestDTO);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_UPDATE_USER_INFO.getMessage(), wish));
     }
 
     @Operation(summary = "내 정보 가져오기")
     @GetMapping
-    public ResponseEntity<ApiResponse> getUserWish(@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails) {
+    public ResponseEntity<ApiResponse> getUserWish(
+        @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
+    ) {
         val response = wishService.getCurrentUserWish(memberDetails.getId());
         return nonNull(response)
                 ? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_INFO.getMessage(), response))
