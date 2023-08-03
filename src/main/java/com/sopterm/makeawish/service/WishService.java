@@ -1,12 +1,12 @@
 package com.sopterm.makeawish.service;
 
+import static com.sopterm.makeawish.common.Util.*;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 import static java.util.Objects.*;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.sopterm.makeawish.dto.wish.*;
@@ -39,8 +39,12 @@ public class WishService {
 	@Transactional
 	public Long createWish(Long userId, WishRequestDTO requestDTO) {
 		val wisher = getUser(userId);
-		val from = WishRequestDTO.convertToTime(requestDTO.startDate());
-		val to = WishRequestDTO.convertToTime(requestDTO.endDate());
+		val from = convertToTime(requestDTO.startDate());
+		val to = convertToTime(requestDTO.endDate());
+		val now = LocalDateTime.now();
+		if (from.isBefore(now) || to.isBefore(now)) {
+			throw new IllegalArgumentException(PAST_WISH.getMessage());
+		}
 		if (wishRepository.existsConflictWish(wisher, from, to, EXPIRY_DAY)) {
 			throw new IllegalArgumentException(EXIST_MAIN_WISH.getMessage());
 		}
@@ -60,8 +64,12 @@ public class WishService {
 		return UserCurrentWishResponseDTO.from(userWish, wisher);
 	}
 
-	public WishResponseDTO findWish(Long wishId) {
-		return WishResponseDTO.from(getWish(wishId));
+	public WishResponseDTO findWish(Long wishId) throws AccessDeniedException {
+		val wish = getWish(wishId);
+		if (wish.getEndAt().isBefore(LocalDateTime.now())) {
+			throw new AccessDeniedException(EXPIRE_WISH.getMessage());
+		}
+		return WishResponseDTO.from(wish);
 	}
 
 	public UserCurrentWishResponseDTO getCurrentUserWish(Long userId) {
@@ -112,9 +120,10 @@ public class WishService {
 	}
 
 	@Transactional
-	public void deleteWishes(WishIdRequestDTO requestDTO) {
-		val wishId = requestDTO.wishes();
-		wishRepository.deleteAllById(wishId);
+	public void deleteWishes(Long userId, WishIdRequestDTO requestDTO) {
+		val user = getUser(userId);
+		val wishIds = filterUserWishes(user, requestDTO.wishes());
+		wishRepository.deleteAllById(wishIds);
 	}
 
 	public WishesResponseDTO findWishes(Long userId) {
@@ -127,8 +136,9 @@ public class WishService {
 				.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
 	}
 
-	private LocalDateTime convertToTime(String date) {
-		val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
-		return LocalDateTime.parse(date + " 00:00", formatter);
+	private List<Long> filterUserWishes(User user, List<Long> wishIds) {
+		return wishIds.stream()
+			.filter(wishId -> getWish(wishId).getWisher().equals(user))
+			.toList();
 	}
 }

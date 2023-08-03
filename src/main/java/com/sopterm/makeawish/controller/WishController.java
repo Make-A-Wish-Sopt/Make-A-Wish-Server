@@ -87,8 +87,11 @@ public class WishController {
 
 	@Operation(summary = "소원 삭제")
 	@DeleteMapping
-	public ResponseEntity<ApiResponse> deleteWishes(@RequestBody WishIdRequestDTO requestDTO) {
-		wishService.deleteWishes(requestDTO);
+	public ResponseEntity<ApiResponse> deleteWishes(
+		@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
+		@RequestBody WishIdRequestDTO requestDTO
+	) {
+		wishService.deleteWishes(memberDetails.getId(), requestDTO);
 		return ResponseEntity.ok(success(SUCCESS_DELETE_WISHES.getMessage()));
 	}
 
