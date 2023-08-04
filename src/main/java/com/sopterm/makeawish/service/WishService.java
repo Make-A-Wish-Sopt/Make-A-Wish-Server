@@ -58,8 +58,8 @@ public class WishService {
 	public UserCurrentWishResponseDTO updateWish(Long userId, UserWishUpdateRequestDTO request) {
 		val wisher = getUser(userId);
 		val userWish = getUserWish(userId);
-		WishStatus status = checkUpdatableDate(wisher, userWish);
-		if (status == IS_BEFORE_FUNDING) {
+		val status = checkUpdatableDate(wisher, userWish);
+		if (status == BEFORE) {
 			wisher.updateMemberProfile(convertToTime(request.startDate()), convertToTime(request.endDate()), request.name(), request.bankName(), request.account(), request.phone());
 			userWish.updateWish(convertToTime(request.startDate()), convertToTime(request.endDate()), request.phone());
 		} else if(status == IS_WHILE_FUNDING) {
@@ -137,12 +137,12 @@ public class WishService {
 	private WishStatus checkUpdatableDate(User wisher, Wish userWish) {
 		val now = LocalDateTime.now();
 		if (userWish.getEndAt().isBefore(now)) {
-			return IS_END_OF_FUNDING;
+			return END;
 		}
 		else if (userWish.getEndAt().isAfter(now) && userWish.getStartAt().isBefore(now)) {
-			return IS_WHILE_FUNDING;
+			return WHILE;
 		}
-		return IS_BEFORE_FUNDING;
+		return BEFORE;
 	}
 
 	private User getUser(Long userId) {
