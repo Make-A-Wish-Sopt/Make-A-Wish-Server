@@ -35,6 +35,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
     }
 
+    @Transactional
     public UserAccountResponseDTO updateUserAccount(Long userId, UserAccountUpdateRequestDTO requestDTO) {
         val wisher = getUser(userId);
         if(Objects.isNull(requestDTO.accountInfo())) {
