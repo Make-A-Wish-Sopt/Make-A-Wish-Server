@@ -27,7 +27,7 @@ public class UserController {
     private final WishService wishService;
     @Operation(summary = "내 정보 수정", description = "수정되지 않은 정보는 null 또는 원래의 정보 그대로 request로 전달부탁드립니다!")
     @PutMapping
-    public ResponseEntity<ApiResponse> updateWish(
+    public ResponseEntity<ApiResponse> updateUserCurrentWish(
         @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
         @RequestBody UserWishUpdateRequestDTO requestDTO
     ) {
@@ -37,7 +37,7 @@ public class UserController {
 
     @Operation(summary = "내 정보 가져오기")
     @GetMapping
-    public ResponseEntity<ApiResponse> getUserWish(
+    public ResponseEntity<ApiResponse> getUserCurrentWish(
         @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
     ) {
         val response = wishService.getCurrentUserWish(memberDetails.getId());
