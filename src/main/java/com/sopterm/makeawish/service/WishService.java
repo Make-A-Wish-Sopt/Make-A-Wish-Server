@@ -62,10 +62,10 @@ public class WishService {
 		if (status == BEFORE) {
 			wisher.updateMemberProfile(convertToTime(request.startDate()), convertToTime(request.endDate()), request.name(), request.bankName(), request.account(), request.phone());
 			userWish.updateWish(convertToTime(request.startDate()), convertToTime(request.endDate()), request.phone());
-		} else if(status == IS_WHILE_FUNDING) {
+		} else if(status == WHILE) {
 			wisher.updateMemberProfile(null, null, request.name(), request.bankName(), request.account(), request.phone());
 			userWish.updateWish(null, null, request.phone());
-		} else if(status == IS_END_OF_FUNDING) {
+		} else if(status == END) {
 			throw new IllegalArgumentException(NOT_CURRENT_WISH.getMessage());
 		}
 		return UserCurrentWishResponseDTO.from(userWish, wisher);
