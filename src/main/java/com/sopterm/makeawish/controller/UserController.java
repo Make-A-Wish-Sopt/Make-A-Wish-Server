@@ -25,9 +25,9 @@ import static java.util.Objects.nonNull;
 public class UserController {
 
     private final WishService wishService;
-    @Operation(summary = "내 정보 수정", description = "수정되지 않은 정보는 null 또는 원래의 정보 그대로 request로 전달부탁드립니다!")
-    @PutMapping
-    public ResponseEntity<ApiResponse> updateUserCurrentWish(
+    @Operation(summary = "진행중인 소원 수정", description = "수정되지 않은 정보는 null 또는 원래의 정보 그대로 request로 전달부탁드립니다!")
+    @PutMapping("/wish")
+    public ResponseEntity<ApiResponse> updateUserMainWish(
         @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
         @RequestBody UserWishUpdateRequestDTO requestDTO
     ) {
@@ -35,9 +35,9 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_UPDATE_USER_INFO.getMessage(), wish));
     }
 
-    @Operation(summary = "내 정보 가져오기")
-    @GetMapping
-    public ResponseEntity<ApiResponse> getUserCurrentWish(
+    @Operation(summary = "진행중인 소원 가져오기")
+    @GetMapping("/wish")
+    public ResponseEntity<ApiResponse> getUserMainWish(
         @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
     ) {
         val response = wishService.getCurrentUserWish(memberDetails.getId());
