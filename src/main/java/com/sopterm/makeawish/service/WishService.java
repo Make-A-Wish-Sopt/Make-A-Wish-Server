@@ -2,6 +2,7 @@ package com.sopterm.makeawish.service;
 
 import static com.sopterm.makeawish.common.Util.*;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
+import static com.sopterm.makeawish.common.message.WishStatus.*;
 import static java.util.Objects.*;
 
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.sopterm.makeawish.common.message.WishStatus;
 import com.sopterm.makeawish.dto.wish.*;
 
 import org.jsoup.Jsoup;
@@ -56,11 +58,16 @@ public class WishService {
 	public UserCurrentWishResponseDTO updateWish(Long userId, UserWishUpdateRequestDTO request) {
 		val wisher = getUser(userId);
 		val userWish = getUserWish(userId);
-		if ((wishRepository.findWishIsUpdatable(wisher).isPresent())) {
+		WishStatus status = checkUpdatableDate(wisher, userWish);
+		if (status == IS_BEFORE_FUNDING) {
+			wisher.updateMemberProfile(convertToTime(request.startDate()), convertToTime(request.endDate()), request.name(), request.bankName(), request.account(), request.phone());
+			userWish.updateWish(convertToTime(request.startDate()), convertToTime(request.endDate()), request.phone());
+		} else if(status == IS_WHILE_FUNDING) {
+			wisher.updateMemberProfile(null, null, request.name(), request.bankName(), request.account(), request.phone());
+			userWish.updateWish(null, null, request.phone());
+		} else if(status == IS_END_OF_FUNDING) {
 			throw new IllegalArgumentException(NOT_CURRENT_WISH.getMessage());
 		}
-		wisher.updateMemberProfile(convertToTime(request.startDate()), convertToTime(request.endDate()), request.name(), request.bankName(), request.account(), request.phone());
-		userWish.updateWish(convertToTime(request.startDate()), convertToTime(request.endDate()), request.phone());
 		return UserCurrentWishResponseDTO.from(userWish, wisher);
 	}
 
@@ -125,6 +132,17 @@ public class WishService {
 	public WishesResponseDTO findWishes(Long userId) {
 		val wishes = wishRepository.findByWisherOrderByStartAtDesc(getUser(userId));
 		return WishesResponseDTO.of(wishes);
+	}
+
+	private WishStatus checkUpdatableDate(User wisher, Wish userWish) {
+		val now = LocalDateTime.now();
+		if (userWish.getEndAt().isBefore(now)) {
+			return IS_END_OF_FUNDING;
+		}
+		else if (userWish.getEndAt().isAfter(now) && userWish.getStartAt().isBefore(now)) {
+			return IS_WHILE_FUNDING;
+		}
+		return IS_BEFORE_FUNDING;
 	}
 
 	private User getUser(Long userId) {
