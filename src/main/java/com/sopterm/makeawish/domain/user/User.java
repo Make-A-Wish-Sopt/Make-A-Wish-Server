@@ -88,9 +88,6 @@ public class User {
     }
 
     private AccountInfo updateAccount(String name, String bank, String account) {
-        if(isNull(this.account)) {
-            return new AccountInfo(name,bank,account);
-        }
         if(isNull(name)) {
             name = this.account.getName();
         }
