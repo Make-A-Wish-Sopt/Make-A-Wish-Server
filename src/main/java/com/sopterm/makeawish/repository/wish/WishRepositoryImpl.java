@@ -28,7 +28,7 @@ public class WishRepositoryImpl implements WishCustomRepository {
 			.from(wish)
 			.where(
 				wish.wisher.eq(wisher),
-				wish.startAt.before(now),
+				wish.startAt.loe(now),
 				wish.endAt.goe(now.minusDays(expiryDay))
 			)
 			.fetchFirst()
