@@ -56,7 +56,7 @@ public class WishService {
 	public UserCurrentWishResponseDTO updateWish(Long userId, UserWishUpdateRequestDTO request) {
 		val wisher = getUser(userId);
 		val userWish = getUserWish(userId);
-정		if ((wishRepository.findWishIsUpdatable(wisher).isPresent())) {
+		if ((wishRepository.findWishIsUpdatable(wisher).isPresent())) {
 			throw new IllegalArgumentException(NOT_CURRENT_WISH.getMessage());
 		}
 		wisher.updateMemberProfile(convertToTime(request.startDate()), convertToTime(request.endDate()), request.name(), request.bankName(), request.account(), request.phone());
