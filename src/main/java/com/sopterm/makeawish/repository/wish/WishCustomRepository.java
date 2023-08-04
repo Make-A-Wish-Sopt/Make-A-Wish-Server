@@ -10,5 +10,4 @@ public interface WishCustomRepository {
 
 	Optional<Wish> findMainWish(User wisher, int expiryDay);
 	boolean existsConflictWish(User wisher, LocalDateTime startAt, LocalDateTime endAt, int expiryDay);
-	Optional<Wish> findWishIsNowAvailable(User wisher);
 }

@@ -7,11 +7,13 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sopterm.makeawish.domain.wish.WishStatus.*;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static java.util.Objects.nonNull;
@@ -39,8 +41,6 @@ public class Wish extends BaseEntity {
 
     private LocalDateTime endAt;
 
-    private String phoneNumber;
-
     private int presentPrice;
 
     private int totalPrice;
@@ -54,14 +54,13 @@ public class Wish extends BaseEntity {
 
     @Builder
     public Wish(String title, String presentImageUrl, String hint, String initial, LocalDateTime startAt,
-                LocalDateTime endAt, String phoneNumber, int presentPrice, User wisher) {
+                LocalDateTime endAt, int presentPrice, User wisher) {
         this.title = title;
         this.presentImageUrl = presentImageUrl;
         this.hint = hint;
         this.initial = initial;
         this.startAt = startAt;
         this.endAt = endAt;
-        this.phoneNumber = phoneNumber;
         this.presentPrice = presentPrice;
         this.totalPrice = 0;
         setWisher(wisher);
@@ -79,9 +78,23 @@ public class Wish extends BaseEntity {
         this.totalPrice += price;
     }
 
-    public void updateWish(LocalDateTime startAt, LocalDateTime endAt, String phoneNumber) {
-        this.startAt = startAt == null ? this.startAt : startAt;
-        this.endAt = endAt == null ? this.endAt : endAt;
-        this.phoneNumber = phoneNumber == null ? this.phoneNumber : phoneNumber;
+    public WishStatus getStatus() {
+        val now = LocalDateTime.now();
+        if (this.startAt.isAfter(now)) {
+            return BEFORE;
+        } else if (this.startAt.isBefore(now) && this.endAt.isAfter(now)) {
+            return WHILE;
+        } else {
+            return END;
+        }
+    }
+
+    public void updateTerm(LocalDateTime startAt, LocalDateTime endAt) {
+        if (nonNull(startAt)) {
+            this.startAt = startAt;
+        }
+        if (nonNull(endAt)) {
+            this.endAt = endAt;
+        }
     }
 }
