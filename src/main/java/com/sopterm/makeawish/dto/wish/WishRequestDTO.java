@@ -17,6 +17,7 @@ public record WishRequestDTO(
 ) {
 
 	public Wish toEntity(User wisher) {
+		wisher.updatePhoneNumber(phone);
 		return Wish.builder()
 			.presentImageUrl(imageUrl)
 			.presentPrice(price)
@@ -25,7 +26,6 @@ public record WishRequestDTO(
 			.initial(initial)
 			.startAt(convertToTime(startDate))
 			.endAt(convertToTime(endDate))
-			.phoneNumber(phone)
 			.wisher(wisher)
 			.build();
 	}
