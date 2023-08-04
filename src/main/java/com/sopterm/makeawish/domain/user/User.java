@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static java.util.Objects.isNull;
+import static java.util.Objects.*;
 
 @Entity
 @Getter
@@ -69,26 +69,21 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
-    public void updateMemberProfile(
-            String name,
-            String bank,
-            String account,
-            String phoneNumber) {
-        this.phoneNumber = isNull(phoneNumber) ? this.phoneNumber : phoneNumber;
-        this.nickname = isNull(name) ? this.nickname : name;
-        this.account = updateAccount(name,bank,account);
+    public void updateProfile(String name, String bank, String account, String phoneNumber) {
+        updatePhoneNumber(phoneNumber);
+        updateAccount(name, bank, account);
     }
 
-    private AccountInfo updateAccount(String name, String bank, String account) {
-        if(isNull(name)) {
-            name = this.account.getName();
+    public void updatePhoneNumber(String phoneNumber) {
+        if (nonNull(phoneNumber)) {
+            this.phoneNumber = phoneNumber;
         }
-        if(isNull(bank)) {
-            bank = this.account.getBank();
+    }
+
+    private void updateAccount(String name, String bank, String account) {
+        if (isNull(this.account)) {
+            this.account = new AccountInfo(null, null, null);
         }
-        if(isNull(account)) {
-            account = this.account.getAccount();
-        }
-        return new AccountInfo(name,bank,account);
+        this.account.updateInfo(name, bank, account);
     }
 }

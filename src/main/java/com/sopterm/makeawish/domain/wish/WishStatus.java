@@ -1,4 +1,4 @@
-package com.sopterm.makeawish.common.message;
+package com.sopterm.makeawish.domain.wish;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum WishStatus {
-    BEFORE,
-    WHILE,
-    END;
+    BEFORE, WHILE, END
 }

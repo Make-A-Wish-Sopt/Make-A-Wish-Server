@@ -2,7 +2,6 @@ package com.sopterm.makeawish.service;
 
 import static com.sopterm.makeawish.common.Util.*;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
-import static com.sopterm.makeawish.common.message.WishStatus.*;
 import static java.util.Objects.*;
 
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.sopterm.makeawish.common.message.WishStatus;
 import com.sopterm.makeawish.dto.wish.*;
 
 import org.jsoup.Jsoup;
@@ -54,48 +52,12 @@ public class WishService {
 		return wishRepository.save(wish).getId();
 	}
 
-	@Transactional
-	public UserCurrentWishResponseDTO updateUserMainWish(Long userId, UserWishUpdateRequestDTO request) {
-		val wisher = getUser(userId);
-		val userWish = getUserWish(userId);
-		val status = checkUpdatableDate(wisher, userWish);
-		if(status.equals(END)) {
-			throw new IllegalArgumentException(NOT_CURRENT_WISH.getMessage());
-		}
-		if (status.equals(BEFORE)) {
-			userWish.updateWish(
-					nonNull(request.startDate()) ? convertToTime(request.startDate()) : null,
-					nonNull(request.endDate()) ? convertToTime(request.endDate()) : null,
-					request.phone());
-		} else if(status.equals(WHILE)) {
-			userWish.updateWish(null, null, request.phone());
-		}
-		wisher.updateMemberProfile(request.name(), request.bankName(), request.account(), request.phone());
-		return UserCurrentWishResponseDTO.from(userWish, wisher);
-	}
-
 	public WishResponseDTO findWish(Long wishId) throws AccessDeniedException {
 		val wish = getWish(wishId);
 		if (wish.getEndAt().isBefore(LocalDateTime.now())) {
 			throw new AccessDeniedException(EXPIRE_WISH.getMessage());
 		}
 		return WishResponseDTO.from(wish);
-	}
-
-	public UserCurrentWishResponseDTO getUserMainWish(Long userId) {
-		val wisher = getUser(userId);
-		if (!wishRepository.existsWishByWisher(wisher)) {
-			throw new IllegalArgumentException(NO_WISH.getMessage());
-		}
-		val wish = wishRepository.findMainWish(wisher, 0).orElseThrow(() -> new IllegalArgumentException(EXPIRE_WISH.getMessage()));
-		return nonNull(wish) ? UserCurrentWishResponseDTO.from(wish, wisher) : null;
-	}
-
-	public Wish getUserWish(Long userId) {
-		if(!wishRepository.existsWishByWisher(getUser(userId))) {
-			throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
-		}
-		return wishRepository.findMainWish(getUser(userId), 0).orElse(null);
 	}
 
 	public MainWishResponseDTO findMainWish(Long userId) {
@@ -135,17 +97,6 @@ public class WishService {
 	public WishesResponseDTO findWishes(Long userId) {
 		val wishes = wishRepository.findByWisherOrderByStartAtDesc(getUser(userId));
 		return WishesResponseDTO.of(wishes);
-	}
-
-	private WishStatus checkUpdatableDate(User wisher, Wish userWish) {
-		val now = LocalDateTime.now();
-		if (userWish.getEndAt().isBefore(now)) {
-			return END;
-		}
-		else if (userWish.getEndAt().isAfter(now) && userWish.getStartAt().isBefore(now)) {
-			return WHILE;
-		}
-		return BEFORE;
 	}
 
 	private User getUser(Long userId) {
