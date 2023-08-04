@@ -52,14 +52,13 @@ public class WishRepositoryImpl implements WishCustomRepository {
 	}
 
 	@Override
-	public Optional<Wish> findWishIsNowAvailable(User wisher) {
+	public Optional<Wish> findWishIsUpdatable(User wisher) {
 		val now = getNowDate(LocalDateTime.now());
 		return Optional.ofNullable(queryFactory
 				.selectFrom(wish)
 				.where(
 						wish.wisher.eq(wisher),
-						wish.endAt.after(now),
-						wish.startAt.before(now)
+						wish.startAt.before(now).and(wish.endAt.after(now))
 				)
 				.fetchFirst());
 	}
