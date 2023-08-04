@@ -123,6 +123,6 @@ public class WishService {
 
 	private boolean isDeletable(User user, Long wishId) {
 		val wish = getWish(wishId);
-		return wish.getWisher().equals(user) && wish.getStatus().equals(WishStatus.END);
+		return wish.getWisher().equals(user) && wish.getStatus(EXPIRY_DAY).equals(WishStatus.END);
 	}
 }

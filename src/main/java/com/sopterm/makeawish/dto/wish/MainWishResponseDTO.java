@@ -35,13 +35,13 @@ public record MainWishResponseDTO(
 			.dayCount(getRemainDay(wish))
 			.price(getPriceAppliedFee(wish.getTotalPrice()))
 			.percent(getPricePercent(wish.getTotalPrice(), wish.getPresentPrice()))
-			.status(wish.getStatus())
+			.status(wish.getStatus(0))
 			.build();
 	}
 
 	private static long getRemainDay(Wish wish) {
 		val now = LocalDateTime.now();
-		return wish.getStatus().equals(BEFORE)
+		return wish.getStatus(0).equals(BEFORE)
 			? ChronoUnit.DAYS.between(now, wish.getStartAt())
 			: ChronoUnit.DAYS.between(now, wish.getEndAt());
 	}

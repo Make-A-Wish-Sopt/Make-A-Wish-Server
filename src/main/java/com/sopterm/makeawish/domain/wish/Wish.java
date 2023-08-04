@@ -78,11 +78,11 @@ public class Wish extends BaseEntity {
         this.totalPrice += price;
     }
 
-    public WishStatus getStatus() {
+    public WishStatus getStatus(int expiryDay) {
         val now = LocalDateTime.now();
         if (this.startAt.isAfter(now)) {
             return BEFORE;
-        } else if (this.startAt.isBefore(now) && this.endAt.isAfter(now)) {
+        } else if (this.startAt.isBefore(now) && this.endAt.plusDays(expiryDay).isAfter(now)) {
             return WHILE;
         } else {
             return END;
