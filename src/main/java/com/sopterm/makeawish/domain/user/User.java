@@ -97,6 +97,7 @@ public class User {
         if(isNull(account)) {
             account = this.account.getAccount();
         }
-        return new AccountInfo(name,bank,account);
+        this.account = new AccountInfo(name,bank,account);
+        return this.account;
     }
 }
