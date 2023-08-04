@@ -87,7 +87,7 @@ public class User {
         this.account = updateAccount(name,bank,account);
     }
 
-    private AccountInfo updateAccount(String name, String bank, String account) {
+    public AccountInfo updateAccount(String name, String bank, String account) {
         if(isNull(name)) {
             name = this.account.getName();
         }
