@@ -47,10 +47,6 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    private LocalDateTime birthStartAt;
-
-    private LocalDateTime birthEndAt;
-
     @Embedded
     private AccountInfo account;
 
@@ -74,14 +70,10 @@ public class User {
     }
 
     public void updateMemberProfile(
-            LocalDateTime birthStartAt,
-            LocalDateTime birthEndAt,
             String name,
             String bank,
             String account,
             String phoneNumber) {
-        this.birthEndAt = isNull(birthEndAt) ? this.birthEndAt : birthEndAt;
-        this.birthStartAt = isNull(birthStartAt) ? this.birthStartAt : birthStartAt;
         this.phoneNumber = isNull(phoneNumber) ? this.phoneNumber : phoneNumber;
         this.nickname = isNull(name) ? this.nickname : name;
         this.account = updateAccount(name,bank,account);
