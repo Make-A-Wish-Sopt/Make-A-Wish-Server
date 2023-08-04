@@ -1,4 +1,4 @@
-package com.sopterm.makeawish.common.message;
+package com.sopterm.makeawish.dto.wish;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

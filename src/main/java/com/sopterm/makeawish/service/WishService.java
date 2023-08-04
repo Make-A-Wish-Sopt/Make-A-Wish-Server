@@ -2,7 +2,7 @@ package com.sopterm.makeawish.service;
 
 import static com.sopterm.makeawish.common.Util.*;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
-import static com.sopterm.makeawish.common.message.WishStatus.*;
+import static com.sopterm.makeawish.dto.wish.WishStatus.*;
 import static java.util.Objects.*;
 
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.sopterm.makeawish.common.message.WishStatus;
+import com.sopterm.makeawish.dto.wish.WishStatus;
 import com.sopterm.makeawish.dto.wish.*;
 
 import org.jsoup.Jsoup;
