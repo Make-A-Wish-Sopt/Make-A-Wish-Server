@@ -41,8 +41,6 @@ public class Wish extends BaseEntity {
 
     private LocalDateTime endAt;
 
-    private String phoneNumber;
-
     private int presentPrice;
 
     private int totalPrice;
@@ -56,14 +54,13 @@ public class Wish extends BaseEntity {
 
     @Builder
     public Wish(String title, String presentImageUrl, String hint, String initial, LocalDateTime startAt,
-                LocalDateTime endAt, String phoneNumber, int presentPrice, User wisher) {
+                LocalDateTime endAt, int presentPrice, User wisher) {
         this.title = title;
         this.presentImageUrl = presentImageUrl;
         this.hint = hint;
         this.initial = initial;
         this.startAt = startAt;
         this.endAt = endAt;
-        this.phoneNumber = phoneNumber;
         this.presentPrice = presentPrice;
         this.totalPrice = 0;
         setWisher(wisher);
@@ -98,12 +95,6 @@ public class Wish extends BaseEntity {
         }
         if (nonNull(endAt)) {
             this.endAt = endAt;
-        }
-    }
-
-    public void updatePhoneNumber(String phoneNumber) {
-        if (nonNull(phoneNumber)) {
-            this.phoneNumber = phoneNumber;
         }
     }
 }

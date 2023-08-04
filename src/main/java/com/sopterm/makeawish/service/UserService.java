@@ -42,7 +42,6 @@ public class UserService {
 			wish.updateTerm(startDate, endDate);
 		}
 		if (status.equals(BEFORE) || status.equals(WHILE)) {
-			wish.updatePhoneNumber(request.phone());
 			wisher.updateProfile(request.name(), request.bankName(), request.account(), request.phone());
 		}
 

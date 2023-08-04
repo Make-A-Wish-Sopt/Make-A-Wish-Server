@@ -70,15 +70,20 @@ public class User {
     }
 
     public void updateProfile(String name, String bank, String account, String phoneNumber) {
-        this.phoneNumber = isNull(phoneNumber) ? this.phoneNumber : phoneNumber;
-        this.nickname = isNull(name) ? this.nickname : name;
-        this.account = updateAccount(name,bank,account);
+        updatePhoneNumber(phoneNumber);
+        updateAccount(name, bank, account);
     }
 
-    private AccountInfo updateAccount(String name, String bank, String account) {
+    public void updatePhoneNumber(String phoneNumber) {
+        if (nonNull(phoneNumber)) {
+            this.phoneNumber = phoneNumber;
+        }
+    }
+
+    private void updateAccount(String name, String bank, String account) {
         if (isNull(this.account)) {
             this.account = new AccountInfo(null, null, null);
         }
-        return this.account.updateInfo(name, bank, account);
+        this.account.updateInfo(name, bank, account);
     }
 }
