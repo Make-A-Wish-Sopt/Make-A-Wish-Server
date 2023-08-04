@@ -55,24 +55,24 @@ public class WishService {
 	}
 
 	@Transactional
-	public UserCurrentWishResponseDTO updateWish(Long userId, UserWishUpdateRequestDTO request) {
+	public UserCurrentWishResponseDTO updateUserMainWish(Long userId, UserWishUpdateRequestDTO request) {
 		val wisher = getUser(userId);
 		val userWish = getUserWish(userId);
 		val status = checkUpdatableDate(wisher, userWish);
 		if (status.equals(BEFORE)) {
 			wisher.updateMemberProfile(
-					nonNull(request.startDate()) ? convertToTime(request.startDate()) : null,
-					nonNull(request.endDate()) ? convertToTime(request.endDate()) : null,
-					request.name(), request.bankName(), request.account(), request.phone());
+				nonNull(request.startDate()) ? convertToTime(request.startDate()) : null,
+				nonNull(request.endDate()) ? convertToTime(request.endDate()) : null,
+				request.name(), request.bankName(), request.account(), request.phone());
 			userWish.updateWish(
-					nonNull(request.startDate()) ? convertToTime(request.startDate()) : null,
-					nonNull(request.endDate()) ? convertToTime(request.endDate()) : null,
-					request.phone());
+				nonNull(request.startDate()) ? convertToTime(request.startDate()) : null,
+				nonNull(request.endDate()) ? convertToTime(request.endDate()) : null,
+				request.phone());
 		} else if(status.equals(WHILE)) {
 			wisher.updateMemberProfile(
-					null, null,
-					request.name(), request.bankName(),
-					request.account(), request.phone());
+				null, null,
+				request.name(), request.bankName(),
+				request.account(), request.phone());
 			userWish.updateWish(null, null, request.phone());
 		} else if(status.equals(END)) {
 			throw new IllegalArgumentException(NOT_CURRENT_WISH.getMessage());
@@ -88,7 +88,7 @@ public class WishService {
 		return WishResponseDTO.from(wish);
 	}
 
-	public UserCurrentWishResponseDTO getCurrentUserWish(Long userId) {
+	public UserCurrentWishResponseDTO getUserMainWish(Long userId) {
 		val wisher = getUser(userId);
 		if (!wishRepository.existsWishByWisher(wisher)) {
 			throw new IllegalArgumentException(NO_WISH.getMessage());

@@ -31,7 +31,7 @@ public class UserController {
         @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
         @RequestBody UserWishUpdateRequestDTO requestDTO
     ) {
-        val wish = wishService.updateWish(memberDetails.getId(), requestDTO);
+        val wish = wishService.updateUserMainWish(memberDetails.getId(), requestDTO);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_UPDATE_USER_INFO.getMessage(), wish));
     }
 
@@ -40,7 +40,7 @@ public class UserController {
     public ResponseEntity<ApiResponse> getUserMainWish(
         @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
     ) {
-        val response = wishService.getCurrentUserWish(memberDetails.getId());
+        val response = wishService.getUserMainWish(memberDetails.getId());
         return nonNull(response)
                 ? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_INFO.getMessage(), response))
                 : ResponseEntity.ok(ApiResponse.fail(EXPIRED_BIRTHDAY_WISH.getMessage()));
