@@ -75,10 +75,7 @@ public class WishService {
 	public UserCurrentWishResponseDTO getCurrentUserWish(Long userId) {
 		val wisher = getUser(userId);
 		if (!wishRepository.existsWishByWisher(wisher)) {
-			throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
-		}
-		if (!nonNull(wishRepository.findWishIsNowAvailable(wisher))) {
-			throw new IllegalArgumentException(EXPIRE_WISH.getMessage());
+			throw new IllegalArgumentException(NO_WISH.getMessage());
 		}
 		val wish = wishRepository
 				.findFirstByWisherOrderByEndAtDesc(getUser(userId)).orElse(null);
