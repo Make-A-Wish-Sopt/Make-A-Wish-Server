@@ -39,10 +39,12 @@ public class WishService {
 	@Transactional
 	public Long createWish(Long userId, WishRequestDTO requestDTO) {
 		val wisher = getUser(userId);
+		if (wishRepository.findMainWish(wisher, EXPIRY_DAY).isPresent()) {
+			throw new IllegalStateException(EXIST_MAIN_WISH.getMessage());
+		}
 		val from = convertToTime(requestDTO.startDate());
 		val to = convertToTime(requestDTO.endDate());
-		validateWishDate(wisher, from , to);
-
+		validateWishDate(wisher, from, to);
 		val wish = requestDTO.toEntity(wisher);
 		return wishRepository.save(wish).getId();
 	}

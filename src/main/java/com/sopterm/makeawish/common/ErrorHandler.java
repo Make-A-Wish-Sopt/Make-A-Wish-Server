@@ -68,4 +68,10 @@ public class ErrorHandler {
 		val response = ApiResponse.fail(FAULT_DATE_FORMATTER.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
+
+	@ExceptionHandler(IllegalStateException.class)
+	public ResponseEntity<ApiResponse> illegalStateException(IllegalStateException exception) {
+		val response = ApiResponse.fail(exception.getMessage());
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
 }
