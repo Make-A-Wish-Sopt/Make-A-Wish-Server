@@ -2,6 +2,7 @@ package com.sopterm.makeawish.controller;
 
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.user.InternalMemberDetails;
+import com.sopterm.makeawish.dto.user.UserAccountUpdateRequestDTO;
 import com.sopterm.makeawish.dto.user.UserWishUpdateRequestDTO;
 import com.sopterm.makeawish.service.UserService;
 
@@ -9,12 +10,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import static com.sopterm.makeawish.common.message.ErrorMessage.*;
+import static com.sopterm.makeawish.common.message.ErrorMessage.EXPIRED_BIRTHDAY_WISH;
+import static com.sopterm.makeawish.common.message.ErrorMessage.NO_EXIST_USER_ACCOUNT;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import static java.util.Objects.nonNull;
 
@@ -46,5 +49,27 @@ public class UserController {
         return nonNull(response)
                 ? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_INFO.getMessage(), response))
                 : ResponseEntity.ok(ApiResponse.fail(EXPIRED_BIRTHDAY_WISH.getMessage()));
+    }
+
+    @Operation(summary = "유저 계좌 정보 가져오기")
+    @GetMapping("/account")
+    public ResponseEntity<ApiResponse> getUserAccount(
+            @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
+    ) {
+        val response = userService.getUserAccount(memberDetails.getId());
+        return nonNull(response)
+                ? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_ACCOUNT_INFO.getMessage(), response))
+                : ResponseEntity.ok(ApiResponse.fail(NO_EXIST_USER_ACCOUNT.getMessage()));
+    }
+
+    @Operation(summary = "유저 계좌 정보 수정")
+    @PutMapping("/account")
+    public ResponseEntity<ApiResponse> updateUserAccount(
+            @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
+            @RequestBody UserAccountUpdateRequestDTO requestDTO
+    ) {
+        val response = userService.updateUserAccount(memberDetails.getId(), requestDTO);
+        return ResponseEntity
+                .ok(ApiResponse.success(SUCCESS_UPDATE_USER_ACCOUNT_INFO.getMessage(), response));
     }
 }

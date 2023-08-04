@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
+import com.sopterm.makeawish.dto.user.UserAccountResponseDTO;
+import com.sopterm.makeawish.dto.user.UserAccountUpdateRequestDTO;
 import com.sopterm.makeawish.dto.user.UserWishUpdateResponseDTO;
 import com.sopterm.makeawish.dto.user.UserWishUpdateRequestDTO;
 import com.sopterm.makeawish.repository.UserRepository;
@@ -52,6 +54,24 @@ public class UserService {
 		val wisher = getUser(userId);
 		val wish =  getUserMainWish(wisher);
 		return UserWishUpdateResponseDTO.of(wisher, wish);
+	}
+
+	public UserAccountResponseDTO getUserAccount(Long userId) {
+		val wisher = getUser(userId);
+		return nonNull(wisher.getAccount()) ? UserAccountResponseDTO.of(wisher) : null;
+	}
+
+	@Transactional
+	public UserAccountResponseDTO updateUserAccount(Long userId, UserAccountUpdateRequestDTO requestDTO) {
+		val wisher = getUser(userId);
+		if (isNull(requestDTO.accountInfo())) {
+			throw new IllegalArgumentException(NO_EXIST_USER_ACCOUNT.getMessage());
+		}
+		wisher.updateAccount(
+			requestDTO.accountInfo().getName(),
+			requestDTO.accountInfo().getBank(),
+			requestDTO.accountInfo().getAccount());
+		return UserAccountResponseDTO.of(wisher);
 	}
 
 	private User getUser(Long userId) {

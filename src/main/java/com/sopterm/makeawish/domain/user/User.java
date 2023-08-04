@@ -80,7 +80,7 @@ public class User {
         }
     }
 
-    private void updateAccount(String name, String bank, String account) {
+    public void updateAccount(String name, String bank, String account) {
         if (isNull(this.account)) {
             this.account = new AccountInfo(null, null, null);
         }
