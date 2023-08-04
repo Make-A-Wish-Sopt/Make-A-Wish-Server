@@ -16,6 +16,7 @@ public enum ErrorMessage {
 	INCORRECT_WISH("본인의 소원 링크가 아닙니다"),
 	EXPIRED_BIRTHDAY_WISH("현재 생일 주간이 아닙니다."),
 	PAST_WISH("소원 링크 주간은 과거로 설정할 수 없습니다."),
+	INVALID_TERM("시작 일자는 종료 일자보다 미래일 수 없습니다."),
 
 	/** user **/
 	INVALID_USER("인증되지 않은 회원입니다."),

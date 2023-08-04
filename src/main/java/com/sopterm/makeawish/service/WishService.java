@@ -41,13 +41,8 @@ public class WishService {
 		val wisher = getUser(userId);
 		val from = convertToTime(requestDTO.startDate());
 		val to = convertToTime(requestDTO.endDate());
-		val now = LocalDateTime.now();
-		if (from.isBefore(now) || to.isBefore(now)) {
-			throw new IllegalArgumentException(PAST_WISH.getMessage());
-		}
-		if (wishRepository.existsConflictWish(wisher, from, to, EXPIRY_DAY)) {
-			throw new IllegalArgumentException(EXIST_MAIN_WISH.getMessage());
-		}
+		validateWishDate(wisher, from , to);
+
 		val wish = requestDTO.toEntity(wisher);
 		return wishRepository.save(wish).getId();
 	}
@@ -134,6 +129,19 @@ public class WishService {
 	private User getUser(Long userId) {
 		return userRepository.findById(userId)
 				.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
+	}
+
+	private void validateWishDate(User wisher, LocalDateTime from, LocalDateTime to) {
+		val now = LocalDateTime.now();
+		if (from.isBefore(now) || to.isBefore(now)) {
+			throw new IllegalArgumentException(PAST_WISH.getMessage());
+		}
+		if (from.isAfter(to)) {
+			throw new IllegalArgumentException(INVALID_TERM.getMessage());
+		}
+		if (wishRepository.existsConflictWish(wisher, from, to, EXPIRY_DAY)) {
+			throw new IllegalArgumentException(EXIST_MAIN_WISH.getMessage());
+		}
 	}
 
 	private List<Long> filterUserWishes(User user, List<Long> wishIds) {

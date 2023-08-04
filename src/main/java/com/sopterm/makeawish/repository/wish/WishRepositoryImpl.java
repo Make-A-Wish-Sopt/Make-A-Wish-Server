@@ -67,9 +67,7 @@ public class WishRepositoryImpl implements WishCustomRepository {
 	private BooleanBuilder conflictTerm(LocalDateTime from, LocalDateTime to, int expiryDay) {
 		val booleanBuilder = new BooleanBuilder();
 		booleanBuilder.or(wish.startAt.between(from, to));
-		booleanBuilder.or(wish.endAt.between(from, to));
-		booleanBuilder.or(wish.endAt.after(from.minusDays(expiryDay)));
-		booleanBuilder.or(wish.endAt.eq(from.minusDays(expiryDay)));
+		booleanBuilder.or(wish.endAt.between(from.minusDays(expiryDay), to));
 		return booleanBuilder;
 	}
 }
