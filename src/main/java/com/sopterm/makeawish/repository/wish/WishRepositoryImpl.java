@@ -51,18 +51,6 @@ public class WishRepositoryImpl implements WishCustomRepository {
 			.fetchFirst() != null;
 	}
 
-	@Override
-	public Optional<Wish> findWishIsUpdatable(User wisher) {
-		val now = getNowDate(LocalDateTime.now());
-		return Optional.ofNullable(queryFactory
-				.selectFrom(wish)
-				.where(
-						wish.wisher.eq(wisher),
-						wish.startAt.before(now).and(wish.endAt.after(now))
-				)
-				.fetchFirst());
-	}
-
 	private BooleanBuilder conflictTerm(LocalDateTime from, LocalDateTime to, int expiryDay) {
 		val booleanBuilder = new BooleanBuilder();
 		booleanBuilder.or(wish.startAt.between(from, to));
