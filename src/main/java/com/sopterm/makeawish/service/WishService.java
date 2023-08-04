@@ -93,7 +93,7 @@ public class WishService {
 	}
 
 	public WishesResponseDTO findWishes(Long userId) {
-		val wishes = wishRepository.findByWisherOrderByStartAtDesc(getUser(userId));
+		val wishes = wishRepository.findEndWishes(getUser(userId), EXPIRY_DAY);
 		return WishesResponseDTO.of(wishes);
 	}
 
