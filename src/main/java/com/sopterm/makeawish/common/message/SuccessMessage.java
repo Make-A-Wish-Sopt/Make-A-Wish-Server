@@ -14,6 +14,8 @@ public enum SuccessMessage {
 	/** user **/
 	SUCCESS_UPDATE_USER_INFO("유저 소원 정보 수정 성공"),
 	SUCCESS_GET_USER_INFO("유저 소원 정보 가져오기 성공"),
+	SUCCESS_GET_USER_ACCOUNT_INFO("유저 계좌정보 가져오기 성공"),
+	SUCCESS_UPDATE_USER_ACCOUNT_INFO("유저 계좌정보 수정 성공"),
 
 	/** wish **/
 	SUCCESS_CREATE_WISH("소원 링크 생성 성공"),
