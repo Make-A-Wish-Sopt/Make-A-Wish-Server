@@ -9,7 +9,6 @@ import com.sopterm.makeawish.domain.wish.Wish;
 public interface WishCustomRepository {
 
 	Optional<Wish> findMainWish(User wisher, int expiryDay);
-	Optional<Wish> findMainWish(User wisher);
 	boolean existsConflictWish(User wisher, LocalDateTime startAt, LocalDateTime endAt, int expiryDay);
 	Optional<Wish> findWishIsUpdatable(User wisher);
 }

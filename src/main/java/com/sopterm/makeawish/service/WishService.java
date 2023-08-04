@@ -77,18 +77,15 @@ public class WishService {
 		if (!wishRepository.existsWishByWisher(wisher)) {
 			throw new IllegalArgumentException(NO_WISH.getMessage());
 		}
-		val wish = wishRepository.findMainWish(wisher);
-		if (wish.isEmpty()) {
-			throw new IllegalArgumentException(EXPIRE_WISH.getMessage());
-		}
-		return UserCurrentWishResponseDTO.from(wish.get(), wisher);
+		val wish = wishRepository.findMainWish(wisher, 0).orElseThrow(() -> new IllegalArgumentException(EXPIRE_WISH.getMessage()));
+		return nonNull(wish) ? UserCurrentWishResponseDTO.from(wish, wisher) : null;
 	}
 
 	public Wish getUserWish(Long userId) {
 		if(!wishRepository.existsWishByWisher(getUser(userId))) {
 			throw new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage());
 		}
-		return wishRepository.findMainWish(getUser(userId)).orElse(null);
+		return wishRepository.findMainWish(getUser(userId), 0).orElse(null);
 	}
 
 	public MainWishResponseDTO findMainWish(Long userId) {

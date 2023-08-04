@@ -35,19 +35,6 @@ public class WishRepositoryImpl implements WishCustomRepository {
 		);
 	}
 
-	@Override
-	public Optional<Wish> findMainWish(User wisher) {
-		val now = getNowDate(LocalDateTime.now());
-		return Optional.ofNullable(queryFactory
-				.selectFrom(wish)
-				.where(
-						wish.wisher.eq(wisher),
-						wish.endAt.after(now)
-				)
-				.fetchFirst()
-		);
-	}
-
 	private LocalDateTime getNowDate(LocalDateTime now) {
 		return LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0);
 	}
