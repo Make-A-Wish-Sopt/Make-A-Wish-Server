@@ -21,7 +21,6 @@ public class Util {
 	}
 
 	public static LocalDateTime convertToTime(String date) {
-		if(Objects.isNull(date)) return null;
 		val instant = Instant
 			.from(DateTimeFormatter.ISO_DATE_TIME.parse(date))
 			.atZone(ZoneId.of("Asia/Seoul"));

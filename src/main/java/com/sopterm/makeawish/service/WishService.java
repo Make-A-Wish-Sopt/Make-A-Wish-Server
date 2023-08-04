@@ -59,13 +59,22 @@ public class WishService {
 		val wisher = getUser(userId);
 		val userWish = getUserWish(userId);
 		val status = checkUpdatableDate(wisher, userWish);
-		if (status == BEFORE) {
-			wisher.updateMemberProfile(convertToTime(request.startDate()), convertToTime(request.endDate()), request.name(), request.bankName(), request.account(), request.phone());
-			userWish.updateWish(convertToTime(request.startDate()), convertToTime(request.endDate()), request.phone());
-		} else if(status == WHILE) {
-			wisher.updateMemberProfile(null, null, request.name(), request.bankName(), request.account(), request.phone());
+		if (status.equals(BEFORE)) {
+			wisher.updateMemberProfile(
+					nonNull(request.startDate()) ? convertToTime(request.startDate()) : null,
+					nonNull(request.endDate()) ? convertToTime(request.endDate()) : null,
+					request.name(), request.bankName(), request.account(), request.phone());
+			userWish.updateWish(
+					nonNull(request.startDate()) ? convertToTime(request.startDate()) : null,
+					nonNull(request.endDate()) ? convertToTime(request.endDate()) : null,
+					request.phone());
+		} else if(status.equals(WHILE)) {
+			wisher.updateMemberProfile(
+					null, null,
+					request.name(), request.bankName(),
+					request.account(), request.phone());
 			userWish.updateWish(null, null, request.phone());
-		} else if(status == END) {
+		} else if(status.equals(END)) {
 			throw new IllegalArgumentException(NOT_CURRENT_WISH.getMessage());
 		}
 		return UserCurrentWishResponseDTO.from(userWish, wisher);
