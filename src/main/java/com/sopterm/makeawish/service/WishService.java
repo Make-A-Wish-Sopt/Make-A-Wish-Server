@@ -9,6 +9,7 @@ import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.sopterm.makeawish.domain.wish.WishStatus;
 import com.sopterm.makeawish.dto.wish.*;
 
 import org.jsoup.Jsoup;
@@ -116,7 +117,12 @@ public class WishService {
 
 	private List<Long> filterUserWishes(User user, List<Long> wishIds) {
 		return wishIds.stream()
-			.filter(wishId -> getWish(wishId).getWisher().equals(user))
+			.filter(wishId -> isDeletable(user, wishId))
 			.toList();
+	}
+
+	private boolean isDeletable(User user, Long wishId) {
+		val wish = getWish(wishId);
+		return wish.getWisher().equals(user) && wish.getStatus().equals(WishStatus.END);
 	}
 }
