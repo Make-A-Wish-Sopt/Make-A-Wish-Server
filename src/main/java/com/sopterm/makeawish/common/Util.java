@@ -19,9 +19,13 @@ public class Util {
 		return (getPriceAppliedFee(totalPrice) / presentPrice) * 100;
 	}
 
-	public static LocalDateTime convertToTime(String date) {
+	public static LocalDateTime convertToDate(String date) {
+		return convertToTime(date).toLocalDate().atStartOfDay();
+	}
+
+	private static LocalDateTime convertToTime(String dateTime) {
 		val instant = Instant
-			.from(DateTimeFormatter.ISO_DATE_TIME.parse(date))
+			.from(DateTimeFormatter.ISO_DATE_TIME.parse(dateTime))
 			.atZone(ZoneId.of("Asia/Seoul"));
 		return LocalDateTime.from(instant);
 	}

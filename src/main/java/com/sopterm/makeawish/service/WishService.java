@@ -39,8 +39,8 @@ public class WishService {
 	@Transactional
 	public Long createWish(Long userId, WishRequestDTO requestDTO) {
 		val wisher = getUser(userId);
-		val from = convertToTime(requestDTO.startDate());
-		val to = convertToTime(requestDTO.endDate());
+		val from = convertToDate(requestDTO.startDate());
+		val to = convertToDate(requestDTO.endDate());
 		validateWishDate(wisher, from , to);
 
 		val wish = requestDTO.toEntity(wisher);
@@ -100,7 +100,7 @@ public class WishService {
 	}
 
 	private void validateWishDate(User wisher, LocalDateTime from, LocalDateTime to) {
-		val now = LocalDateTime.now();
+		val now = LocalDateTime.now().toLocalDate().atStartOfDay();
 		if (from.isBefore(now) || to.isBefore(now)) {
 			throw new IllegalArgumentException(PAST_WISH.getMessage());
 		}
