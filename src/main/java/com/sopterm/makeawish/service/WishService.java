@@ -43,9 +43,9 @@ public class WishService {
 		if (wishRepository.findMainWish(wisher, EXPIRY_DAY).isPresent()) {
 			throw new IllegalStateException(EXIST_MAIN_WISH.getMessage());
 		}
-		val from = convertToTime(requestDTO.startDate());
-		val to = convertToTime(requestDTO.endDate());
-		validateWishDate(wisher, from, to);
+		val from = convertToDate(requestDTO.startDate());
+		val to = convertToDate(requestDTO.endDate());
+		validateWishDate(wisher, from , to);
 		val wish = requestDTO.toEntity(wisher);
 		return wishRepository.save(wish).getId();
 	}
@@ -103,7 +103,7 @@ public class WishService {
 	}
 
 	private void validateWishDate(User wisher, LocalDateTime from, LocalDateTime to) {
-		val now = LocalDateTime.now();
+		val now = LocalDateTime.now().toLocalDate().atStartOfDay();
 		if (from.isBefore(now) || to.isBefore(now)) {
 			throw new IllegalArgumentException(PAST_WISH.getMessage());
 		}

@@ -39,8 +39,8 @@ public class UserService {
 			throw new IllegalArgumentException(NOT_CURRENT_WISH.getMessage());
 		}
 		if (status.equals(BEFORE)) {
-			val startDate = nonNull(request.startDate()) ? convertToTime(request.startDate()) : null;
-			val endDate = nonNull(request.endDate()) ? convertToTime(request.endDate()) : null;
+			val startDate = nonNull(request.startDate()) ? convertToDate(request.startDate()) : null;
+			val endDate = nonNull(request.endDate()) ? convertToDate(request.endDate()) : null;
 			wish.updateTerm(startDate, endDate);
 		}
 		if (status.equals(BEFORE) || status.equals(WHILE)) {

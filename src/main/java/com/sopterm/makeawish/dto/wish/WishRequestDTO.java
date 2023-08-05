@@ -24,8 +24,8 @@ public record WishRequestDTO(
 			.title(title)
 			.hint(hint)
 			.initial(initial)
-			.startAt(convertToTime(startDate))
-			.endAt(convertToTime(endDate))
+			.startAt(convertToDate(startDate))
+			.endAt(convertToDate(endDate))
 			.wisher(wisher)
 			.build();
 	}
