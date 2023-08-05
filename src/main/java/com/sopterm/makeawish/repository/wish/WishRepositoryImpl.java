@@ -3,6 +3,7 @@ package com.sopterm.makeawish.repository.wish;
 import static com.sopterm.makeawish.domain.wish.QWish.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -28,7 +29,6 @@ public class WishRepositoryImpl implements WishCustomRepository {
 			.from(wish)
 			.where(
 				wish.wisher.eq(wisher),
-				wish.startAt.loe(now),
 				wish.endAt.goe(now.minusDays(expiryDay))
 			)
 			.fetchFirst()
@@ -49,6 +49,20 @@ public class WishRepositoryImpl implements WishCustomRepository {
 				conflictTerm(startAt, endAt, expiryDay)
 			)
 			.fetchFirst() != null;
+	}
+
+	@Override
+	public List<Wish> findEndWishes(User wisher, int expiryDay) {
+		val now = LocalDateTime.now();
+		return queryFactory
+			.select(wish)
+			.from(wish)
+			.where(
+				wish.wisher.eq(wisher),
+				wish.endAt.before(now.minusDays(expiryDay))
+			)
+			.orderBy(wish.startAt.desc())
+			.fetch();
 	}
 
 	private BooleanBuilder conflictTerm(LocalDateTime from, LocalDateTime to, int expiryDay) {

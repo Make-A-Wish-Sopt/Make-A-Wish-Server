@@ -34,7 +34,7 @@ public class UserService {
 		val wisher = getUser(userId);
 		val wish =  getUserMainWish(wisher);
 
-		val status = wish.getStatus();
+		val status = wish.getStatus(0);
 		if (status.equals(END)) {
 			throw new IllegalArgumentException(NOT_CURRENT_WISH.getMessage());
 		}
