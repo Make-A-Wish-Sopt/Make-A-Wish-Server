@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import lombok.val;
 
@@ -19,7 +20,7 @@ public class Util {
 		return (getPriceAppliedFee(totalPrice) / presentPrice) * 100;
 	}
 
-	public static LocalDateTime convertToTime(String date) {
+	public static LocalDateTime convertToTime(String date) throws DateTimeParseException {
 		val instant = Instant
 			.from(DateTimeFormatter.ISO_DATE_TIME.parse(date))
 			.atZone(ZoneId.of("Asia/Seoul"));

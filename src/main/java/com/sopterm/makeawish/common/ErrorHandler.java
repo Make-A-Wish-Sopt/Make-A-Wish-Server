@@ -3,6 +3,7 @@ package com.sopterm.makeawish.common;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 
 import java.nio.file.AccessDeniedException;
+import java.time.format.DateTimeParseException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sopterm.makeawish.exception.WrongAccessTokenException;
@@ -60,5 +61,17 @@ public class ErrorHandler {
 	public ResponseEntity<ApiResponse> accessDeniedException(AccessDeniedException exception) {
 		val response = ApiResponse.fail(exception.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+	}
+
+	@ExceptionHandler(DateTimeParseException.class)
+	public ResponseEntity<ApiResponse> dateTimeParseException() {
+		val response = ApiResponse.fail(FAULT_DATE_FORMATTER.getMessage());
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(IllegalStateException.class)
+	public ResponseEntity<ApiResponse> illegalStateException(IllegalStateException exception) {
+		val response = ApiResponse.fail(exception.getMessage());
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 }
