@@ -2,7 +2,7 @@ package com.sopterm.makeawish.controller;
 
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.user.InternalMemberDetails;
-import com.sopterm.makeawish.dto.user.UserAccountUpdateRequestDTO;
+import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
 import com.sopterm.makeawish.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,7 +43,7 @@ public class UserController {
     @PutMapping("/account")
     public ResponseEntity<ApiResponse> updateUserAccount(
             @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
-            @RequestBody UserAccountUpdateRequestDTO requestDTO
+            @RequestBody UserAccountRequestDTO requestDTO
     ) {
         val response = userService.updateUserAccount(memberDetails.getId(), requestDTO);
         return ResponseEntity

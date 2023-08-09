@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.dto.user.UserAccountResponseDTO;
-import com.sopterm.makeawish.dto.user.UserAccountUpdateRequestDTO;
+import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
 import com.sopterm.makeawish.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -28,15 +28,15 @@ public class UserService {
 	}
 
 	@Transactional
-	public UserAccountResponseDTO updateUserAccount(Long userId, UserAccountUpdateRequestDTO requestDTO) {
+	public UserAccountResponseDTO updateUserAccount(Long userId, UserAccountRequestDTO requestDTO) {
 		val wisher = getUser(userId);
 		if (isNull(requestDTO.accountInfo())) {
 			throw new IllegalArgumentException(NO_EXIST_USER_ACCOUNT.getMessage());
 		}
-		wisher.updateAccount(
-			requestDTO.accountInfo().getName(),
+		wisher.updateAccount(requestDTO.accountInfo().getName(),
 			requestDTO.accountInfo().getBank(),
 			requestDTO.accountInfo().getAccount());
+		wisher.updatePhoneNumber(requestDTO.phone());
 		return UserAccountResponseDTO.of(wisher);
 	}
 
