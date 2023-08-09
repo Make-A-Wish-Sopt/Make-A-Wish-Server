@@ -19,10 +19,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 
-import static com.sopterm.makeawish.common.ApiResponse.*;
+import static com.sopterm.makeawish.common.ApiResponse.success;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import static java.util.Objects.nonNull;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @Tag(name = "Wish", description = "유저 소원 API")
 @RestController
@@ -93,6 +93,16 @@ public class WishController {
 	) {
 		wishService.deleteWishes(memberDetails.getId(), requestDTO);
 		return ResponseEntity.ok(success(SUCCESS_DELETE_WISHES.getMessage()));
+	}
+
+	@Operation(summary = "소원 펀딩 중지")
+	@PatchMapping("/{wishId}")
+	public ResponseEntity<ApiResponse> stopWish(
+			@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
+			@PathVariable Long wishId
+	) throws AccessDeniedException {
+		wishService.stopWish(memberDetails.getId(), wishId);
+		return ResponseEntity.ok(success(SUCCESS_STOP_WISH.getMessage()));
 	}
 
 	private URI getURI(Long id) {

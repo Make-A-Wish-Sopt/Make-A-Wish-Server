@@ -125,4 +125,18 @@ public class WishService {
 		val wish = getWish(wishId);
 		return wish.getWisher().equals(user) && wish.getStatus(EXPIRY_DAY).equals(WishStatus.END);
 	}
+
+	@Transactional
+	public void stopWish(Long userId, Long wishId) throws AccessDeniedException {
+		val wish = getWish(wishId);
+
+		if(!wish.getWisher().getId().equals(userId))
+			throw new AccessDeniedException(FORBIDDEN.getMessage());
+
+		if(wish.getStartAt().isAfter(LocalDateTime.now())){
+			wishRepository.deleteById(wishId);
+		}else{
+			wish.updateTerm(wish.getStartAt(), LocalDateTime.now().minusDays(1));
+		}
+	}
 }
