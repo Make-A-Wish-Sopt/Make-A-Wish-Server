@@ -2,7 +2,7 @@ package com.sopterm.makeawish.controller;
 
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.user.InternalMemberDetails;
-import com.sopterm.makeawish.dto.user.UserWishUpdateRequestDTO;
+import com.sopterm.makeawish.dto.wish.UserWishUpdateRequestDTO;
 import com.sopterm.makeawish.dto.wish.WishIdRequestDTO;
 import com.sopterm.makeawish.dto.wish.WishRequestDTO;
 import com.sopterm.makeawish.service.WishService;
@@ -15,6 +15,7 @@ import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -36,6 +37,7 @@ public class WishController {
 
 	private final WishService wishService;
 
+	//TODO: 이미지 업로드 기능 구현 후 반영
 	@Operation(summary = "소원 링크 생성")
 	@PostMapping
 	public ResponseEntity<ApiResponse> createWish(
@@ -99,17 +101,19 @@ public class WishController {
 	}
 
 	@Operation(summary = "진행 중인 소원 수정", description = "수정되지 않은 정보는 null 또는 원래의 정보 그대로 전달")
-	@PutMapping("/main")
+	@PutMapping("/progress")
 	public ResponseEntity<ApiResponse> updateUserMainWish(
 		@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
+		@RequestParam(name = "imageFile", required = false) MultipartFile imageFile,
 		@RequestBody UserWishUpdateRequestDTO requestDTO
 	) {
-		val wish = wishService.updateUserMainWish(memberDetails.getId(), requestDTO);
+		val wish = wishService
+			.updateUserMainWish(memberDetails.getId(), imageFile, requestDTO);
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_UPDATE_USER_INFO.getMessage(), wish));
 	}
 
 	@Operation(summary = "진행 중인 소원 정보 조회")
-	@GetMapping("/main")
+	@GetMapping("/progress")
 	public ResponseEntity<ApiResponse> findUserMainWish(
 		@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
 	) {
