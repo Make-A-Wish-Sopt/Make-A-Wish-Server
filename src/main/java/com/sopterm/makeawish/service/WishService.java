@@ -127,14 +127,16 @@ public class WishService {
 	}
 
 	@Transactional
-	public void stopWish(Long userId, Long wishId) throws AccessDeniedException {
-		val wish = getWish(wishId);
+	public void stopWish(Long userId) throws AccessDeniedException {
+		val wish = wishRepository
+				.findMainWish(getUser(userId), EXPIRY_DAY)
+				.orElseThrow(() -> new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage()));
 
 		if(!wish.getWisher().getId().equals(userId))
 			throw new AccessDeniedException(FORBIDDEN.getMessage());
 
 		if(wish.getStartAt().isAfter(LocalDateTime.now())){
-			wishRepository.deleteById(wishId);
+			wishRepository.deleteById(wish.getId());
 		}else{
 			wish.updateTerm(wish.getStartAt(), LocalDateTime.now().minusDays(1));
 		}

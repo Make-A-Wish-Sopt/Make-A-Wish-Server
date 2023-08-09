@@ -96,12 +96,11 @@ public class WishController {
 	}
 
 	@Operation(summary = "소원 펀딩 중지")
-	@PatchMapping("/{wishId}")
+	@PatchMapping
 	public ResponseEntity<ApiResponse> stopWish(
-			@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
-			@PathVariable Long wishId
+			@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
 	) throws AccessDeniedException {
-		wishService.stopWish(memberDetails.getId(), wishId);
+		wishService.stopWish(memberDetails.getId());
 		return ResponseEntity.ok(success(SUCCESS_STOP_WISH.getMessage()));
 	}
 
