@@ -11,13 +11,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.sopterm.makeawish.domain.wish.WishStatus;
-import com.sopterm.makeawish.dto.user.UserWishUpdateRequestDTO;
-import com.sopterm.makeawish.dto.user.UserWishUpdateResponseDTO;
+import com.sopterm.makeawish.dto.wish.UserWishUpdateRequestDTO;
+import com.sopterm.makeawish.dto.wish.UserWishUpdateResponseDTO;
 import com.sopterm.makeawish.dto.wish.*;
 
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
@@ -100,13 +101,17 @@ public class WishService {
 		return WishesResponseDTO.of(wishes);
 	}
 
-
 	@Transactional
-	public UserWishUpdateResponseDTO updateUserMainWish(Long userId, UserWishUpdateRequestDTO request) {
+	public UserWishUpdateResponseDTO updateUserMainWish(
+		Long userId,
+		MultipartFile imageFile,
+		UserWishUpdateRequestDTO request
+	) {
 		val wisher = getUser(userId);
 		val wish =  getUserMainWish(wisher);
-
+		val imageUrl = nonNull(imageFile) ? "" : request.imageUrl(); //TODO: 이미지 업로드 기능 반영
 		val status = wish.getStatus(0);
+
 		if (status.equals(END)) {
 			throw new IllegalArgumentException(NOT_CURRENT_WISH.getMessage());
 		}
@@ -114,6 +119,7 @@ public class WishService {
 			val startDate = nonNull(request.startDate()) ? convertToDate(request.startDate()) : null;
 			val endDate = nonNull(request.endDate()) ? convertToDate(request.endDate()) : null;
 			wish.updateTerm(startDate, endDate);
+			wish.updateContent(imageUrl, request.price(), request.title(), request.hint(), request.initial());
 		}
 		if (status.equals(BEFORE) || status.equals(WHILE)) {
 			wisher.updateProfile(request.name(), request.bankName(), request.account(), request.phone());
