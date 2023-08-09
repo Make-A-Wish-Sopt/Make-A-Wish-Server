@@ -33,7 +33,8 @@ public class UserService {
 		if (isNull(requestDTO.accountInfo())) {
 			throw new IllegalArgumentException(NO_EXIST_USER_ACCOUNT.getMessage());
 		}
-		wisher.updateAccount(requestDTO.accountInfo().getName(),
+		wisher.updateAccount(
+			requestDTO.accountInfo().getName(),
 			requestDTO.accountInfo().getBank(),
 			requestDTO.accountInfo().getAccount());
 		wisher.updatePhoneNumber(requestDTO.phone());
