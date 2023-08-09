@@ -1,4 +1,4 @@
-package com.sopterm.makeawish.dto.user;
+package com.sopterm.makeawish.dto.wish;
 
 import lombok.Builder;
 
@@ -9,6 +9,11 @@ public record UserWishUpdateRequestDTO(
     String name,
     String bankName,
     String account,
-    String phone
+    String phone,
+	String imageUrl,
+	Integer price,
+	String title,
+	String hint,
+	String initial
 ) {
 }
