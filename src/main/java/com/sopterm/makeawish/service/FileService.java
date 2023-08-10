@@ -19,9 +19,8 @@ import static com.sopterm.makeawish.common.message.ErrorMessage.INCORRECT_IMAGE_
 public class FileService {
 
 	private final S3Presigner presigner;
-	public Map<String, String> getSignedUrl(String activeProfile, String imageBucketName, String fileName) {
+	public Map<String, String> getSignedUrl(String activeProfile, String imageBucketName, String imageBucketPath, String fileName) {
 
-		val imageBucketPath = "/image/wish/";
 		val regExp = "^(jpeg|png|gif|bmp)$";
 		val keyName = "/" + activeProfile + imageBucketPath + "%s-%s".formatted(UUID.randomUUID().toString(), fileName);
 		val splittedFileName = fileName.split("\\.");

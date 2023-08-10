@@ -27,6 +27,9 @@ public class FileController {
     private String activeProfile;
     @Value("${cloud.aws.bucket.image}")
     private String imageBucketName;
+    @Value("${cloud.aws.bucket.path}")
+    private String imageBucketPath;
+
     private final FileService fileService;
 
     @Operation(summary = "이미지 업로드를 위한 url 관련 API")
