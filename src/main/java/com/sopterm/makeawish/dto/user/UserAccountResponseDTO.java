@@ -7,11 +7,16 @@ import com.sopterm.makeawish.domain.user.User;
 import lombok.Builder;
 
 @Builder
-public record UserAccountResponseDTO(Long id, AccountInfo accountInfo) {
+public record UserAccountResponseDTO(
+	Long id,
+	AccountInfo accountInfo,
+	String phone
+) {
 	public static UserAccountResponseDTO of(User user) {
 		return UserAccountResponseDTO.builder()
 			.id(user.getId())
 			.accountInfo(getUserAccount(user))
+			.phone(user.getPhoneNumber())
 			.build();
 	}
 

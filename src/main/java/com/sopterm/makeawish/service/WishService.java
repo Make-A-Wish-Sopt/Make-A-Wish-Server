@@ -2,6 +2,7 @@ package com.sopterm.makeawish.service;
 
 import static com.sopterm.makeawish.common.Util.*;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
+import static com.sopterm.makeawish.domain.wish.WishStatus.*;
 import static java.util.Objects.*;
 
 import java.io.IOException;
@@ -10,11 +11,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.sopterm.makeawish.domain.wish.WishStatus;
+import com.sopterm.makeawish.dto.wish.UserWishUpdateRequestDTO;
+import com.sopterm.makeawish.dto.wish.UserWishUpdateResponseDTO;
 import com.sopterm.makeawish.dto.wish.*;
 
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
@@ -97,6 +101,39 @@ public class WishService {
 		return WishesResponseDTO.of(wishes);
 	}
 
+	@Transactional
+	public UserWishUpdateResponseDTO updateUserMainWish(
+		Long userId,
+		MultipartFile imageFile,
+		UserWishUpdateRequestDTO request
+	) {
+		val wisher = getUser(userId);
+		val wish =  getUserMainWish(wisher);
+		val imageUrl = nonNull(imageFile) ? "" : request.imageUrl(); //TODO: 이미지 업로드 기능 반영
+		val status = wish.getStatus(0);
+
+		if (status.equals(END)) {
+			throw new IllegalArgumentException(NOT_CURRENT_WISH.getMessage());
+		}
+		if (status.equals(BEFORE)) {
+			val startDate = nonNull(request.startDate()) ? convertToDate(request.startDate()) : null;
+			val endDate = nonNull(request.endDate()) ? convertToDate(request.endDate()) : null;
+			wish.updateTerm(startDate, endDate);
+			wish.updateContent(imageUrl, request.price(), request.title(), request.hint(), request.initial());
+		}
+		if (status.equals(BEFORE) || status.equals(WHILE)) {
+			wisher.updateProfile(request.name(), request.bankName(), request.account(), request.phone());
+		}
+
+		return UserWishUpdateResponseDTO.of(wisher, wish);
+	}
+
+	public UserWishUpdateResponseDTO findUserMainWish(Long userId) {
+		val wisher = getUser(userId);
+		val wish =  getUserMainWish(wisher);
+		return UserWishUpdateResponseDTO.of(wisher, wish);
+	}
+
 	private User getUser(Long userId) {
 		return userRepository.findById(userId)
 				.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
@@ -124,5 +161,11 @@ public class WishService {
 	private boolean isDeletable(User user, Long wishId) {
 		val wish = getWish(wishId);
 		return wish.getWisher().equals(user) && wish.getStatus(EXPIRY_DAY).equals(WishStatus.END);
+	}
+
+	private Wish getUserMainWish(User user) {
+		return   wishRepository
+			.findMainWish(user, 0)
+			.orElseThrow(() -> new EntityNotFoundException(NO_WISH.getMessage()));
 	}
 }

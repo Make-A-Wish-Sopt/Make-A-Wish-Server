@@ -3,6 +3,8 @@ package com.sopterm.makeawish.domain.wish;
 import com.sopterm.makeawish.domain.BaseEntity;
 import com.sopterm.makeawish.domain.Present;
 import com.sopterm.makeawish.domain.user.User;
+import com.sopterm.makeawish.dto.wish.UserWishUpdateRequestDTO;
+
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -86,6 +88,24 @@ public class Wish extends BaseEntity {
             return END;
         } else {
             return WHILE;
+        }
+    }
+
+    public void updateContent(String imageUrl, Integer price, String title, String hint, String initial) {
+        if (nonNull(imageUrl)) {
+            this.presentImageUrl = imageUrl;
+        }
+        if (nonNull(price)) {
+            this.presentPrice = price;
+        }
+        if (nonNull(title)) {
+            this.title = title;
+        }
+        if (nonNull(hint)) {
+            this.hint = hint;
+        }
+        if (nonNull(initial)) {
+            this.initial = initial;
         }
     }
 
