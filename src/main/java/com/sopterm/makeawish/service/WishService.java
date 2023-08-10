@@ -1,33 +1,28 @@
 package com.sopterm.makeawish.service;
 
-import static com.sopterm.makeawish.common.Util.*;
-import static com.sopterm.makeawish.common.message.ErrorMessage.*;
-import static com.sopterm.makeawish.domain.wish.WishStatus.*;
-import static java.util.Objects.*;
+import com.sopterm.makeawish.domain.user.User;
+import com.sopterm.makeawish.domain.wish.Wish;
+import com.sopterm.makeawish.domain.wish.WishStatus;
+import com.sopterm.makeawish.dto.wish.*;
+import com.sopterm.makeawish.repository.UserRepository;
+import com.sopterm.makeawish.repository.wish.WishRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import org.jsoup.Jsoup;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.sopterm.makeawish.domain.wish.WishStatus;
-import com.sopterm.makeawish.dto.wish.UserWishUpdateRequestDTO;
-import com.sopterm.makeawish.dto.wish.UserWishUpdateResponseDTO;
-import com.sopterm.makeawish.dto.wish.*;
-
-import org.jsoup.Jsoup;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.sopterm.makeawish.domain.user.User;
-import com.sopterm.makeawish.domain.wish.Wish;
-import com.sopterm.makeawish.repository.UserRepository;
-import com.sopterm.makeawish.repository.wish.WishRepository;
-
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import lombok.val;
+import static com.sopterm.makeawish.common.Util.convertToDate;
+import static com.sopterm.makeawish.common.message.ErrorMessage.*;
+import static com.sopterm.makeawish.domain.wish.WishStatus.*;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -126,6 +121,19 @@ public class WishService {
 		val wisher = getUser(userId);
 		val wish = getUserMainWish(wisher);
 		return UserWishUpdateResponseDTO.of(wisher, wish);
+	}
+
+	@Transactional
+	public void stopWish(Long userId) throws AccessDeniedException {
+		val user = getUser(userId);
+		val wish = getUserMainWish(user);
+
+		val status = wish.getStatus(0);
+		switch(status) {
+			case BEFORE -> wishRepository.delete(wish);
+			case WHILE -> wish.updateTerm(null, LocalDateTime.now().toLocalDate().atStartOfDay().minusDays(1));
+			default -> throw new AccessDeniedException(EXPIRE_WISH.getMessage());
+		}
 	}
 
 	private User getUser(Long userId) {

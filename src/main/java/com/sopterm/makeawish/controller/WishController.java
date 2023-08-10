@@ -25,7 +25,7 @@ import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 import static com.sopterm.makeawish.common.message.ErrorMessage.NO_WISH;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import static java.util.Objects.nonNull;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @Tag(name = "Wish", description = "유저 소원 API")
 @RestController
@@ -117,6 +117,15 @@ public class WishController {
 		return nonNull(response)
 			? ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_USER_INFO.getMessage(), response))
 			: ResponseEntity.ok(ApiResponse.fail(EXPIRED_BIRTHDAY_WISH.getMessage()));
+	}
+
+	@Operation(summary = "소원 펀딩 중지")
+	@PatchMapping("/progress")
+	public ResponseEntity<ApiResponse> stopWish(
+		@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
+	) throws AccessDeniedException {
+		wishService.stopWish(memberDetails.getId());
+		return ResponseEntity.ok(success(SUCCESS_STOP_WISH.getMessage()));
 	}
 
 	private URI getURI(Long id) {
