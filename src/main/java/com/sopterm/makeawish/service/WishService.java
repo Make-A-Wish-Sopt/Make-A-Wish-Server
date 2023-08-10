@@ -18,7 +18,6 @@ import com.sopterm.makeawish.dto.wish.*;
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
@@ -49,7 +48,7 @@ public class WishService {
 		}
 		val from = convertToDate(requestDTO.startDate());
 		val to = convertToDate(requestDTO.endDate());
-		validateWishDate(wisher, from , to);
+		validateWishDate(wisher, from, to);
 		val wish = requestDTO.toEntity(wisher);
 		return wishRepository.save(wish).getId();
 	}
@@ -102,14 +101,9 @@ public class WishService {
 	}
 
 	@Transactional
-	public UserWishUpdateResponseDTO updateUserMainWish(
-		Long userId,
-		MultipartFile imageFile,
-		UserWishUpdateRequestDTO request
-	) {
+	public UserWishUpdateResponseDTO updateUserMainWish(Long userId, UserWishUpdateRequestDTO request) {
 		val wisher = getUser(userId);
-		val wish =  getUserMainWish(wisher);
-		val imageUrl = nonNull(imageFile) ? "" : request.imageUrl(); //TODO: 이미지 업로드 기능 반영
+		val wish = getUserMainWish(wisher);
 		val status = wish.getStatus(0);
 
 		if (status.equals(END)) {
@@ -119,7 +113,7 @@ public class WishService {
 			val startDate = nonNull(request.startDate()) ? convertToDate(request.startDate()) : null;
 			val endDate = nonNull(request.endDate()) ? convertToDate(request.endDate()) : null;
 			wish.updateTerm(startDate, endDate);
-			wish.updateContent(imageUrl, request.price(), request.title(), request.hint(), request.initial());
+			wish.updateContent(request.imageUrl(), request.price(), request.title(), request.hint(), request.initial());
 		}
 		if (status.equals(BEFORE) || status.equals(WHILE)) {
 			wisher.updateProfile(request.name(), request.bankName(), request.account(), request.phone());
@@ -130,13 +124,13 @@ public class WishService {
 
 	public UserWishUpdateResponseDTO findUserMainWish(Long userId) {
 		val wisher = getUser(userId);
-		val wish =  getUserMainWish(wisher);
+		val wish = getUserMainWish(wisher);
 		return UserWishUpdateResponseDTO.of(wisher, wish);
 	}
 
 	private User getUser(Long userId) {
 		return userRepository.findById(userId)
-				.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
+			.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
 	}
 
 	private void validateWishDate(User wisher, LocalDateTime from, LocalDateTime to) {
@@ -164,7 +158,7 @@ public class WishService {
 	}
 
 	private Wish getUserMainWish(User user) {
-		return   wishRepository
+		return wishRepository
 			.findMainWish(user, 0)
 			.orElseThrow(() -> new EntityNotFoundException(NO_WISH.getMessage()));
 	}
