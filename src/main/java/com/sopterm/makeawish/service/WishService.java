@@ -2,6 +2,7 @@ package com.sopterm.makeawish.service;
 
 import static com.sopterm.makeawish.common.Util.*;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
+import static com.sopterm.makeawish.domain.wish.WishStatus.*;
 import static java.util.Objects.*;
 
 import java.io.IOException;
@@ -10,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.sopterm.makeawish.domain.wish.WishStatus;
+import com.sopterm.makeawish.dto.wish.UserWishUpdateRequestDTO;
+import com.sopterm.makeawish.dto.wish.UserWishUpdateResponseDTO;
 import com.sopterm.makeawish.dto.wish.*;
 
 import org.jsoup.Jsoup;
@@ -45,7 +48,7 @@ public class WishService {
 		}
 		val from = convertToDate(requestDTO.startDate());
 		val to = convertToDate(requestDTO.endDate());
-		validateWishDate(wisher, from , to);
+		validateWishDate(wisher, from, to);
 		val wish = requestDTO.toEntity(wisher);
 		return wishRepository.save(wish).getId();
 	}
@@ -97,9 +100,53 @@ public class WishService {
 		return WishesResponseDTO.of(wishes);
 	}
 
+	@Transactional
+	public UserWishUpdateResponseDTO updateUserMainWish(Long userId, UserWishUpdateRequestDTO request) {
+		val wisher = getUser(userId);
+		val wish = getUserMainWish(wisher);
+		val status = wish.getStatus(0);
+
+		if (status.equals(END)) {
+			throw new IllegalArgumentException(NOT_CURRENT_WISH.getMessage());
+		}
+		if (status.equals(BEFORE)) {
+			val startDate = nonNull(request.startDate()) ? convertToDate(request.startDate()) : null;
+			val endDate = nonNull(request.endDate()) ? convertToDate(request.endDate()) : null;
+			wish.updateTerm(startDate, endDate);
+			wish.updateContent(request.imageUrl(), request.price(), request.title(), request.hint(), request.initial());
+		}
+		if (status.equals(BEFORE) || status.equals(WHILE)) {
+			wisher.updateProfile(request.name(), request.bankName(), request.account(), request.phone());
+		}
+
+		return UserWishUpdateResponseDTO.of(wisher, wish);
+	}
+
+	public UserWishUpdateResponseDTO findUserMainWish(Long userId) {
+		val wisher = getUser(userId);
+		val wish = getUserMainWish(wisher);
+		return UserWishUpdateResponseDTO.of(wisher, wish);
+	}
+
+	@Transactional
+	public void stopWish(Long userId) throws AccessDeniedException {
+		val wish = wishRepository
+			.findMainWish(getUser(userId), EXPIRY_DAY)
+			.orElseThrow(() -> new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage()));
+
+		if (!wish.getWisher().getId().equals(userId))
+			throw new AccessDeniedException(FORBIDDEN.getMessage());
+
+		if (wish.getStartAt().isAfter(LocalDateTime.now())) {
+			wishRepository.deleteById(wish.getId());
+		} else {
+			wish.updateTerm(wish.getStartAt(), LocalDateTime.now().minusDays(1));
+		}
+	}
+
 	private User getUser(Long userId) {
 		return userRepository.findById(userId)
-				.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
+			.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
 	}
 
 	private void validateWishDate(User wisher, LocalDateTime from, LocalDateTime to) {
@@ -126,19 +173,9 @@ public class WishService {
 		return wish.getWisher().equals(user) && wish.getStatus(EXPIRY_DAY).equals(WishStatus.END);
 	}
 
-	@Transactional
-	public void stopWish(Long userId) throws AccessDeniedException {
-		val wish = wishRepository
-				.findMainWish(getUser(userId), EXPIRY_DAY)
-				.orElseThrow(() -> new IllegalArgumentException(NO_EXIST_MAIN_WISH.getMessage()));
-
-		if(!wish.getWisher().getId().equals(userId))
-			throw new AccessDeniedException(FORBIDDEN.getMessage());
-
-		if(wish.getStartAt().isAfter(LocalDateTime.now())){
-			wishRepository.deleteById(wish.getId());
-		}else{
-			wish.updateTerm(wish.getStartAt(), LocalDateTime.now().minusDays(1));
-		}
+	private Wish getUserMainWish(User user) {
+		return wishRepository
+			.findMainWish(user, 0)
+			.orElseThrow(() -> new EntityNotFoundException(NO_WISH.getMessage()));
 	}
 }
