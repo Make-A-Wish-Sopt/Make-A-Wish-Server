@@ -132,7 +132,7 @@ public class WishService {
 		switch(status) {
 			case BEFORE -> wishRepository.delete(wish);
 			case WHILE -> wish.updateTerm(null, LocalDateTime.now().toLocalDate().atStartOfDay().minusDays(1));
-			default -> throw new AccessDeniedException(NO_EXIST_MAIN_WISH.getMessage());
+			default -> throw new AccessDeniedException(EXPIRE_WISH.getMessage());
 		}
 	}
 
