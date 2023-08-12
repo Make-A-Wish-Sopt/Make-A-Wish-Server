@@ -30,7 +30,6 @@ public enum ErrorMessage {
 	NOT_PAID_CAKE("결제가 필요한 케이크가 아닙니다"),
 
 	/** auth **/
-	DISAGREE_KAKAO_EMAIL("카카오 이메일 항목에 동의하지 않았습니다."),
 	CODE_PARSE_ERROR("인가 코드 오류"),
 	FAILED_VALIDATE_KAKAO_LOGIN("카카오 로그인 오류입니다."),
 	WRONG_SIGNATURE("잘못된 서명이 사용되었습니다."),

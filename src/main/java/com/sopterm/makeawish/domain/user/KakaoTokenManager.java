@@ -96,7 +96,6 @@ public class KakaoTokenManager {
 
     private String validateEmail(JsonElement element) {
         boolean ifEmailIsNotAgreed = element.getAsJsonObject().get("email_needs_agreement").getAsBoolean();
-        if (ifEmailIsNotAgreed) throw new IllegalArgumentException(DISAGREE_KAKAO_EMAIL.getMessage());
-        return element.getAsJsonObject().get("email").getAsString();
+        return ifEmailIsNotAgreed ? null : element.getAsJsonObject().get("email").getAsString();
     }
 }
