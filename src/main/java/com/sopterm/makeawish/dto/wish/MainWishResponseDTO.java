@@ -24,13 +24,9 @@ public record MainWishResponseDTO(
 ) {
 
 	public static MainWishResponseDTO from(Wish wish) {
-		val name = Objects.nonNull(wish.getWisher().getAccount())
-			? wish.getWisher().getAccount().getName()
-			: wish.getWisher().getNickname();
-
 		return MainWishResponseDTO.builder()
 			.wishId(wish.getId())
-			.name(name)
+			.name(wish.getWisher().getNickname())
 			.cakeCount(wish.getPresents().size())
 			.dayCount(getRemainDay(wish))
 			.price(getPriceAppliedFee(wish.getTotalPrice()))
