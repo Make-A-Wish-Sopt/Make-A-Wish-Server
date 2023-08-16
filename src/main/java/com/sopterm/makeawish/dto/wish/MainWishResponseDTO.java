@@ -5,7 +5,6 @@ import static com.sopterm.makeawish.domain.wish.WishStatus.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.domain.wish.WishStatus;
@@ -15,7 +14,6 @@ import lombok.*;
 @Builder
 public record MainWishResponseDTO(
 	Long wishId,
-	String name,
 	int cakeCount,
 	long dayCount,
 	int price,
@@ -26,7 +24,6 @@ public record MainWishResponseDTO(
 	public static MainWishResponseDTO from(Wish wish) {
 		return MainWishResponseDTO.builder()
 			.wishId(wish.getId())
-			.name(wish.getWisher().getNickname())
 			.cakeCount(wish.getPresents().size())
 			.dayCount(getRemainDay(wish))
 			.price(getPriceAppliedFee(wish.getTotalPrice()))
