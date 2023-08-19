@@ -8,12 +8,15 @@ public record AuthSignInResponseDTO(
         @NonNull
         String accessToken,
         @NonNull
-        String refreshToken
+        String refreshToken,
+        @NonNull
+        String nickName
 ) {
-        public static AuthSignInResponseDTO from (String accessToken, String refreshToken) {
+        public static AuthSignInResponseDTO from (String accessToken, String refreshToken, String nickName) {
             return AuthSignInResponseDTO.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
+                    .nickName(nickName)
                     .build();
         }
 }

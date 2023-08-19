@@ -36,7 +36,7 @@ public class KakaoLoginService implements SocialLoginService {
         val accessToken = tokenManager.createAuthAccessToken(user.getId());
         val refreshToken = tokenManager.createAuthRefreshToken(user.getId());
         user.updateRefreshToken(refreshToken);
-        return new AuthSignInResponseDTO(accessToken,refreshToken);
+        return new AuthSignInResponseDTO(accessToken,refreshToken,user.getNickname());
     }
 
     private User issueAccessToken(AuthSignInRequestDTO request) {
