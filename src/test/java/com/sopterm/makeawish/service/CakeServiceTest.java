@@ -1,21 +1,21 @@
 package com.sopterm.makeawish.service;
 
+import com.sopterm.makeawish.common.Util;
 import com.sopterm.makeawish.domain.Cake;
+import com.sopterm.makeawish.domain.user.AccountInfo;
 import com.sopterm.makeawish.domain.user.SocialType;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
-import com.sopterm.makeawish.dto.auth.AuthSignInRequestDTO;
 import com.sopterm.makeawish.dto.cake.CakeReadyRequestDTO;
-import com.sopterm.makeawish.dto.wish.WishRequestDTO;
 import com.sopterm.makeawish.repository.CakeRepository;
 import com.sopterm.makeawish.repository.UserRepository;
+import com.sopterm.makeawish.repository.wish.WishRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -42,6 +42,9 @@ class CakeServiceTest {
 
     @Autowired
     CakeRepository cakeRepository;
+
+    @Autowired
+    WishRepository wishRepository;
 
     @BeforeAll
     void 케이크_세팅() {
@@ -81,12 +84,8 @@ class CakeServiceTest {
     @Test
     public void 똥케이크_선물한_경우() {
         // given
-        AuthSignInRequestDTO userRequest = new AuthSignInRequestDTO("kim@email.com", SocialType.KAKAO, "12345", "김아무", LocalDateTime.now());
-        User user = userRepository.save(new User(userRequest));
-
-        WishRequestDTO wishRequest = new WishRequestDTO("imageUrl", 50000, "소원 제목", "소원 힌트", "ㅅㅇ ㅈㅁ", getLocalDateTime(0), getLocalDateTime(7), "01012345678");
-        Long wishId = wishService.createWish(user.getId(), wishRequest);
-        Wish wish = wishService.getWish(wishId);
+        User user = userRepository.save(createUser());
+        Wish wish = wishRepository.save(createWish(user));
         Cake cake = cakeService.getCake(1L);
         int prevTotalPrice = wish.getTotalPrice();
 
@@ -100,12 +99,8 @@ class CakeServiceTest {
     @Test
     public void 그외_케이크_선물한_경우() {
         // given
-        AuthSignInRequestDTO userRequest = new AuthSignInRequestDTO("kim@email.com", SocialType.KAKAO, "12345", "김아무", LocalDateTime.now());
-        User user = userRepository.save(new User(userRequest));
-
-        WishRequestDTO wishRequest = new WishRequestDTO("imageUrl", 50000, "소원 제목", "소원 힌트", "ㅅㅇ ㅈㅁ", getLocalDateTime(0), getLocalDateTime(7), "01012345678");
-        Long wishId = wishService.createWish(user.getId(), wishRequest);
-        Wish wish = wishService.getWish(wishId);
+        User user = userRepository.save(createUser());
+        Wish wish = wishRepository.save(createWish(user));
         Cake cake = cakeService.getCake(5L);
         int prevTotalPrice = wish.getTotalPrice();
 
@@ -119,5 +114,31 @@ class CakeServiceTest {
     private String getLocalDateTime(int plusDays){
         LocalDateTime date = LocalDateTime.now().plusDays(plusDays);
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss+00:00"));
+    }
+
+
+    private User createUser(){
+        AccountInfo accountInfo = new AccountInfo("김아무", "bank", "account");
+        return User.builder()
+                .email("kim@email.com")
+                .socialType(SocialType.KAKAO)
+                .socialId("12345")
+                .nickname("김아무")
+                .createdAt(LocalDateTime.now())
+                .account(accountInfo)
+                .build();
+    }
+
+    private Wish createWish(User user){
+        return Wish.builder()
+                .wisher(user)
+                .presentImageUrl("iamge-url")
+                .title("소원 제목")
+                .hint("소원 힌트")
+                .initial("ㅅㅇ ㅈㅁ")
+                .presentPrice(50000)
+                .startAt(Util.convertToDate(getLocalDateTime(0)))
+                .endAt(Util.convertToDate(getLocalDateTime(7)))
+                .build();
     }
 }
