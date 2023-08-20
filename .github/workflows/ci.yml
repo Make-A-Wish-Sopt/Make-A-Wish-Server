@@ -30,6 +30,8 @@ jobs:
           touch src/main/resources/application-dev.yml
           echo "${{ secrets.APPLICATION_DEV }}" >> src/main/resources/application-dev.yml
           cat src/main/resources/application-dev.yml
+          touch src/main/resources/application-test.yml
+          echo "${{ secrets.APPLICATION_TEST }}" >> src/main/resources/application-test.yml
           
       - name: Build with Gradle
         run: ./gradlew build
