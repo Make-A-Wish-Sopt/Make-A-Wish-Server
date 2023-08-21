@@ -12,6 +12,7 @@ import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.repository.wish.WishRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ class CakeServiceTest {
     }
 
     @Test
+    @DisplayName("똥케이크로 카카오페이 연결 준비 시 예외 발생")
     public void 카카오페이_준비_연결_실패() {
         // given
         CakeReadyRequestDTO request = new CakeReadyRequestDTO("partnerOrderId", "partnerUserId", 1L, "0", "200", "http://localhost:8080", "http://localhost:8080", "http://localhost:8080");
@@ -68,6 +70,7 @@ class CakeServiceTest {
     }
 
     @Test
+    @DisplayName("가격 있는 케이크로 카카오페이 연결 준비 시 연결 성공")
     public void 카카오페이_준비_연결_성공() {
         // given
         CakeReadyRequestDTO request = new CakeReadyRequestDTO("partnerOrderId", "partnerUserId", 2L, "0", "200", "http://localhost:8080", "http://localhost:8080", "http://localhost:8080");
@@ -82,6 +85,7 @@ class CakeServiceTest {
     }
 
     @Test
+    @DisplayName("똥케이크 선물 시 가격 변동 X")
     public void 똥케이크_선물한_경우() {
         // given
         User user = userRepository.save(createUser());
@@ -97,6 +101,7 @@ class CakeServiceTest {
     }
 
     @Test
+    @DisplayName("가격있는 케이크를 선물 시 가격 변동 O")
     public void 그외_케이크_선물한_경우() {
         // given
         User user = userRepository.save(createUser());
