@@ -28,7 +28,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
 
 
-@SpringBootTest(properties = "spring.profiles.active:test")
+@SpringBootTest
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CakeServiceTest {
