@@ -28,7 +28,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
 
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active:test")
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CakeServiceTest {
@@ -62,7 +62,7 @@ class CakeServiceTest {
     @DisplayName("똥케이크로 카카오페이 연결 준비 시 예외 발생")
     public void 카카오페이_준비_연결_실패() {
         // given
-        CakeReadyRequestDTO request = new CakeReadyRequestDTO("partnerOrderId", "partnerUserId", 1L, "0", "200", "http://localhost:8080", "http://localhost:8080", "http://localhost:8080");
+        CakeReadyRequestDTO request = new CakeReadyRequestDTO("partnerOrderId", "partnerUserId", 1L, "0", "200", "https://www.sunmulzu.shop/", "https://www.sunmulzu.shop/", "https://www.sunmulzu.shop/");
 
         // when - then
         assertThatThrownBy(() -> cakeService.getKakaoPayReady(request))
@@ -73,7 +73,7 @@ class CakeServiceTest {
     @DisplayName("가격 있는 케이크로 카카오페이 연결 준비 시 연결 성공")
     public void 카카오페이_준비_연결_성공() {
         // given
-        CakeReadyRequestDTO request = new CakeReadyRequestDTO("partnerOrderId", "partnerUserId", 2L, "0", "200", "http://localhost:8080", "http://localhost:8080", "http://localhost:8080");
+        CakeReadyRequestDTO request = new CakeReadyRequestDTO("partnerOrderId", "partnerUserId", 2L, "0", "200", "https://www.sunmulzu.shop/", "https://www.sunmulzu.shop/", "https://www.sunmulzu.shop/");
 
         // when
         ThrowableAssert.ThrowingCallable doNothing = () -> {
