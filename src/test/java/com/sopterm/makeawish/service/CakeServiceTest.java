@@ -137,7 +137,7 @@ class CakeServiceTest {
     private Wish createWish(User user){
         return Wish.builder()
                 .wisher(user)
-                .presentImageUrl("iamge-url")
+                .presentImageUrl("image-url")
                 .title("소원 제목")
                 .hint("소원 힌트")
                 .initial("ㅅㅇ ㅈㅁ")
