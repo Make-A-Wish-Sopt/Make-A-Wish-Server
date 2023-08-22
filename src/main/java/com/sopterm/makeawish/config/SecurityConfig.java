@@ -29,7 +29,8 @@ public class SecurityConfig {
         "/error",
         "/health",
         "/api/v1/auth/**",
-        "/api/v1/public/**"
+        "/api/v1/public/**", 
+        "/cakes/approve"
     };
 
     @Bean
