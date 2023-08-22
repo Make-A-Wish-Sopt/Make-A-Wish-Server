@@ -116,7 +116,7 @@ public class CakeService {
         presentRepository.save(present);
         wish.updateTotalPrice(cake.getPrice());
         val contribute = calculateContribute(cake.getPrice(), wish.getPresentPrice());
-        return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), contribute, wish.getWisher().getAccount().getName());
+        return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), contribute, wish.getWisher().getNickname());
     }
 
     private String calculateContribute(int price, int targetPrice) {
