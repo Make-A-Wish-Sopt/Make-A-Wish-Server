@@ -17,7 +17,8 @@ public class Util {
 	}
 
 	public static int getPricePercent(int totalPrice, int presentPrice) {
-		return (getPriceAppliedFee(totalPrice) / presentPrice) * 100;
+		float percent = ((float)getPriceAppliedFee(totalPrice) / (float)presentPrice) * 100;
+		return Math.round(percent);
 	}
 
 	public static LocalDateTime convertToDate(String date) {
