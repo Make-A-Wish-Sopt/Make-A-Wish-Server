@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.sopterm.makeawish.common.message.SuccessMessage.SUCCESS_GET_REFRESH_TOKEN;
@@ -29,7 +29,7 @@ public class AuthController {
     private final AuthService authService;
     @Operation(summary = "카카오 소셜 로그인", description = "kakao 인증 서버에서 발급받은 accessToken header에 request")
     @PostMapping("/kakao/callback")
-    public ResponseEntity<ApiResponse> signIn(@RequestParam String code) throws JsonProcessingException {
+    public ResponseEntity<ApiResponse> signIn(@RequestHeader String code) throws JsonProcessingException {
         val responseDto = authService.socialLogin("KAKAO", code);
         val apiResponse = ApiResponse.success(SUCCESS_SIGN_IN.getMessage(), responseDto);
         return ResponseEntity.ok(apiResponse);
