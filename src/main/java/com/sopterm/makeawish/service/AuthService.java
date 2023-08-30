@@ -29,10 +29,10 @@ public class AuthService {
     private final UserRepository userRepository;
 
     @Transactional
-    public AuthSignInResponseDTO socialLogin(String social, String code) throws JsonProcessingException {
+    public AuthSignInResponseDTO socialLogin(String social, String code, String redirectUri) throws JsonProcessingException {
         val socialType = SocialType.from(social);
         val socialLoginService = socialLogins.get(socialType);
-        return socialLoginService.socialLogin(code);
+        return socialLoginService.socialLogin(code, redirectUri);
     }
 
     @Transactional

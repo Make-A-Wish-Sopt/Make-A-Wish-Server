@@ -33,10 +33,8 @@ public class KakaoTokenManager {
     private String kakaoUrl;
     @Value("${social.client-id}")
     private String clientId;
-    @Value("${social.redirect-uri}")
-    private String redirectUri;
 
-    public String getAccessTokenByCode(String code) throws JsonProcessingException {
+    public String getAccessTokenByCode(String code, String redirectUri) throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);

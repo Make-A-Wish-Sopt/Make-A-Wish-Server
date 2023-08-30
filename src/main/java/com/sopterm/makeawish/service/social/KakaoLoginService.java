@@ -23,10 +23,10 @@ public class KakaoLoginService implements SocialLoginService {
     private final KakaoTokenManager kakaoTokenManager;
 
     @Override
-    public AuthSignInResponseDTO socialLogin(String code) {
+    public AuthSignInResponseDTO socialLogin(String code, String redirectUri) {
         String kakaoAccessToken = null;
         try {
-            kakaoAccessToken = kakaoTokenManager.getAccessTokenByCode(code);
+            kakaoAccessToken = kakaoTokenManager.getAccessTokenByCode(code, redirectUri);
         } catch (JsonProcessingException j) {
             throw new IllegalArgumentException(CODE_PARSE_ERROR.getMessage());
         }
