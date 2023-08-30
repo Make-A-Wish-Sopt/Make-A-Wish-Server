@@ -49,4 +49,13 @@ public class UserController {
         return ResponseEntity
                 .ok(ApiResponse.success(SUCCESS_UPDATE_USER_ACCOUNT_INFO.getMessage(), response));
     }
+
+    @Operation(summary = "유저 탈퇴")
+    @DeleteMapping
+    public ResponseEntity<ApiResponse> deleteUser(
+            @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
+    ) {
+        userService.deleteUser(memberDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success(SUCCESS_DELETE_USER.getMessage()));
+    }
 }

@@ -3,6 +3,8 @@ package com.sopterm.makeawish.service;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 import static java.util.Objects.*;
 
+import com.sopterm.makeawish.repository.PresentRepository;
+import com.sopterm.makeawish.repository.wish.WishRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,8 @@ import lombok.val;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final WishRepository wishRepository;
+	private final PresentRepository presentRepository;
 
 	public UserAccountResponseDTO getUserAccount(Long userId) {
 		val wisher = getUser(userId);
@@ -39,6 +43,16 @@ public class UserService {
 			requestDTO.accountInfo().getAccount());
 		wisher.updatePhoneNumber(requestDTO.phone());
 		return UserAccountResponseDTO.of(wisher);
+	}
+
+	@Transactional
+	public void deleteUser(Long userId) {
+		val user = getUser(userId);
+		user.getWishes().forEach(wish -> {
+			wish.getPresents().forEach(presentRepository::delete);
+			wishRepository.delete(wish);
+		});
+		userRepository.delete(user);
 	}
 
 	private User getUser(Long userId) {
