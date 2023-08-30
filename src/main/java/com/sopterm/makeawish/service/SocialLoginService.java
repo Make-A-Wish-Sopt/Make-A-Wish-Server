@@ -6,5 +6,5 @@ import com.sopterm.makeawish.dto.auth.AuthSignInResponseDTO;
 @FunctionalInterface
 public interface SocialLoginService {
 
-    AuthSignInResponseDTO socialLogin(String code) throws JsonProcessingException;
+    AuthSignInResponseDTO socialLogin(String code, String redirectUri) throws JsonProcessingException;
 }
