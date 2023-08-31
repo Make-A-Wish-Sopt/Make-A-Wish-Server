@@ -2,8 +2,8 @@ package com.sopterm.makeawish.service;
 
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
-import com.sopterm.makeawish.domain.wish.WishStatus;
 import com.sopterm.makeawish.dto.wish.*;
+import com.sopterm.makeawish.repository.PresentRepository;
 import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.repository.wish.WishRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static com.sopterm.makeawish.common.Util.convertToDate;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
@@ -32,6 +31,7 @@ public class WishService {
 
 	private final WishRepository wishRepository;
 	private final UserRepository userRepository;
+	private final PresentRepository presentRepository;
 
 	private final int EXPIRY_DAY = 7;
 
@@ -86,8 +86,7 @@ public class WishService {
 	@Transactional
 	public void deleteWishes(Long userId, WishIdRequestDTO requestDTO) {
 		val user = getUser(userId);
-		val wishIds = filterUserWishes(user, requestDTO.wishes());
-		wishRepository.deleteAllById(wishIds);
+		requestDTO.wishes().forEach(wishId -> deleteUserWish(user, getWish(wishId)));
 	}
 
 	public WishesResponseDTO findWishes(Long userId) {
@@ -154,15 +153,11 @@ public class WishService {
 		}
 	}
 
-	private List<Long> filterUserWishes(User user, List<Long> wishIds) {
-		return wishIds.stream()
-			.filter(wishId -> isDeletable(user, wishId))
-			.toList();
-	}
-
-	private boolean isDeletable(User user, Long wishId) {
-		val wish = getWish(wishId);
-		return wish.getWisher().equals(user) && wish.getStatus(EXPIRY_DAY).equals(WishStatus.END);
+	private void deleteUserWish(User wisher, Wish wish) {
+		if (wish.getWisher().equals(wisher)) {
+			wish.getPresents().forEach(presentRepository::delete);
+			wishRepository.delete(wish);
+		}
 	}
 
 	private Wish getUserMainWish(User user) {
