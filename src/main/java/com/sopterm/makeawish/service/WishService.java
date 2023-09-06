@@ -50,8 +50,8 @@ public class WishService {
 
 	public WishResponseDTO findWish(Long wishId) throws AccessDeniedException {
 		val wish = getWish(wishId);
-		if (wish.getEndAt().isBefore(LocalDateTime.now())) {
-			throw new AccessDeniedException(EXPIRE_WISH.getMessage());
+		if (!wish.getStatus(0).equals(WHILE)) {
+			throw new AccessDeniedException(INVALID_WISH.getMessage());
 		}
 		return WishResponseDTO.from(wish);
 	}
@@ -155,7 +155,7 @@ public class WishService {
 
 	private void deleteUserWish(User wisher, Wish wish) {
 		if (wish.getWisher().equals(wisher)) {
-			wish.getPresents().forEach(presentRepository::delete);
+			presentRepository.deleteAll(wish.getPresents());
 			wishRepository.delete(wish);
 		}
 	}
