@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum CacheType {
 
-    PRESENT_COUNT("presents", 3000, 30);
+    PRESENT_COUNT("allPresentsList", 3000, 30);
 
     private final String cacheName;
     private final int maxSize;
