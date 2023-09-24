@@ -11,6 +11,7 @@ import com.sopterm.makeawish.repository.CakeRepository;
 import com.sopterm.makeawish.repository.PresentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.*;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -127,6 +128,7 @@ public class CakeService {
         return cakeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(INVALID_CAKE.getMessage()));
     }
 
+    @Cacheable(cacheNames = "allPresentsList")
     public List<PresentDTO> getPresents(Long userId, Long wishId) {
         val wish = wishService.getWish(wishId);
         if (!isRightWisher(userId, wish))
