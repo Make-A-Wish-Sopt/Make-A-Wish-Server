@@ -46,7 +46,7 @@
 #### 📌 브랜치명
 - 브랜치는 뷰 단위로 생성합니다.
 - 브랜치 규칙 → {이름}_#{#이슈번호_간단한 설명}
-- `ex) donut_#1-login`
+- `ex) jiyoung_#1-login`
 
 #### 🛠 Development Environment
 <p align="left">
