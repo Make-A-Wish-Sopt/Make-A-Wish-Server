@@ -3,7 +3,7 @@ package com.sopterm.makeawish.dto.cake;
 import lombok.Builder;
 
 @Builder
-public record CakeRequest(
+public record CakeCreateRequest(
         String name,
         Long cakeId,
         String message,
