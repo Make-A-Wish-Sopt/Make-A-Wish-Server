@@ -1,6 +1,7 @@
 package com.sopterm.makeawish.service;
 
 import com.sopterm.makeawish.common.KakaoPayProperties;
+import com.sopterm.makeawish.common.Util;
 import com.sopterm.makeawish.domain.Cake;
 import com.sopterm.makeawish.domain.Present;
 import com.sopterm.makeawish.domain.wish.Wish;
@@ -33,7 +34,6 @@ import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 public class CakeService {
 
     private final WishService wishService;
-    private final CakeService cakeService;
     private final CakeRepository cakeRepository;
     private final PresentRepository presentRepository;
 
@@ -117,12 +117,8 @@ public class CakeService {
         val present = new Present(name, message, wish, cake);
         presentRepository.save(present);
         wish.updateTotalPrice(cake.getPrice());
-        val contribute = calculateContribute(cake.getPrice(), wish.getPresentPrice());
+        val contribute = Util.calculateContribution(cake.getPrice(), wish.getPresentPrice());
         return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), contribute, wish.getWisher().getNickname());
-    }
-
-    private String calculateContribute(int price, int targetPrice) {
-        return String.format("%.0f", (double) price / (double) targetPrice * 100);
     }
 
     public Cake getCake(Long id) {
@@ -177,12 +173,12 @@ public class CakeService {
 
     @Transactional
     public CakeCreateResponseDTO createPresentNew(CakeCreateRequest request) {
-        val cake = cakeService.getCake(request.cakeId());
+        val cake = getCake(request.cakeId());
         val wish = wishService.getWish(request.wishId());
         val present = new Present(request.name(), request.message(), wish, cake);
         presentRepository.save(present);
         wish.updateTotalPrice(cake.getPrice());
-        val contribute = calculateContribute(cake.getPrice(), wish.getPresentPrice());
+        val contribute = Util.calculateContribution(cake.getPrice(), wish.getPresentPrice());
         return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), contribute, wish.getWisher().getNickname());
     }
 }
