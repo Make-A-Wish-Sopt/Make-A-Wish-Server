@@ -68,9 +68,7 @@ public class PublicController {
     @Operation(summary = "케이크 저장하기")
     @PostMapping("/cakes")
     public ResponseEntity<ApiResponse> createCakePresent(@RequestBody CakeRequest request) {
-	    val cake = cakeService.getCake(request.cakeId());
-        val wish = wishService.getWish(request.wishId());
-        val response = cakeService.createPresent(request.name(), cake, wish, request.message());
+        val response = cakeService.createPresentNew(request);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_CAKE.getMessage(), response));
     }
 }

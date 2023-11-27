@@ -33,6 +33,7 @@ import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 public class CakeService {
 
     private final WishService wishService;
+    private final CakeService cakeService;
     private final CakeRepository cakeRepository;
     private final PresentRepository presentRepository;
 
@@ -135,10 +136,10 @@ public class CakeService {
             throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
 
         val allCake = getAllCakes().stream().collect(
-            Collectors.toMap(
-                CakeResponseDTO::toEntity,
-                count -> 0L
-            ));
+                Collectors.toMap(
+                        CakeResponseDTO::toEntity,
+                        count -> 0L
+                ));
 
         val cakes = getAllPresent(wish);
         allCake.putAll(cakes);
@@ -167,10 +168,21 @@ public class CakeService {
 
     public List<PresentResponseDTO> getEachPresent(Long userId, Long wishId, Long cakeId) {
         val wish = wishService.getWish(wishId);
-        if (!isRightWisher(userId, wish)){
+        if (!isRightWisher(userId, wish)) {
             throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
         }
         val presents = presentRepository.findPresentsByWishIdAndCakeId(wishId, cakeId);
         return presents.stream().map(PresentResponseDTO::from).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public CakeCreateResponseDTO createPresentNew(CakeRequest request) {
+        val cake = cakeService.getCake(request.cakeId());
+        val wish = wishService.getWish(request.wishId());
+        val present = new Present(request.name(), request.message(), wish, cake);
+        presentRepository.save(present);
+        wish.updateTotalPrice(cake.getPrice());
+        val contribute = calculateContribute(cake.getPrice(), wish.getPresentPrice());
+        return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), contribute, wish.getWisher().getNickname());
     }
 }
