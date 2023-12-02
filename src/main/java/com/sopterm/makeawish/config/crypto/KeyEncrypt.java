@@ -25,9 +25,7 @@ public class KeyEncrypt {
     private static final Charset ENCODING_TYPE = StandardCharsets.UTF_8;
     private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
     private final SecretKeySpec secretKeySpec;
-
     private final IvParameterSpec ivParameterSpec;
-
     private final Cipher cipher;
 
     public KeyEncrypt(@Value("${crypto.secret-key}") String secretKey, @Value("${crypto.iv}") String iv) {
