@@ -24,29 +24,30 @@ public class KeyEncrypt {
     private static final String ALGORITHM = "AES";
     private static final Charset ENCODING_TYPE = StandardCharsets.UTF_8;
     private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
+    private final SecretKeySpec secretKeySpec;
 
-    @Value("${crypto.secret-key}")
-    private String secretKey;
+    private final IvParameterSpec ivParameterSpec;
 
-    @Value("${crypto.iv}")
-    private String iv;
+    private final Cipher cipher;
 
-    public String encrypt(String plainText) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(ENCODING_TYPE), ALGORITHM);
-        IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes());
-        Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+    public KeyEncrypt(@Value("${crypto.secret-key}") String secretKey, @Value("${crypto.iv}") String iv) {
+        try {
+            this.secretKeySpec = new SecretKeySpec(secretKey.getBytes(ENCODING_TYPE), ALGORITHM);
+            this.ivParameterSpec = new IvParameterSpec(iv.getBytes());
+            this.cipher = Cipher.getInstance(TRANSFORMATION);
+            this.cipher.init(Cipher.ENCRYPT_MODE, this.secretKeySpec, this.ivParameterSpec);
+        } catch (InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException e ){
+            log.error("error: Initializing KeyEncrypt ", e);
+            throw new RuntimeException("error: Initializing KeyEncrypt ", e);
+        }
+    }
 
+    public String encrypt(String plainText) throws IllegalBlockSizeException, BadPaddingException {
         byte[] encryptedBytes = cipher.doFinal(plainText.getBytes(ENCODING_TYPE));
         return Base64.getEncoder().encodeToString(encryptedBytes);
     }
 
-    public String decrypt(String encryptedText) throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), ALGORITHM);
-        Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-        IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes());
-        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-
+    public String decrypt(String encryptedText) throws IllegalBlockSizeException, BadPaddingException {
         byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText));
         return new String(decryptedBytes, ENCODING_TYPE);
     }
