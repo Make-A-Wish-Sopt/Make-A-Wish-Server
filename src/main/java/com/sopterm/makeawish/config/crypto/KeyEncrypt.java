@@ -35,20 +35,31 @@ public class KeyEncrypt {
             this.secretKeySpec = new SecretKeySpec(secretKey.getBytes(ENCODING_TYPE), ALGORITHM);
             this.ivParameterSpec = new IvParameterSpec(iv.getBytes());
             this.cipher = Cipher.getInstance(TRANSFORMATION);
-            this.cipher.init(Cipher.ENCRYPT_MODE, this.secretKeySpec, this.ivParameterSpec);
-        } catch (InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException e ){
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException e) {
             log.error("error: Initializing KeyEncrypt ", e);
             throw new RuntimeException("error: Initializing KeyEncrypt ", e);
         }
     }
 
-    public String encrypt(String plainText) throws IllegalBlockSizeException, BadPaddingException {
-        byte[] encryptedBytes = cipher.doFinal(plainText.getBytes(ENCODING_TYPE));
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+    public String encrypt(String plainText) {
+        try {
+            this.cipher.init(Cipher.ENCRYPT_MODE, this.secretKeySpec, this.ivParameterSpec);
+            byte[] encryptedBytes = cipher.doFinal(plainText.getBytes(ENCODING_TYPE));
+            return Base64.getEncoder().encodeToString(encryptedBytes);
+        } catch (IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException |
+                 InvalidKeyException e) {
+            throw new RuntimeException("error: Encrypting text ", e);
+        }
     }
 
-    public String decrypt(String encryptedText) throws IllegalBlockSizeException, BadPaddingException {
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText));
-        return new String(decryptedBytes, ENCODING_TYPE);
+    public String decrypt(String encryptedText) {
+        try {
+            this.cipher.init(Cipher.DECRYPT_MODE, this.secretKeySpec, this.ivParameterSpec);
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText));
+            return new String(decryptedBytes, ENCODING_TYPE);
+        } catch (IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException |
+                 InvalidKeyException e) {
+            throw new RuntimeException("error: Decrypting text ", e);
+        }
     }
 }
