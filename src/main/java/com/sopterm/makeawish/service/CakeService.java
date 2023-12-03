@@ -114,7 +114,12 @@ public class CakeService {
 
     @Transactional
     public CakeCreateResponseDTO createPresent(String name, Cake cake, Wish wish, String message) {
-        val present = new Present(name, message, wish, cake);
+        val present = Present.builder()
+                        .name(name)
+                        .message(message)
+                        .cake(cake)
+                        .wish(wish)
+                        .build();
         presentRepository.save(present);
         wish.updateTotalPrice(cake.getPrice());
         val contribute = Util.calculateContribution(cake.getPrice(), wish.getPresentPrice());
@@ -175,7 +180,12 @@ public class CakeService {
     public CakeCreateResponseDTO createPresentNew(CakeCreateRequest request) {
         val cake = getCake(request.cakeId());
         val wish = wishService.getWish(request.wishId());
-        val present = new Present(request.name(), request.message(), wish, cake);
+        val present = Present.builder()
+                .name(request.name())
+                .message(request.message())
+                .cake(cake)
+                .wish(wish)
+                .build();
         presentRepository.save(present);
         wish.updateTotalPrice(cake.getPrice());
         val contribute = Util.calculateContribution(cake.getPrice(), wish.getPresentPrice());
