@@ -37,18 +37,59 @@ public class Present {
 	@JoinColumn(name = "cake_id")
 	private Cake cake;
 
-	public Present(String name, String message, Wish wish, Cake cake) {
-		this.name = name;
-		this.message = message;
-		setWish(wish);
-		this.cake = cake;
+	public static class PresentBuilder {
+		private String name;
+		private String message;
+		private Wish wish;
+		private Cake cake;
+
+		private PresentBuilder() {}
+
+		public static PresentBuilder builder() {
+			return new PresentBuilder();
+		}
+
+		public PresentBuilder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public PresentBuilder message(String message) {
+			this.message = message;
+			return this;
+		}
+
+		public PresentBuilder wish(Wish wish) {
+			this.wish = wish;
+			return this;
+		}
+
+		public PresentBuilder cake(Cake cake) {
+			this.cake = cake;
+			return this;
+		}
+
+		private void setWish(Present present, Wish wish) {
+			if (nonNull(present.wish)) {
+				present.wish.getPresents().remove(present);
+			}
+			present.wish = wish;
+			if (nonNull(wish)) {
+				wish.getPresents().add(present);
+			}
+		}
+
+		public Present build() {
+			Present present = new Present();
+			present.name = this.name;
+			present.message = this.message;
+			setWish(present, this.wish);
+			present.cake = this.cake;
+			return present;
+		}
 	}
 
-	private void setWish(Wish wish) {
-		if (nonNull(this.wish)) {
-			this.wish.getPresents().remove(this);
-		}
-		this.wish = wish;
-		wish.getPresents().add(this);
+	public static PresentBuilder builder() {
+		return new PresentBuilder();
 	}
 }

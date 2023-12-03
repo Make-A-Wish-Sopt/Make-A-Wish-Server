@@ -31,4 +31,8 @@ public class Util {
 			.atZone(ZoneId.of("Asia/Seoul"));
 		return LocalDateTime.from(instant);
 	}
+
+	public static String calculateContribution(int price, int targetPrice) {
+		return String.format("%.0f", (double) price / targetPrice * 100);
+	}
 }

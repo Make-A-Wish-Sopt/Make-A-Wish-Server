@@ -4,6 +4,7 @@ import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 
 import java.nio.file.AccessDeniedException;
 
+import com.sopterm.makeawish.dto.cake.CakeCreateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,4 +64,10 @@ public class PublicController {
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_CAKE.getMessage(), response));
 	}
 
+    @Operation(summary = "케이크 저장하기")
+    @PostMapping("/cakes")
+    public ResponseEntity<ApiResponse> createCakePresent(@RequestBody CakeCreateRequest request) {
+        val response = cakeService.createPresentNew(request);
+        return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_CAKE.getMessage(), response));
+    }
 }

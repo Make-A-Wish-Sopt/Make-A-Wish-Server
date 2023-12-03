@@ -1,6 +1,7 @@
 package com.sopterm.makeawish.service;
 
 import com.sopterm.makeawish.common.KakaoPayProperties;
+import com.sopterm.makeawish.common.Util;
 import com.sopterm.makeawish.domain.Cake;
 import com.sopterm.makeawish.domain.Present;
 import com.sopterm.makeawish.domain.wish.Wish;
@@ -113,15 +114,16 @@ public class CakeService {
 
     @Transactional
     public CakeCreateResponseDTO createPresent(String name, Cake cake, Wish wish, String message) {
-        val present = new Present(name, message, wish, cake);
+        val present = Present.builder()
+                        .name(name)
+                        .message(message)
+                        .cake(cake)
+                        .wish(wish)
+                        .build();
         presentRepository.save(present);
         wish.updateTotalPrice(cake.getPrice());
-        val contribute = calculateContribute(cake.getPrice(), wish.getPresentPrice());
+        val contribute = Util.calculateContribution(cake.getPrice(), wish.getPresentPrice());
         return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), contribute, wish.getWisher().getNickname());
-    }
-
-    private String calculateContribute(int price, int targetPrice) {
-        return String.format("%.0f", (double) price / (double) targetPrice * 100);
     }
 
     public Cake getCake(Long id) {
@@ -135,10 +137,10 @@ public class CakeService {
             throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
 
         val allCake = getAllCakes().stream().collect(
-            Collectors.toMap(
-                CakeResponseDTO::toEntity,
-                count -> 0L
-            ));
+                Collectors.toMap(
+                        CakeResponseDTO::toEntity,
+                        count -> 0L
+                ));
 
         val cakes = getAllPresent(wish);
         allCake.putAll(cakes);
@@ -167,10 +169,26 @@ public class CakeService {
 
     public List<PresentResponseDTO> getEachPresent(Long userId, Long wishId, Long cakeId) {
         val wish = wishService.getWish(wishId);
-        if (!isRightWisher(userId, wish)){
+        if (!isRightWisher(userId, wish)) {
             throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
         }
         val presents = presentRepository.findPresentsByWishIdAndCakeId(wishId, cakeId);
         return presents.stream().map(PresentResponseDTO::from).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public CakeCreateResponseDTO createPresentNew(CakeCreateRequest request) {
+        val cake = getCake(request.cakeId());
+        val wish = wishService.getWish(request.wishId());
+        val present = Present.builder()
+                .name(request.name())
+                .message(request.message())
+                .cake(cake)
+                .wish(wish)
+                .build();
+        presentRepository.save(present);
+        wish.updateTotalPrice(cake.getPrice());
+        val contribute = Util.calculateContribution(cake.getPrice(), wish.getPresentPrice());
+        return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), contribute, wish.getWisher().getNickname());
     }
 }
