@@ -33,6 +33,6 @@ public class Util {
 	}
 
 	public static String calculateContribution(int price, int targetPrice) {
-		return String.format("%.0f", (double) price / (double) targetPrice * 100);
+		return String.format("%.0f", (double) price / targetPrice * 100);
 	}
 }
