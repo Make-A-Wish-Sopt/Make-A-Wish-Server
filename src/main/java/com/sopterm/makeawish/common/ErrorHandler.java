@@ -6,6 +6,8 @@ import java.nio.file.AccessDeniedException;
 import java.time.format.DateTimeParseException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.popbill.api.PopbillException;
+import com.popbill.api.Response;
 import com.sopterm.makeawish.exception.WrongAccessTokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +73,12 @@ public class ErrorHandler {
 
 	@ExceptionHandler(IllegalStateException.class)
 	public ResponseEntity<ApiResponse> illegalStateException(IllegalStateException exception) {
+		val response = ApiResponse.fail(exception.getMessage());
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(PopbillException.class)
+	public ResponseEntity<ApiResponse> popbillException(PopbillException exception){
 		val response = ApiResponse.fail(exception.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
