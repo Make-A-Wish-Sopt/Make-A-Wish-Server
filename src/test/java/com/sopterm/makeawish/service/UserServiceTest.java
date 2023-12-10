@@ -32,7 +32,7 @@ class UserServiceTest {
         String AccountNumber = "1234567890";
 
         // when - then
-        assertThatThrownBy(() -> userService.verifyUserAccount(BankCode, AccountNumber))
+        assertThatThrownBy(() -> userService.verifyUserAccount("홍길동",BankCode, AccountNumber))
                 .isInstanceOf(PopbillException.class);
     }
 }
