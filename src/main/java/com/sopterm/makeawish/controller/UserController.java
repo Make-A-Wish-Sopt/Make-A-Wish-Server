@@ -61,8 +61,9 @@ public class UserController {
 
     @Operation(summary = "계좌 실명 조회")
     @GetMapping("/verify-account")
-    public ResponseEntity<ApiResponse> checkAccountInformation(@RequestParam String BankCode, @RequestParam String AccountNumber) throws PopbillException {
-        val accountCheckInfo = userService.verifyUserAccount(BankCode, AccountNumber);
-        return ResponseEntity.ok(ApiResponse.success(SUCCESS_VERIFY_USER_ACCOUNT.getMessage(), accountCheckInfo));
+    public ResponseEntity<ApiResponse> checkAccountInformation(
+            @RequestParam String name, @RequestParam String BankCode, @RequestParam String AccountNumber) throws Exception {
+        userService.verifyUserAccount(name, BankCode, AccountNumber);
+        return ResponseEntity.ok(ApiResponse.success(SUCCESS_VERIFY_USER_ACCOUNT.getMessage()));
     }
 }
