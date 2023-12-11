@@ -4,6 +4,7 @@ import com.popbill.api.AccountCheckService;
 import com.popbill.api.PopbillException;
 import com.sopterm.makeawish.common.AbuseException;
 import com.sopterm.makeawish.domain.abuse.AbuseLog;
+import com.sopterm.makeawish.domain.abuse.AbuseUser;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
 import com.sopterm.makeawish.dto.user.UserAccountResponseDTO;
@@ -15,6 +16,7 @@ import com.sopterm.makeawish.repository.wish.WishRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,12 +74,12 @@ public class UserService {
 			.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
 	}
 
-	public void verifyUserAccount(Long userId, String name, String BankCode, String AccountNumber) throws PopbillException {
+	public void verifyUserAccount(Long userId, String name, String bankCode, String AccountNumber) throws PopbillException {
+		checkAbuseUser(userId);
 		try {
-            val accountInfo = accountCheckService.CheckAccountInfo(corpNum, BankCode, AccountNumber);
-			val user = getUser(userId);
+            val accountInfo = accountCheckService.CheckAccountInfo(corpNum, bankCode, AccountNumber);
 			if(!name.equals(accountInfo.getAccountName())){
-				abuseLogRepository.save(new AbuseLog(user));
+				abuseLogRepository.save(new AbuseLog(getUser(userId)));
 				throw new IllegalArgumentException(NOT_VALID_USER_ACCOUNT.getMessage());
 			}
 		} catch (PopbillException e) {
@@ -93,6 +95,15 @@ public class UserService {
 	}
 
 	public Integer countAbuseLogByUser(Long userId){
-		return abuseLogRepository.countAbuseLogByUserIdDuringWeekend(userId);
+		val abuseLogCount = abuseLogRepository.countAbuseLogByUserIdDuringWeekend(userId);
+		if(abuseLogCount >= 4){
+			abuseUserRepository.save(new AbuseUser(getUser(userId)));
+			throw new AbuseException(IS_ABUSE_USER.getMessage());
+		}
+		return abuseLogCount;
+	}
+
+	public void createAbuseUser(Long userId){
+		abuseUserRepository.save(new AbuseUser(getUser(userId)));
 	}
 }

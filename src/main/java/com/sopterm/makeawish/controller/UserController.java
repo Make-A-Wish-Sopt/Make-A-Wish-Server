@@ -70,11 +70,12 @@ public class UserController {
             @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
             @RequestParam String name, @RequestParam String BankCode, @RequestParam String AccountNumber) throws Exception {
         userService.verifyUserAccount(memberDetails.getId(), name, BankCode, AccountNumber);
-        return ResponseEntity.ok(ApiResponse.success(SUCCESS_VERIFY_USER_ACCOUNT.getMessage()));
+        val response = userService.countAbuseLogByUser(memberDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success(SUCCESS_VERIFY_USER_ACCOUNT.getMessage(), response));
     }
 
     @Operation(summary = "어뷰징 유저 확인")
-    @GetMapping("")
+    @GetMapping("/abuse")
     public ResponseEntity<ApiResponse> checkAbuseUser(
             @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
     ){
