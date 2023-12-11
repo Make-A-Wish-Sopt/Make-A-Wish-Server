@@ -25,6 +25,7 @@ public enum ErrorMessage {
 	NULL_PRINCIPAL("principal 이 null 일 수 없습니다."),
 	NO_EXIST_USER_ACCOUNT("유저의 계좌정보가 없습니다."),
 	NOT_VALID_USER_ACCOUNT("유저의 계좌번호가 아닙니다."),
+	IS_ABUSE_USER("어뷰징 유저로 이용 불가합니다."),
 
 	/** cake **/
 	INVALID_CAKE("존재하지 않는 케이크입니다."),
