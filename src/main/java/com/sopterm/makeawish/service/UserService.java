@@ -8,6 +8,7 @@ import com.sopterm.makeawish.domain.abuse.AbuseUser;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
 import com.sopterm.makeawish.dto.user.UserAccountResponseDTO;
+import com.sopterm.makeawish.dto.user.UserAccountVerifyRequestDTO;
 import com.sopterm.makeawish.repository.PresentRepository;
 import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.repository.abuse.AbuseLogRepository;
@@ -74,11 +75,12 @@ public class UserService {
 			.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
 	}
 
-	public void verifyUserAccount(Long userId, String name, String bankCode, String AccountNumber) throws PopbillException {
+	@Transactional
+	public void verifyUserAccount(Long userId, UserAccountVerifyRequestDTO verifyRequestDTO) throws PopbillException {
 		checkAbuseUser(userId);
 		try {
-            val accountInfo = accountCheckService.CheckAccountInfo(corpNum, bankCode, AccountNumber);
-			if(!name.equals(accountInfo.getAccountName())){
+            val accountInfo = accountCheckService.CheckAccountInfo(corpNum, verifyRequestDTO.BankCode(), verifyRequestDTO.AccountNumber());
+			if(!verifyRequestDTO.name().equals(accountInfo.getAccountName())){
 				abuseLogRepository.save(new AbuseLog(getUser(userId)));
 				throw new IllegalArgumentException(NOT_VALID_USER_ACCOUNT.getMessage());
 			}
@@ -94,6 +96,7 @@ public class UserService {
                 });
 	}
 
+	@Transactional
 	public Integer countAbuseLogByUser(Long userId){
 		val abuseLogCount = abuseLogRepository.countAbuseLogByUserIdDuringWeekend(userId);
 		if(abuseLogCount >= 4){
