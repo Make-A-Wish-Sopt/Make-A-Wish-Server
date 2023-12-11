@@ -3,11 +3,13 @@ package com.sopterm.makeawish.service;
 import com.popbill.api.AccountCheckService;
 import com.popbill.api.PopbillException;
 import com.sopterm.makeawish.common.AbuseException;
+import com.sopterm.makeawish.domain.abuse.AbuseLog;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
 import com.sopterm.makeawish.dto.user.UserAccountResponseDTO;
 import com.sopterm.makeawish.repository.PresentRepository;
 import com.sopterm.makeawish.repository.UserRepository;
+import com.sopterm.makeawish.repository.abuse.AbuseLogRepository;
 import com.sopterm.makeawish.repository.abuse.AbuseUserRepository;
 import com.sopterm.makeawish.repository.wish.WishRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,6 +33,7 @@ public class UserService {
 	private final PresentRepository presentRepository;
 	private final AccountCheckService accountCheckService;
 	private final AbuseUserRepository abuseUserRepository;
+	private final AbuseLogRepository abuseLogRepository;
 
 	@Value("${popbill.businessNumber}")
 	private String corpNum;
@@ -69,12 +72,14 @@ public class UserService {
 			.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
 	}
 
-	public void verifyUserAccount(String name, String BankCode, String AccountNumber) throws PopbillException {
+	public void verifyUserAccount(Long userId, String name, String BankCode, String AccountNumber) throws PopbillException {
 		try {
             val accountInfo = accountCheckService.CheckAccountInfo(corpNum, BankCode, AccountNumber);
-
-			if(!name.equals(accountInfo.getAccountName()))
+			val user = getUser(userId);
+			if(!name.equals(accountInfo.getAccountName())){
+				abuseLogRepository.save(new AbuseLog(user));
 				throw new IllegalArgumentException(NOT_VALID_USER_ACCOUNT.getMessage());
+			}
 		} catch (PopbillException e) {
 			throw new PopbillException(e.getCode(), e.getMessage());
 		}
@@ -85,5 +90,9 @@ public class UserService {
 				.ifPresent(abuseUser -> {
 					throw new AbuseException(IS_ABUSE_USER.getMessage());
                 });
+	}
+
+	public Integer countAbuseLogByUser(Long userId){
+		return abuseLogRepository.countAbuseLogByUserIdDuringWeekend(userId);
 	}
 }

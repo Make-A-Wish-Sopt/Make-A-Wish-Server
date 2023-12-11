@@ -65,10 +65,11 @@ public class UserController {
     }
 
     @Operation(summary = "계좌 실명 조회")
-    @GetMapping("/verify-account")
+    @PostMapping("/verify-account")
     public ResponseEntity<ApiResponse> checkAccountInformation(
+            @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
             @RequestParam String name, @RequestParam String BankCode, @RequestParam String AccountNumber) throws Exception {
-        userService.verifyUserAccount(name, BankCode, AccountNumber);
+        userService.verifyUserAccount(memberDetails.getId(), name, BankCode, AccountNumber);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_VERIFY_USER_ACCOUNT.getMessage()));
     }
 
@@ -78,6 +79,7 @@ public class UserController {
             @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
     ){
         userService.checkAbuseUser(memberDetails.getId());
-        return ResponseEntity.ok(ApiResponse.success(IS_NOT_ABUSE_USER.getMessage()));
+        val response = userService.countAbuseLogByUser(memberDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success(IS_NOT_ABUSE_USER.getMessage(), response));
     }
 }
