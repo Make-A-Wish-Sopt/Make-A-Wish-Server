@@ -78,6 +78,6 @@ public class UserController {
             @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
     ){
         userService.checkAbuseUser(memberDetails.getId());
-        return ResponseEntity.ok(ApiResponse.success("어뷰징 유저가 아닙니다."));
+        return ResponseEntity.ok(ApiResponse.success(IS_NOT_ABUSE_USER.getMessage()));
     }
 }
