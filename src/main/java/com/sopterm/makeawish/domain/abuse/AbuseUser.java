@@ -14,7 +14,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor
 public class AbuseUser {
     @Id
