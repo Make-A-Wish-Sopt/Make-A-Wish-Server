@@ -1,10 +1,10 @@
 package com.sopterm.makeawish.controller;
 
+import com.popbill.api.PopbillException;
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.user.InternalMemberDetails;
 import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
 import com.sopterm.makeawish.service.UserService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -57,5 +57,13 @@ public class UserController {
     ) {
         userService.deleteUser(memberDetails.getId());
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_DELETE_USER.getMessage()));
+    }
+
+    @Operation(summary = "계좌 실명 조회")
+    @GetMapping("/verify-account")
+    public ResponseEntity<ApiResponse> checkAccountInformation(
+            @RequestParam String name, @RequestParam String BankCode, @RequestParam String AccountNumber) throws Exception {
+        userService.verifyUserAccount(name, BankCode, AccountNumber);
+        return ResponseEntity.ok(ApiResponse.success(SUCCESS_VERIFY_USER_ACCOUNT.getMessage()));
     }
 }

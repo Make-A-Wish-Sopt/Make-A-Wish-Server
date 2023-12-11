@@ -1,21 +1,24 @@
 package com.sopterm.makeawish.service;
 
-import static com.sopterm.makeawish.common.message.ErrorMessage.*;
-import static java.util.Objects.*;
-
-import com.sopterm.makeawish.repository.PresentRepository;
-import com.sopterm.makeawish.repository.wish.WishRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.popbill.api.AccountCheckInfo;
+import com.popbill.api.AccountCheckService;
+import com.popbill.api.PopbillException;
 import com.sopterm.makeawish.domain.user.User;
-import com.sopterm.makeawish.dto.user.UserAccountResponseDTO;
 import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
+import com.sopterm.makeawish.dto.user.UserAccountResponseDTO;
+import com.sopterm.makeawish.repository.PresentRepository;
 import com.sopterm.makeawish.repository.UserRepository;
-
+import com.sopterm.makeawish.repository.wish.WishRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.sopterm.makeawish.common.message.ErrorMessage.*;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,10 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final WishRepository wishRepository;
 	private final PresentRepository presentRepository;
+	private final AccountCheckService accountCheckService;
+
+	@Value("${popbill.businessNumber}")
+	private String corpNum;
 
 	public UserAccountResponseDTO getUserAccount(Long userId) {
 		val wisher = getUser(userId);
@@ -58,5 +65,16 @@ public class UserService {
 	private User getUser(Long userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
+	}
+
+	public void verifyUserAccount(String name, String BankCode, String AccountNumber) throws PopbillException {
+		try {
+            val accountInfo = accountCheckService.CheckAccountInfo(corpNum, BankCode, AccountNumber);
+
+			if(!name.equals(accountInfo.getAccountName()))
+				throw new IllegalArgumentException(NOT_VALID_USER_ACCOUNT.getMessage());
+		} catch (PopbillException e) {
+			throw new PopbillException(e.getCode(), e.getMessage());
+		}
 	}
 }
