@@ -82,4 +82,10 @@ public class ErrorHandler {
 		val response = ApiResponse.fail(exception.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
+
+	@ExceptionHandler(AbuseException.class)
+	public ResponseEntity<ApiResponse> abuseException(AbuseException exception){
+		val response = ApiResponse.fail(exception.getMessage());
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
 }
