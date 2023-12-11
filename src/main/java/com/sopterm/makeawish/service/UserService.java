@@ -1,13 +1,14 @@
 package com.sopterm.makeawish.service;
 
-import com.popbill.api.AccountCheckInfo;
 import com.popbill.api.AccountCheckService;
 import com.popbill.api.PopbillException;
+import com.sopterm.makeawish.common.AbuseException;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
 import com.sopterm.makeawish.dto.user.UserAccountResponseDTO;
 import com.sopterm.makeawish.repository.PresentRepository;
 import com.sopterm.makeawish.repository.UserRepository;
+import com.sopterm.makeawish.repository.abuse.AbuseUserRepository;
 import com.sopterm.makeawish.repository.wish.WishRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class UserService {
 	private final WishRepository wishRepository;
 	private final PresentRepository presentRepository;
 	private final AccountCheckService accountCheckService;
+	private final AbuseUserRepository abuseUserRepository;
 
 	@Value("${popbill.businessNumber}")
 	private String corpNum;
@@ -76,5 +78,12 @@ public class UserService {
 		} catch (PopbillException e) {
 			throw new PopbillException(e.getCode(), e.getMessage());
 		}
+	}
+
+	public void checkAbuseUser(Long userId){
+		abuseUserRepository.findAbuseUserByUserId(userId)
+				.ifPresent(abuseUser -> {
+					throw new AbuseException(IS_ABUSE_USER.getMessage());
+                });
 	}
 }

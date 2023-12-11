@@ -1,6 +1,7 @@
 package com.sopterm.makeawish.controller;
 
 import com.popbill.api.PopbillException;
+import com.popbill.api.Response;
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.user.InternalMemberDetails;
 import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
@@ -14,6 +15,10 @@ import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import javax.swing.text.html.parser.Entity;
+
+import java.net.http.HttpResponse;
 
 import static com.sopterm.makeawish.common.message.ErrorMessage.NO_EXIST_USER_ACCOUNT;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
@@ -65,5 +70,14 @@ public class UserController {
             @RequestParam String name, @RequestParam String BankCode, @RequestParam String AccountNumber) throws Exception {
         userService.verifyUserAccount(name, BankCode, AccountNumber);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_VERIFY_USER_ACCOUNT.getMessage()));
+    }
+
+    @Operation(summary = "어뷰징 유저 확인")
+    @GetMapping("")
+    public ResponseEntity<ApiResponse> checkAbuseUser(
+            @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
+    ){
+        userService.checkAbuseUser(memberDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success("어뷰징 유저가 아닙니다."));
     }
 }
