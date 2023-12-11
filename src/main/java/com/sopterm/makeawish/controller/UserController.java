@@ -5,6 +5,7 @@ import com.popbill.api.Response;
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.user.InternalMemberDetails;
 import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
+import com.sopterm.makeawish.dto.user.UserAccountVerifyRequestDTO;
 import com.sopterm.makeawish.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -68,8 +69,8 @@ public class UserController {
     @PostMapping("/verify-account")
     public ResponseEntity<ApiResponse> checkAccountInformation(
             @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
-            @RequestParam String name, @RequestParam String BankCode, @RequestParam String AccountNumber) throws Exception {
-        userService.verifyUserAccount(memberDetails.getId(), name, BankCode, AccountNumber);
+            @RequestBody UserAccountVerifyRequestDTO verifyRequestDTO) throws Exception {
+        userService.verifyUserAccount(memberDetails.getId(), verifyRequestDTO);
         val response = userService.countAbuseLogByUser(memberDetails.getId());
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_VERIFY_USER_ACCOUNT.getMessage(), response));
     }
