@@ -27,4 +27,12 @@ public record ApiResponse(boolean success, String message, Object data) {
 			.message(message)
 			.build();
 	}
+
+	public static ApiResponse fail(String message, Object data) {
+		return ApiResponse.builder()
+				.success(false)
+				.message(message)
+				.data(data)
+				.build();
+	}
 }

@@ -18,6 +18,7 @@ public enum SuccessMessage {
 	SUCCESS_UPDATE_USER_ACCOUNT_INFO("유저 계좌정보 수정 성공"),
 	SUCCESS_DELETE_USER("회원 탈퇴 성공"),
 	SUCCESS_VERIFY_USER_ACCOUNT("유저 계좌정보 인증 성공"),
+	IS_NOT_ABUSE_USER("어뷰징 유저가 아닙니다."),
 
 	/** wish **/
 	SUCCESS_CREATE_WISH("소원 링크 생성 성공"),
