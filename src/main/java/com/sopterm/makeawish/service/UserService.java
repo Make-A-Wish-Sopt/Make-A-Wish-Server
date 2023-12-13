@@ -1,5 +1,6 @@
 package com.sopterm.makeawish.service;
 
+import com.popbill.api.AccountCheckInfo;
 import com.popbill.api.AccountCheckService;
 import com.popbill.api.PopbillException;
 import com.sopterm.makeawish.common.AbuseException;
@@ -40,6 +41,7 @@ public class UserService {
 
 	@Value("${popbill.businessNumber}")
 	private String corpNum;
+	private static final int ABUSE_CAUTION_COUNT = 4;
 
 	public UserAccountResponseDTO getUserAccount(Long userId) {
 		val wisher = getUser(userId);
@@ -76,17 +78,22 @@ public class UserService {
 	}
 
 	@Transactional
-	public void verifyUserAccount(Long userId, UserAccountVerifyRequestDTO verifyRequestDTO) throws PopbillException {
+	public Integer verifyUserAccount(Long userId, UserAccountVerifyRequestDTO verifyRequestDTO) throws PopbillException {
 		checkAbuseUser(userId);
+		var response = 0;
 		try {
-            val accountInfo = accountCheckService.CheckAccountInfo(corpNum, verifyRequestDTO.BankCode(), verifyRequestDTO.AccountNumber());
-			if(!verifyRequestDTO.name().equals(accountInfo.getAccountName())){
-				abuseLogRepository.save(new AbuseLog(getUser(userId)));
-				throw new IllegalArgumentException(NOT_VALID_USER_ACCOUNT.getMessage());
+			val accountInfo = accountCheckService.CheckAccountInfo(corpNum, verifyRequestDTO.BankCode(), verifyRequestDTO.AccountNumber());
+			if (!verifyRequestDTO.name().equals(accountInfo.getAccountName())) {
+				val abuseLog = AbuseLog.builder()
+						.user(getUser(userId))
+						.build();
+				abuseLogRepository.save(abuseLog);
+				response = countAbuseLogByUser(userId);
 			}
-		} catch (PopbillException e) {
+		} catch (PopbillException e){
 			throw new PopbillException(e.getCode(), e.getMessage());
 		}
+		return response;
 	}
 
 	public void checkAbuseUser(Long userId){
@@ -99,13 +106,13 @@ public class UserService {
 	@Transactional
 	public Integer countAbuseLogByUser(Long userId){
 		val abuseLogCount = abuseLogRepository.countAbuseLogByUserIdDuringWeekend(userId);
-		if(abuseLogCount >= 4){
-			abuseUserRepository.save(new AbuseUser(getUser(userId)));
-			throw new AbuseException(IS_ABUSE_USER.getMessage());
+		if(abuseLogCount >= ABUSE_CAUTION_COUNT){
+			createAbuseUser(userId);
 		}
 		return abuseLogCount;
 	}
 
+	@Transactional
 	public void createAbuseUser(Long userId){
 		abuseUserRepository.save(new AbuseUser(getUser(userId)));
 	}
