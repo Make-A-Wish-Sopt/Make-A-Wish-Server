@@ -5,6 +5,7 @@ import com.sopterm.makeawish.domain.user.InternalMemberDetails;
 import com.sopterm.makeawish.dto.wish.UserWishUpdateRequestDTO;
 import com.sopterm.makeawish.dto.wish.WishIdRequestDTO;
 import com.sopterm.makeawish.dto.wish.WishRequestDTO;
+import com.sopterm.makeawish.service.AbuseService;
 import com.sopterm.makeawish.service.UserService;
 import com.sopterm.makeawish.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +37,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class WishController {
 
 	private final WishService wishService;
-	private final UserService userService;
+	private final AbuseService abuseService;
 
 	@Operation(summary = "소원 링크 생성")
 	@PostMapping
@@ -44,7 +45,7 @@ public class WishController {
 		@Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
 		@RequestBody WishRequestDTO requestDTO
 	) {
-		userService.checkAbuseUser(memberDetails.getId());
+		abuseService.checkAbuseUser(memberDetails.getId());
 		val wishId = wishService.createWish(memberDetails.getId(), requestDTO);
 		return ResponseEntity
 			.created(getURI(wishId))

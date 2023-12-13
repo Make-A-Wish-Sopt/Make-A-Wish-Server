@@ -2,17 +2,13 @@ package com.sopterm.makeawish.service;
 
 import com.popbill.api.AccountCheckService;
 import com.popbill.api.PopbillException;
-import com.sopterm.makeawish.common.AbuseException;
 import com.sopterm.makeawish.domain.abuse.AbuseLog;
-import com.sopterm.makeawish.domain.abuse.AbuseUser;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
 import com.sopterm.makeawish.dto.user.UserAccountResponseDTO;
 import com.sopterm.makeawish.dto.user.UserAccountVerifyRequestDTO;
 import com.sopterm.makeawish.repository.PresentRepository;
 import com.sopterm.makeawish.repository.UserRepository;
-import com.sopterm.makeawish.repository.abuse.AbuseLogRepository;
-import com.sopterm.makeawish.repository.abuse.AbuseUserRepository;
 import com.sopterm.makeawish.repository.wish.WishRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.sopterm.makeawish.common.message.ErrorMessage.*;
+import static com.sopterm.makeawish.common.message.ErrorMessage.INVALID_USER;
+import static com.sopterm.makeawish.common.message.ErrorMessage.NO_EXIST_USER_ACCOUNT;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -34,8 +31,7 @@ public class UserService {
     private final WishRepository wishRepository;
     private final PresentRepository presentRepository;
     private final AccountCheckService accountCheckService;
-    private final AbuseUserRepository abuseUserRepository;
-    private final AbuseLogRepository abuseLogRepository;
+    private final AbuseService abuseService;
 
     @Value("${popbill.businessNumber}")
     private String corpNum;
@@ -70,14 +66,14 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    private User getUser(Long userId) {
+    public User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
     }
 
     @Transactional
     public Integer verifyUserAccount(Long userId, UserAccountVerifyRequestDTO verifyRequestDTO) throws PopbillException {
-        checkAbuseUser(userId);
+        abuseService.checkAbuseUser(userId);
         var response = 0;
         try {
             val accountInfo = accountCheckService.CheckAccountInfo(corpNum, verifyRequestDTO.BankCode(), verifyRequestDTO.AccountNumber());
@@ -85,33 +81,12 @@ public class UserService {
                 val abuseLog = AbuseLog.builder()
                         .user(getUser(userId))
                         .build();
-                abuseLogRepository.save(abuseLog);
-                response = countAbuseLogByUser(userId);
+                abuseService.createAbuseLog(abuseLog);
+                response = abuseService.countAbuseLogByUser(userId);
             }
         } catch (PopbillException e) {
             throw new PopbillException(e.getCode(), e.getMessage());
         }
         return response;
-    }
-
-    public void checkAbuseUser(Long userId) {
-        abuseUserRepository.findAbuseUserByUserId(userId)
-                .ifPresent(abuseUser -> {
-                    throw new AbuseException(IS_ABUSE_USER.getMessage());
-                });
-    }
-
-    @Transactional
-    public Integer countAbuseLogByUser(Long userId) {
-        val abuseLogCount = abuseLogRepository.countAbuseLogByUserIdDuringWeekend(userId);
-        if (abuseLogCount >= ABUSE_CAUTION_COUNT) {
-            createAbuseUser(userId);
-        }
-        return abuseLogCount;
-    }
-
-    @Transactional
-    public void createAbuseUser(Long userId) {
-        abuseUserRepository.save(new AbuseUser(getUser(userId)));
     }
 }

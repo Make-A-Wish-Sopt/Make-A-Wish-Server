@@ -25,7 +25,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("유효하지 않은 기관코드인 경우 예외 발생")
-    void 계좌_연동_실패() throws PopbillException {
+    void failCheckAcountInfo() throws PopbillException {
         // given
         String corpNum = "0123456789";
         UserAccountVerifyRequestDTO requestDTO = UserAccountVerifyRequestDTO.builder()

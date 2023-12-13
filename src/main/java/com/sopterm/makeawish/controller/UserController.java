@@ -4,6 +4,7 @@ import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.user.InternalMemberDetails;
 import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
 import com.sopterm.makeawish.dto.user.UserAccountVerifyRequestDTO;
+import com.sopterm.makeawish.service.AbuseService;
 import com.sopterm.makeawish.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,6 +29,7 @@ import static java.util.Objects.nonNull;
 public class UserController {
 
     private final UserService userService;
+    private final AbuseService abuseService;
     private static final int VERIFY_ACCOUNT_SUCCESS = 0;
 
     @Operation(summary = "유저 계좌 정보 가져오기")
@@ -77,8 +79,8 @@ public class UserController {
     public ResponseEntity<ApiResponse> checkAbuseUser(
             @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
     ) {
-        userService.checkAbuseUser(memberDetails.getId());
-        val response = userService.countAbuseLogByUser(memberDetails.getId());
+        abuseService.checkAbuseUser(memberDetails.getId());
+        val response = abuseService.countAbuseLogByUser(memberDetails.getId());
         return ResponseEntity.ok(ApiResponse.success(IS_NOT_ABUSE_USER.getMessage(), response));
     }
 }
