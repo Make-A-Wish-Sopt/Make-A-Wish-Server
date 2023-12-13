@@ -1,7 +1,5 @@
 package com.sopterm.makeawish.controller;
 
-import com.popbill.api.PopbillException;
-import com.popbill.api.Response;
 import com.sopterm.makeawish.common.ApiResponse;
 import com.sopterm.makeawish.domain.user.InternalMemberDetails;
 import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
@@ -17,10 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.parser.Entity;
-
-import java.net.http.HttpResponse;
-
+import static com.sopterm.makeawish.common.message.ErrorMessage.NOT_VALID_USER_ACCOUNT;
 import static com.sopterm.makeawish.common.message.ErrorMessage.NO_EXIST_USER_ACCOUNT;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import static java.util.Objects.nonNull;
@@ -33,6 +28,7 @@ import static java.util.Objects.nonNull;
 public class UserController {
 
     private final UserService userService;
+    private static final int VERIFY_ACCOUNT_SUCCESS = 0;
 
     @Operation(summary = "유저 계좌 정보 가져오기")
     @GetMapping("/account")
@@ -70,16 +66,17 @@ public class UserController {
     public ResponseEntity<ApiResponse> checkAccountInformation(
             @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
             @RequestBody UserAccountVerifyRequestDTO verifyRequestDTO) throws Exception {
-        userService.verifyUserAccount(memberDetails.getId(), verifyRequestDTO);
-        val response = userService.countAbuseLogByUser(memberDetails.getId());
-        return ResponseEntity.ok(ApiResponse.success(SUCCESS_VERIFY_USER_ACCOUNT.getMessage(), response));
+        val response = userService.verifyUserAccount(memberDetails.getId(), verifyRequestDTO);
+        return response == VERIFY_ACCOUNT_SUCCESS
+                ? ResponseEntity.ok(ApiResponse.success(SUCCESS_VERIFY_USER_ACCOUNT.getMessage()))
+                : ResponseEntity.ok(ApiResponse.fail(NOT_VALID_USER_ACCOUNT.getMessage(), response));
     }
 
     @Operation(summary = "어뷰징 유저 확인")
     @GetMapping("/abuse")
     public ResponseEntity<ApiResponse> checkAbuseUser(
             @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails
-    ){
+    ) {
         userService.checkAbuseUser(memberDetails.getId());
         val response = userService.countAbuseLogByUser(memberDetails.getId());
         return ResponseEntity.ok(ApiResponse.success(IS_NOT_ABUSE_USER.getMessage(), response));
