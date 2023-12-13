@@ -3,13 +3,17 @@ package com.sopterm.makeawish.service;
 import com.sopterm.makeawish.common.AbuseException;
 import com.sopterm.makeawish.domain.abuse.AbuseLog;
 import com.sopterm.makeawish.domain.abuse.AbuseUser;
+import com.sopterm.makeawish.domain.user.User;
+import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.repository.abuse.AbuseLogRepository;
 import com.sopterm.makeawish.repository.abuse.AbuseUserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.sopterm.makeawish.common.message.ErrorMessage.INVALID_USER;
 import static com.sopterm.makeawish.common.message.ErrorMessage.IS_ABUSE_USER;
 
 @Service
@@ -18,13 +22,12 @@ import static com.sopterm.makeawish.common.message.ErrorMessage.IS_ABUSE_USER;
 public class AbuseService {
     private final AbuseLogRepository abuseLogRepository;
     private final AbuseUserRepository abuseUserRepository;
-    private final UserService userService;
-
+    private final UserRepository userRepository;
     private static final int ABUSE_CAUTION_COUNT = 4;
 
     @Transactional
     public void createAbuseUser(Long userId) {
-        abuseUserRepository.save(new AbuseUser(userService.getUser(userId)));
+        abuseUserRepository.save(new AbuseUser(getUser(userId)));
     }
 
     public void checkAbuseUser(Long userId) {
@@ -45,5 +48,10 @@ public class AbuseService {
 
     public void createAbuseLog(AbuseLog abuseLog){
         abuseLogRepository.save(abuseLog);
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
     }
 }

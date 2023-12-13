@@ -66,7 +66,7 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public User getUser(Long userId) {
+    private User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
     }
