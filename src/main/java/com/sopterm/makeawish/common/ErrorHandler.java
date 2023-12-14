@@ -80,7 +80,7 @@ public class ErrorHandler {
 	@ExceptionHandler(PopbillException.class)
 	public ResponseEntity<ApiResponse> popbillException(PopbillException exception){
 		val response = ApiResponse.fail(exception.getMessage());
-		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
 	}
 
 	@ExceptionHandler(AbuseException.class)
