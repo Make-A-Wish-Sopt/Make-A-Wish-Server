@@ -1,19 +1,28 @@
 package com.sopterm.makeawish.service.social;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonParser;
 import com.sopterm.makeawish.domain.user.InternalTokenManager;
 import com.sopterm.makeawish.domain.user.KakaoTokenManager;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.dto.auth.AuthSignInRequestDTO;
 import com.sopterm.makeawish.dto.auth.AuthSignInResponseDTO;
+import com.sopterm.makeawish.external.SlackClient;
 import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.service.SocialLoginService;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KakaoLoginService implements SocialLoginService {
@@ -21,7 +30,8 @@ public class KakaoLoginService implements SocialLoginService {
     private final UserRepository userRepository;
     private final InternalTokenManager tokenManager;
     private final KakaoTokenManager kakaoTokenManager;
-
+    private final SlackClient slackClient;
+    private final ObjectMapper jsonMapper = new ObjectMapper();
     @Override
     public AuthSignInResponseDTO socialLogin(String code, String redirectUri) {
         String kakaoAccessToken = null;
