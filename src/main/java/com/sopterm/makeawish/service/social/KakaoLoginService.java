@@ -27,6 +27,8 @@ import static com.sopterm.makeawish.common.message.ErrorMessage.*;
 @RequiredArgsConstructor
 public class KakaoLoginService implements SocialLoginService {
 
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
     private final UserRepository userRepository;
     private final InternalTokenManager tokenManager;
     private final KakaoTokenManager kakaoTokenManager;
