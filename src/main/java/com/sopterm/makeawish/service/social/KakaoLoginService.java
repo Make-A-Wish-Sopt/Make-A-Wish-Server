@@ -56,6 +56,15 @@ public class KakaoLoginService implements SocialLoginService {
                 .orElseGet(() -> signup(request));
     }
     private User signup(AuthSignInRequestDTO request) {
+
+        try {
+            if (Objects.equals(activeProfile, "dev")) {
+                val slackRequest = createSlackRequest(request.nickname(), request.email(), request.createdAt(), String.valueOf(request.socialType()));
+                slackClient.postMessage(slackRequest.toString());
+            }
+        } catch (RuntimeException ex) {
+            log.error("슬랙 요청이 실패했습니다 : " + ex.getMessage());
+        }
         return userRepository.save(new User(request));
     }
 
