@@ -58,4 +58,36 @@ public class KakaoLoginService implements SocialLoginService {
     private User signup(AuthSignInRequestDTO request) {
         return userRepository.save(new User(request));
     }
+
+    private JsonNode createSlackRequest(String nickname, String email, LocalDateTime createdAt, String socialType) {
+        val rootNode = jsonMapper.createObjectNode();
+        rootNode.put("text", "새로운 유저가 가입했어요!");
+        val blocks = jsonMapper.createArrayNode();
+
+        val textField = jsonMapper.createObjectNode();
+        textField.put("type", "section");
+        textField.set("text", createTextFieldNode("새로운 유저가 가입했어요!"));
+
+        val contentNode = jsonMapper.createObjectNode();
+        contentNode.put("type", "section");
+        val fields = jsonMapper.createArrayNode();
+        fields.add(createTextFieldNode("*이름:*\n" + nickname));
+        fields.add(createTextFieldNode("*이메알:*\n"+ email));
+        fields.add(createTextFieldNode("*가입 시간:*\n" + createdAt));
+        fields.add(createTextFieldNode("*소셜:*\n" + socialType));
+        contentNode.set("fields", fields);
+
+        blocks.add(textField);
+        blocks.add(contentNode);
+        rootNode.set("blocks", blocks);
+        return rootNode;
+    }
+
+    private JsonNode createTextFieldNode (String text) {
+        val textField = jsonMapper.createObjectNode();
+        textField.put("type", "mrkdwn");
+        textField.put("text", text);
+        return textField;
+    }
+
 }
