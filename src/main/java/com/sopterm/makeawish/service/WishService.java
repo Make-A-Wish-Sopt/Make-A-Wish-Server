@@ -2,10 +2,11 @@ package com.sopterm.makeawish.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sopterm.makeawish.common.message.slack.SlackErrorMessage;
+import com.sopterm.makeawish.common.message.slack.SlackSuccessMessage;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.wish.*;
-import com.sopterm.makeawish.external.SlackClient;
 import com.sopterm.makeawish.external.SlackWishClient;
 import com.sopterm.makeawish.repository.PresentRepository;
 import com.sopterm.makeawish.repository.UserRepository;
@@ -23,10 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import static com.sopterm.makeawish.common.Util.convertToDate;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
+import static com.sopterm.makeawish.common.message.slack.SlackField.*;
 import static com.sopterm.makeawish.domain.wish.WishStatus.*;
 import static java.util.Objects.nonNull;
 
@@ -60,7 +61,7 @@ public class WishService {
 			val wishSlackRequest = createSlackWishRequest(wish);
 			slackWishClient.postWishMessage(wishSlackRequest.toString());
 		} catch (RuntimeException e) {
-			log.error("슬랙 요청이 실패했습니다. : " + e.getMessage());
+			log.error(SlackErrorMessage.POST_REQUEST_ERROR.getMessage() + e.getMessage());
 		}
 		return wishRepository.save(wish).getId();
 	}
@@ -185,30 +186,30 @@ public class WishService {
 
 	private JsonNode createSlackWishRequest(Wish wish) {
 		val rootNode = jsonMapper.createObjectNode();
-		rootNode.put("text", "새로운 소원이 생성되었어요!");
+		rootNode.put(TEXT, SlackSuccessMessage.SUCCESS_CREATE_WISH.getMessage());
 		val blocks = jsonMapper.createArrayNode();
 
 		val textField = jsonMapper.createObjectNode();
-		textField.put("type", "section");
-		textField.set("text", createTextFieldNode("새로운 소원이 생성되었어요!"));
+		textField.put(TYPE, SECTION);
+		textField.set(TEXT, createTextFieldNode(SlackSuccessMessage.SUCCESS_CREATE_WISH.getMessage()));
 
 		val contentNode = jsonMapper.createObjectNode();
-		contentNode.put("type", "section");
+		contentNode.put(TYPE, SECTION);
 		val fields = jsonMapper.createArrayNode();
-		fields.add(createTextFieldNode("*이름:*"+ StringUtils.LF + wish.getWisher().getNickname()));
-		fields.add(createTextFieldNode("*생일 주간 기간:*"+ StringUtils.LF + wish.getStartAt() + " ~ " + wish.getEndAt()));
-		contentNode.set("fields", fields);
+		fields.add(createTextFieldNode(USER_NAME + StringUtils.LF + wish.getWisher().getNickname()));
+		fields.add(createTextFieldNode(USER_WISH_PERIOD + StringUtils.LF + wish.getStartAt() + " ~ " + wish.getEndAt()));
+		contentNode.set(FIELDS, fields);
 
 		blocks.add(textField);
 		blocks.add(contentNode);
-		rootNode.set("blocks", blocks);
+		rootNode.set(BLOCKS, blocks);
 		return rootNode;
 	}
 
 	private JsonNode createTextFieldNode (String text) {
 		val textField = jsonMapper.createObjectNode();
-		textField.put("type", "mrkdwn");
-		textField.put("text", text);
+		textField.put(TYPE, MARKDOWN);
+		textField.put(TEXT, text);
 		return textField;
 	}
 
