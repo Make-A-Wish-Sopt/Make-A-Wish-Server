@@ -1,8 +1,12 @@
 package com.sopterm.makeawish.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.wish.*;
+import com.sopterm.makeawish.external.SlackClient;
+import com.sopterm.makeawish.external.SlackWishClient;
 import com.sopterm.makeawish.repository.PresentRepository;
 import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.repository.wish.WishRepository;
@@ -10,13 +14,16 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static com.sopterm.makeawish.common.Util.convertToDate;
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
@@ -29,9 +36,13 @@ import static java.util.Objects.nonNull;
 @Transactional(readOnly = true)
 public class WishService {
 
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
 	private final WishRepository wishRepository;
 	private final UserRepository userRepository;
 	private final PresentRepository presentRepository;
+	private final SlackWishClient slackWishClient;
+	private final ObjectMapper jsonMapper = new ObjectMapper();
 
 	private final int EXPIRY_DAY = 7;
 
@@ -45,6 +56,12 @@ public class WishService {
 		val to = convertToDate(requestDTO.endDate());
 		validateWishDate(wisher, from, to);
 		val wish = requestDTO.toEntity(wisher);
+		try {
+			val wishSlackRequest = createSlackWishRequest(wish);
+			slackWishClient.postWishMessage(wishSlackRequest.toString());
+		} catch (RuntimeException e) {
+			log.error("슬랙 요청이 실패했습니다. : " + e.getMessage());
+		}
 		return wishRepository.save(wish).getId();
 	}
 
@@ -165,4 +182,34 @@ public class WishService {
 			.findMainWish(user, 0)
 			.orElseThrow(() -> new EntityNotFoundException(NO_WISH.getMessage()));
 	}
+
+	private JsonNode createSlackWishRequest(Wish wish) {
+		val rootNode = jsonMapper.createObjectNode();
+		rootNode.put("text", "새로운 소원이 생성되었어요!");
+		val blocks = jsonMapper.createArrayNode();
+
+		val textField = jsonMapper.createObjectNode();
+		textField.put("type", "section");
+		textField.set("text", createTextFieldNode("새로운 소원이 생성되었어요!"));
+
+		val contentNode = jsonMapper.createObjectNode();
+		contentNode.put("type", "section");
+		val fields = jsonMapper.createArrayNode();
+		fields.add(createTextFieldNode("*이름:*"+ StringUtils.LF + wish.getWisher().getNickname()));
+		fields.add(createTextFieldNode("*생일 주간 기간:*"+ StringUtils.LF + wish.getStartAt() + " ~ " + wish.getEndAt()));
+		contentNode.set("fields", fields);
+
+		blocks.add(textField);
+		blocks.add(contentNode);
+		rootNode.set("blocks", blocks);
+		return rootNode;
+	}
+
+	private JsonNode createTextFieldNode (String text) {
+		val textField = jsonMapper.createObjectNode();
+		textField.put("type", "mrkdwn");
+		textField.put("text", text);
+		return textField;
+	}
+
 }
