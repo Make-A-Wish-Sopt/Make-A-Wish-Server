@@ -81,7 +81,7 @@ public class KakaoLoginService implements SocialLoginService {
         contentNode.put("type", "section");
         val fields = jsonMapper.createArrayNode();
         fields.add(createTextFieldNode("*이름:*\n" + nickname));
-        fields.add(createTextFieldNode("*이메알:*\n"+ email));
+        fields.add(createTextFieldNode("*이메일:*\n"+ email));
         fields.add(createTextFieldNode("*가입 시간:*\n" + createdAt));
         fields.add(createTextFieldNode("*소셜:*\n" + socialType));
         contentNode.set("fields", fields);
