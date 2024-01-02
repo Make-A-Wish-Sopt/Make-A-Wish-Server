@@ -45,7 +45,7 @@ public class WishService {
 	private final SlackWishClient slackWishClient;
 	private final ObjectMapper jsonMapper = new ObjectMapper();
 
-	private final int EXPIRY_DAY = 7;
+	private final int EXPIRY_DAY = 0;
 
 	@Transactional
 	public Long createWish(Long userId, WishRequestDTO requestDTO) {
