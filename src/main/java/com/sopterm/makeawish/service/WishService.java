@@ -125,9 +125,9 @@ public class WishService {
 			val startDate = nonNull(request.startDate()) ? convertToDate(request.startDate()) : null;
 			val endDate = nonNull(request.endDate()) ? convertToDate(request.endDate()) : null;
 			wish.updateTerm(startDate, endDate);
-			wish.updateContent(request.imageUrl(), request.price(), request.title(), request.hint(), request.initial());
 		}
 		if (status.equals(BEFORE) || status.equals(WHILE)) {
+			wish.updateContent(request.imageUrl(), request.price(), request.title(), request.hint(), request.initial());
 			wisher.updateProfile(request.name(), request.bankName(), request.account(), request.phone());
 		}
 
