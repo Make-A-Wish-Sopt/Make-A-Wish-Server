@@ -45,7 +45,7 @@ public class WishService {
 	private final SlackWishClient slackWishClient;
 	private final ObjectMapper jsonMapper = new ObjectMapper();
 
-	private final int EXPIRY_DAY = 0;
+	private final int EXPIRY_DAY = 7;
 
 	@Transactional
 	public Long createWish(Long userId, WishRequestDTO requestDTO) {
@@ -125,9 +125,9 @@ public class WishService {
 			val startDate = nonNull(request.startDate()) ? convertToDate(request.startDate()) : null;
 			val endDate = nonNull(request.endDate()) ? convertToDate(request.endDate()) : null;
 			wish.updateTerm(startDate, endDate);
-			wish.updateContent(request.imageUrl(), request.price(), request.title(), request.hint(), request.initial());
 		}
 		if (status.equals(BEFORE) || status.equals(WHILE)) {
+			wish.updateContent(request.imageUrl(), request.price(), request.title(), request.hint(), request.initial());
 			wisher.updateProfile(request.name(), request.bankName(), request.account(), request.phone());
 		}
 
