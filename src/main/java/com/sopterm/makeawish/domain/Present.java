@@ -6,18 +6,19 @@ import static java.util.Objects.*;
 
 import com.sopterm.makeawish.domain.wish.Wish;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Present {
 
 	@Id @GeneratedValue(strategy = IDENTITY)
@@ -36,6 +37,9 @@ public class Present {
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "cake_id")
 	private Cake cake;
+
+	@CreatedDate
+	protected LocalDateTime createdAt;
 
 	public static class PresentBuilder {
 		private String name;
