@@ -130,7 +130,6 @@ public class CakeService {
         return cakeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(INVALID_CAKE.getMessage()));
     }
 
-    @Cacheable(cacheNames = "allPresentsList")
     public List<PresentDTO> getPresents(Long userId, Long wishId) {
         val wish = wishService.getWish(wishId);
         if (!isRightWisher(userId, wish))
