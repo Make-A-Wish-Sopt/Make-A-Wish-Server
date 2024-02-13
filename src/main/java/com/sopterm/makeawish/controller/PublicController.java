@@ -59,7 +59,7 @@ public class PublicController {
 		if (cake.getId() != 1) {
 			cakeService.getKakaoPayApprove(request);
 		}
-		val response = cakeService.createPresent(new CakeCreateRequest(request.name(), request.cakeId(), request.message(), request.wishId()));
+		val response = cakeService.createPresent(new CakeCreateRequest(request.name(), request.message(), request.cakeId(), request.wishId()));
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_CAKE.getMessage(), response));
 	}
 

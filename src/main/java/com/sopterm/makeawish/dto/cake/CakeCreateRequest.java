@@ -5,8 +5,8 @@ import lombok.Builder;
 @Builder
 public record CakeCreateRequest(
         String name,
-        Long cakeId,
         String message,
+        Long cakeId,
         Long wishId
 ) {
 }

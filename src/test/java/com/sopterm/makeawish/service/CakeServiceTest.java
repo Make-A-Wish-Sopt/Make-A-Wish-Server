@@ -95,7 +95,7 @@ class CakeServiceTest {
         int prevTotalPrice = wish.getTotalPrice();
 
         // when
-        cakeService.createPresent(new CakeCreateRequest("최아무", cake.getId(), "메세지", wish.getId()));
+        cakeService.createPresent(new CakeCreateRequest("최아무", "메세지", cake.getId(), wish.getId()));
 
         //then
         assertThat(prevTotalPrice).isEqualTo(wishService.getWish(wish.getId()).getTotalPrice());
@@ -111,7 +111,7 @@ class CakeServiceTest {
         int prevTotalPrice = wish.getTotalPrice();
 
         // when
-        cakeService.createPresent(new CakeCreateRequest("최아무", cake.getId(), "메세지", wish.getId()));
+        cakeService.createPresent(new CakeCreateRequest("최아무", "메세지", cake.getId(), wish.getId()));
         //then
         assertThat(prevTotalPrice).isEqualTo(wishService.getWish(wish.getId()).getTotalPrice() - cake.getPrice());
     }
