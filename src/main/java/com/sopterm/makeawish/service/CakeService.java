@@ -163,7 +163,7 @@ public class CakeService {
     }
 
     @Transactional
-    public CakeCreateResponseDTO createPresentNew(CakeCreateRequest request) {
+    public CakeCreateResponseDTO createPresent(CakeCreateRequest request) {
         val cake = getCake(request.cakeId());
         val wish = wishService.getWish(request.wishId());
         val present = Present.builder()
