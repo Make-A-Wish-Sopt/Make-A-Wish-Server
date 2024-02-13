@@ -59,15 +59,14 @@ public class PublicController {
 		if (cake.getId() != 1) {
 			cakeService.getKakaoPayApprove(request);
 		}
-		val wish = wishService.getWish(request.wishId());
-		val response = cakeService.createPresent(request.name(), cake, wish, request.message());
+		val response = cakeService.createPresent(new CakeCreateRequest(request.name(), request.message(), request.cakeId(), request.wishId()));
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_CAKE.getMessage(), response));
 	}
 
     @Operation(summary = "케이크 저장하기")
     @PostMapping("/cakes")
     public ResponseEntity<ApiResponse> createCakePresent(@RequestBody CakeCreateRequest request) {
-        val response = cakeService.createPresentNew(request);
+        val response = cakeService.createPresent(request);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_CAKE.getMessage(), response));
     }
 }
