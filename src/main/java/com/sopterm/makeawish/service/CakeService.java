@@ -112,20 +112,6 @@ public class CakeService {
         }
     }
 
-    @Transactional
-    public CakeCreateResponseDTO createPresent(String name, Cake cake, Wish wish, String message) {
-        val present = Present.builder()
-                        .name(name)
-                        .message(message)
-                        .cake(cake)
-                        .wish(wish)
-                        .build();
-        presentRepository.save(present);
-        wish.updateTotalPrice(cake.getPrice());
-        val contribute = Util.calculateContribution(cake.getPrice(), wish.getPresentPrice());
-        return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), contribute, wish.getWisher().getNickname());
-    }
-
     public Cake getCake(Long id) {
         return cakeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(INVALID_CAKE.getMessage()));
     }

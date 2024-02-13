@@ -6,6 +6,7 @@ import com.sopterm.makeawish.domain.user.AccountInfo;
 import com.sopterm.makeawish.domain.user.SocialType;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
+import com.sopterm.makeawish.dto.cake.CakeCreateRequest;
 import com.sopterm.makeawish.dto.cake.CakeReadyRequestDTO;
 import com.sopterm.makeawish.repository.CakeRepository;
 import com.sopterm.makeawish.repository.UserRepository;
@@ -94,7 +95,7 @@ class CakeServiceTest {
         int prevTotalPrice = wish.getTotalPrice();
 
         // when
-        cakeService.createPresent("최아무", cake, wish, "선물 메세지");
+        cakeService.createPresentNew(new CakeCreateRequest("최아무", cake.getId(), "메세지", wish.getId()));
 
         //then
         assertThat(prevTotalPrice).isEqualTo(wishService.getWish(wish.getId()).getTotalPrice());
@@ -110,8 +111,7 @@ class CakeServiceTest {
         int prevTotalPrice = wish.getTotalPrice();
 
         // when
-        cakeService.createPresent("최아무", cake, wish, "선물 메세지");
-
+        cakeService.createPresentNew(new CakeCreateRequest("최아무", cake.getId(), "메세지", wish.getId()));
         //then
         assertThat(prevTotalPrice).isEqualTo(wishService.getWish(wish.getId()).getTotalPrice() - cake.getPrice());
     }

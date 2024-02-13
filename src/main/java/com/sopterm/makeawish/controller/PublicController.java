@@ -60,7 +60,7 @@ public class PublicController {
 			cakeService.getKakaoPayApprove(request);
 		}
 		val wish = wishService.getWish(request.wishId());
-		val response = cakeService.createPresent(request.name(), cake, wish, request.message());
+		val response = cakeService.createPresentNew(new CakeCreateRequest(request.name(), request.cakeId(), request.message(), request.wishId()));
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_CAKE.getMessage(), response));
 	}
 
