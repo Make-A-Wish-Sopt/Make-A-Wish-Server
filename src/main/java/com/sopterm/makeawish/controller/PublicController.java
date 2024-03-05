@@ -5,6 +5,7 @@ import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import java.nio.file.AccessDeniedException;
 
 import com.sopterm.makeawish.dto.cake.CakeCreateRequest;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import lombok.val;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/public")
+@Tag(name = "Present", description = "선물하기")
 public class PublicController {
 
 	private final CakeService cakeService;
