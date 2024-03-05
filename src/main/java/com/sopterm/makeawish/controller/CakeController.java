@@ -6,6 +6,7 @@ import com.sopterm.makeawish.service.CakeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +24,7 @@ import lombok.val;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/cakes")
 @SecurityRequirement(name = "Authorization")
+@Tag(name = "Cake", description = "소원 결과")
 public class CakeController {
 
     private final CakeService cakeService;
