@@ -22,7 +22,8 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static com.sopterm.makeawish.common.message.ErrorMessage.*;
+import static com.sopterm.makeawish.common.message.ErrorMessage.FAILED_VALIDATE_KAKAO_LOGIN;
+import static com.sopterm.makeawish.common.message.ErrorMessage.INVALID_CODE;
 
 @Slf4j
 @Service
@@ -58,7 +59,10 @@ public class KakaoTokenManager {
         );
         // HTTP 응답 (JSON) -> 액세스 토큰 파싱
         String responseBody = response.getBody();
-        if(Objects.isNull(responseBody)) throw new IllegalArgumentException(INVALID_CODE.getMessage());
+        if (Objects.isNull(responseBody)) {
+            log.error("KakaoTokenManager.getAccessTokenByCode, 응답값이 없습니다. code = {}", code);
+            throw new IllegalArgumentException(INVALID_CODE.getMessage());
+        }
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         return jsonNode.get("access_token").asText();
@@ -80,6 +84,7 @@ public class KakaoTokenManager {
             br.close();
             return result;
         } catch (IOException e) {
+            log.error("KakaoTokenManager.getKakaoInfo, e = {}, socialToken = {}", e.getMessage());
             throw new IllegalArgumentException(FAILED_VALIDATE_KAKAO_LOGIN.getMessage());
         }
     }
