@@ -60,7 +60,7 @@ public class KakaoTokenManager {
         // HTTP 응답 (JSON) -> 액세스 토큰 파싱
         String responseBody = response.getBody();
         if (Objects.isNull(responseBody)) {
-            log.error("KakaoTokenManager.getAccessTokenByCode, 응답값이 없습니다.");
+            log.error("KakaoTokenManager.getAccessTokenByCode, 응답값이 없습니다. code = {}", code);
             throw new IllegalArgumentException(INVALID_CODE.getMessage());
         }
         ObjectMapper objectMapper = new ObjectMapper();
@@ -84,7 +84,7 @@ public class KakaoTokenManager {
             br.close();
             return result;
         } catch (IOException e) {
-            log.error("KakaoTokenManager.getKakaoInfo, e = {}", e.getMessage());
+            log.error("KakaoTokenManager.getKakaoInfo, e = {}, socialToken = {}", e.getMessage());
             throw new IllegalArgumentException(FAILED_VALIDATE_KAKAO_LOGIN.getMessage());
         }
     }

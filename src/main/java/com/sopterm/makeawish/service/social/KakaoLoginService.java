@@ -40,7 +40,7 @@ public class KakaoLoginService implements SocialLoginService {
         try {
             kakaoAccessToken = kakaoTokenManager.getAccessTokenByCode(code, redirectUri);
         } catch (JsonProcessingException e) {
-            log.error("KakaoLoginService.socialLogin, e = {}", e.getMessage());
+            log.error("KakaoLoginService.socialLogin, code = {}, redirectUri = {}, e = {}", code, redirectUri, e.getMessage());
             throw new IllegalArgumentException(CODE_PARSE_ERROR.getMessage());
         }
         val kakaoInfo = kakaoTokenManager.getKakaoInfo(kakaoAccessToken);
