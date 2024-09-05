@@ -78,6 +78,9 @@ dependencies {
 
     // mockito
     testImplementation 'org.mockito:mockito-core:4.8.0'
+
+    // flyway
+    implementation 'org.flywaydb:flyway-core'
 }
 
 test {
