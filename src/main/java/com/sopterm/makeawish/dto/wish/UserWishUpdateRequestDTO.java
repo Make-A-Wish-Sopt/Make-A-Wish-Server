@@ -14,6 +14,7 @@ public record UserWishUpdateRequestDTO(
 	Integer price,
 	String title,
 	String hint,
-	String initial
+	String initial,
+	boolean wantsGift
 ) {
 }
