@@ -96,4 +96,14 @@ public class Present {
     public static PresentBuilder builder() {
         return new PresentBuilder();
     }
+
+    public static Present initAdminPresent(Wish wish) {
+        Cake cake = Cake.makeAdminCake();
+        return Present.builder()
+                .cake(cake)
+                .wish(wish)
+                .name("선물주 운영자")
+                .message("초기 선물 내용")
+                .build();
+    }
 }
