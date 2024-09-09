@@ -54,9 +54,11 @@ public class Wish extends BaseEntity {
     @OneToMany(mappedBy = "wish")
     private final List<Present> presents = new ArrayList<>();
 
+    private boolean wantsGift;
+
     @Builder
     public Wish(String title, String presentImageUrl, String hint, String initial, LocalDateTime startAt,
-                LocalDateTime endAt, int presentPrice, User wisher) {
+                LocalDateTime endAt, int presentPrice, User wisher, boolean wantsGift) {
         this.title = title;
         this.presentImageUrl = presentImageUrl;
         this.hint = hint;
@@ -65,6 +67,7 @@ public class Wish extends BaseEntity {
         this.endAt = endAt;
         this.presentPrice = presentPrice;
         this.totalPrice = 0;
+        this.wantsGift = wantsGift;
         setWisher(wisher);
     }
 
@@ -91,7 +94,7 @@ public class Wish extends BaseEntity {
         }
     }
 
-    public void updateContent(String imageUrl, Integer price, String title, String hint, String initial) {
+    public void updateContent(String imageUrl, Integer price, String title, String hint, String initial, boolean wantsGift) {
         if (nonNull(imageUrl)) {
             this.presentImageUrl = imageUrl;
         }
@@ -106,6 +109,9 @@ public class Wish extends BaseEntity {
         }
         if (nonNull(initial)) {
             this.initial = initial;
+        }
+        if(nonNull(wantsGift)) {
+            this.wantsGift = wantsGift;
         }
     }
 
