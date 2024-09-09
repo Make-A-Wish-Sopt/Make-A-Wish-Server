@@ -44,4 +44,10 @@ public class Cake {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public static Cake makeAdminCake(){
+        return Cake.builder()
+                .id(11L)
+                .build();
+    }
 }

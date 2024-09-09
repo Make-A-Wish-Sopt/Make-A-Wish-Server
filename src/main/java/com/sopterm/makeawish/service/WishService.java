@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sopterm.makeawish.common.message.slack.SlackErrorMessage;
 import com.sopterm.makeawish.common.message.slack.SlackSuccessMessage;
+import com.sopterm.makeawish.domain.Present;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.wish.*;
@@ -63,7 +64,9 @@ public class WishService {
 		} catch (RuntimeException e) {
 			log.error(SlackErrorMessage.POST_REQUEST_ERROR.getMessage() + e.getMessage());
 		}
-		return wishRepository.save(wish).getId();
+		Long wishId = wishRepository.save(wish).getId();
+		presentRepository.save(Present.initAdminPresent(wish));
+		return wishId;
 	}
 
 	public WishResponseDTO findWish(Long wishId) throws AccessDeniedException {
