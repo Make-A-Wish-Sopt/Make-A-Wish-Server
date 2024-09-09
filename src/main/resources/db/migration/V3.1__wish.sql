@@ -1,0 +1,1 @@
+update wish set wants_gift = true where wants_gift is null ;
