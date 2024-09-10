@@ -3,12 +3,14 @@ package com.sopterm.makeawish.service;
 import com.sopterm.makeawish.common.KakaoPayProperties;
 import com.sopterm.makeawish.common.Util;
 import com.sopterm.makeawish.domain.Cake;
+import com.sopterm.makeawish.domain.GiftMenu;
 import com.sopterm.makeawish.domain.Present;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.cake.*;
 import com.sopterm.makeawish.dto.present.PresentDTO;
 import com.sopterm.makeawish.dto.present.PresentResponseDTO;
 import com.sopterm.makeawish.repository.CakeRepository;
+import com.sopterm.makeawish.repository.GiftMenuRepository;
 import com.sopterm.makeawish.repository.PresentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.*;
@@ -36,6 +38,7 @@ public class CakeService {
     private final WishService wishService;
     private final CakeRepository cakeRepository;
     private final PresentRepository presentRepository;
+    private final GiftMenuRepository giftMenuRepository;
 
     public List<CakeResponseDTO> getAllCakes() {
         return cakeRepository.findAll()
@@ -165,15 +168,25 @@ public class CakeService {
     public CakeCreateResponseDTO createPresent(CakeCreateRequest request) {
         val cake = getCake(request.cakeId());
         val wish = wishService.getWish(request.wishId());
+        val giftMenu = getGiftMenuInfo(request.giftMenuId());
         val present = Present.builder()
                 .name(request.name())
                 .message(request.message())
                 .cake(cake)
                 .wish(wish)
+                .giftMenu(giftMenu)
                 .build();
         presentRepository.save(present);
         wish.updateTotalPrice(cake.getPrice());
         val contribute = Util.calculateContribution(cake.getPrice(), wish.getPresentPrice());
         return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), contribute, wish.getWisher().getNickname());
+    }
+
+    private GiftMenu getGiftMenuInfo(Long giftMenuId){
+        if(giftMenuId == 0L){
+            return GiftMenu.getLetter();
+        }
+        return giftMenuRepository.findById(giftMenuId)
+                .orElseThrow();
     }
 }
