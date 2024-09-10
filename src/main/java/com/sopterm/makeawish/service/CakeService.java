@@ -177,16 +177,11 @@ public class CakeService {
                 .giftMenu(giftMenu)
                 .build();
         presentRepository.save(present);
-        wish.updateTotalPrice(cake.getPrice());
-        val contribute = Util.calculateContribution(cake.getPrice(), wish.getPresentPrice());
-        return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), contribute, wish.getWisher().getNickname());
+        wish.updateTotalPrice(giftMenu.getPrice());
+        return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), wish.getWisher().getNickname());
     }
 
     private GiftMenu getGiftMenuInfo(Long giftMenuId){
-        if(giftMenuId == 0L){
-            return GiftMenu.getLetter();
-        }
-        return giftMenuRepository.findById(giftMenuId)
-                .orElseThrow();
+        return giftMenuRepository.findById(giftMenuId).orElseThrow(() -> new EntityNotFoundException(INVALID_GIFT_MENU.getMessage()));
     }
 }
