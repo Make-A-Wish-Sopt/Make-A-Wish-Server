@@ -7,6 +7,7 @@ public record CakeCreateRequest(
         String name,
         String message,
         Long cakeId,
-        Long wishId
+        Long wishId,
+        Long giftMenuId
 ) {
 }
