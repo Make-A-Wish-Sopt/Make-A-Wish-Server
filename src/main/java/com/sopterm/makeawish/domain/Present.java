@@ -40,11 +40,16 @@ public class Present {
     @CreatedDate
     protected LocalDateTime createdAt;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "gift_menu_id")
+    private GiftMenu giftMenu;
+
     public static class PresentBuilder {
         private String name;
         private String message;
         private Wish wish;
         private Cake cake;
+        private GiftMenu giftMenu;
 
         private PresentBuilder() {
         }
@@ -73,6 +78,11 @@ public class Present {
             return this;
         }
 
+        public PresentBuilder giftMenu(GiftMenu giftMenu) {
+            this.giftMenu = giftMenu;
+            return this;
+        }
+
         private void setWish(Present present, Wish wish) {
             if (nonNull(present.wish)) {
                 present.wish.getPresents().remove(present);
@@ -89,6 +99,7 @@ public class Present {
             present.message = this.message;
             setWish(present, this.wish);
             present.cake = this.cake;
+            present.giftMenu = this.giftMenu;
             return present;
         }
     }
@@ -104,6 +115,7 @@ public class Present {
                 .wish(wish)
                 .name("선물주 운영자")
                 .message("초기 선물 내용")
+                .giftMenu(GiftMenu.getLetter())
                 .build();
     }
 }
