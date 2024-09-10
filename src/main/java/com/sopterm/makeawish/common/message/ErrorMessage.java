@@ -43,7 +43,11 @@ public enum ErrorMessage {
 	SERVER_INTERNAL_ERROR("서버 내부 오류"),
 	INVALID_HTTP_REQUEST("지원하지 않는 HTTP Method 요청입니다."),
 	FORBIDDEN("해당 데이터에 접근할 수 없습니다."),
-	FAULT_DATE_FORMATTER("잘못된 날짜 형식입니다.");
+	FAULT_DATE_FORMATTER("잘못된 날짜 형식입니다."),
+
+	/** gift menu **/
+	INVALID_GIFT_MENU("존재하지 않는 선물 종류입니다."),
+	;
 
 	private final String message;
 }

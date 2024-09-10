@@ -8,7 +8,6 @@ public record CakeCreateResponseDTO(
         String imageUrl,
         String hint,
         String initial,
-        String contribute,
         String wisher
 ) {
 }

@@ -2,6 +2,7 @@ package com.sopterm.makeawish.service;
 
 import com.sopterm.makeawish.common.Util;
 import com.sopterm.makeawish.domain.Cake;
+import com.sopterm.makeawish.domain.GiftMenu;
 import com.sopterm.makeawish.domain.user.AccountInfo;
 import com.sopterm.makeawish.domain.user.SocialType;
 import com.sopterm.makeawish.domain.user.User;
@@ -9,6 +10,7 @@ import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.cake.CakeCreateRequest;
 import com.sopterm.makeawish.dto.cake.CakeReadyRequestDTO;
 import com.sopterm.makeawish.repository.CakeRepository;
+import com.sopterm.makeawish.repository.GiftMenuRepository;
 import com.sopterm.makeawish.repository.UserRepository;
 import com.sopterm.makeawish.repository.wish.WishRepository;
 import org.assertj.core.api.ThrowableAssert;
@@ -47,6 +49,9 @@ class CakeServiceTest {
 
     @Autowired
     WishRepository wishRepository;
+
+    @Autowired
+    GiftMenuRepository giftMenuRepository;
 
     @BeforeAll
     void 케이크_세팅() {
@@ -92,10 +97,12 @@ class CakeServiceTest {
         User user = userRepository.save(createUser());
         Wish wish = wishRepository.save(createWish(user));
         Cake cake = cakeService.getCake(1L);
+        GiftMenu giftMenu = giftMenuRepository.save(new GiftMenu(0L, "letter", 0));
+
         int prevTotalPrice = wish.getTotalPrice();
 
         // when
-        cakeService.createPresent(new CakeCreateRequest("최아무", "메세지", cake.getId(), wish.getId()));
+        cakeService.createPresent(new CakeCreateRequest("최아무", "메세지", cake.getId(), wish.getId(), giftMenu.getId()));
 
         //then
         assertThat(prevTotalPrice).isEqualTo(wishService.getWish(wish.getId()).getTotalPrice());
@@ -107,13 +114,14 @@ class CakeServiceTest {
         // given
         User user = userRepository.save(createUser());
         Wish wish = wishRepository.save(createWish(user));
+        GiftMenu giftMenu = giftMenuRepository.save(new GiftMenu(1L, "sushi", 4900));
         Cake cake = cakeService.getCake(5L);
         int prevTotalPrice = wish.getTotalPrice();
 
         // when
-        cakeService.createPresent(new CakeCreateRequest("최아무", "메세지", cake.getId(), wish.getId()));
+        cakeService.createPresent(new CakeCreateRequest("최아무", "메세지", cake.getId(), wish.getId(), giftMenu.getId()));
         //then
-        assertThat(prevTotalPrice).isEqualTo(wishService.getWish(wish.getId()).getTotalPrice() - cake.getPrice());
+        assertThat(prevTotalPrice).isEqualTo(wishService.getWish(wish.getId()).getTotalPrice() - giftMenu.getPrice());
     }
 
     private String getLocalDateTime(int plusDays){
