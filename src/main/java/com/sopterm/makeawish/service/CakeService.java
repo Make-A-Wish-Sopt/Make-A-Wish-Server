@@ -143,7 +143,8 @@ public class CakeService {
         if (!isRightWisher(userId, wish)) {
             throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
         }
-        val present = presentRepository.findPresentByWishIdAndId(wishId, presentId);
+        val present = presentRepository.findPresentByWishIdAndId(wishId, presentId)
+                .orElseThrow(() -> new EntityNotFoundException(INVALID_GIFT_MENU.getMessage()));
         return PresentResponseDTO.from(present);
     }
 
