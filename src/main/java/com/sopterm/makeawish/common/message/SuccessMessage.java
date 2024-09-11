@@ -40,7 +40,11 @@ public enum SuccessMessage {
 
 	/** present **/
 	SUCCESS_GET_ALL_PRESENT("선물 전체 조회 성공"),
-	SUCCESS_GET_PRESENT_MESSAGE("케이크에 대한 편지 조회 성공");
+	SUCCESS_GET_PRESENT_MESSAGE("케이크에 대한 편지 조회 성공"),
+
+	/** gift menu **/
+	SUCESS_GET_ALL_GIFT_MENU("선물 가능한 목록 전체 조회 성공")
+	;
 
 	private final String message;
 }

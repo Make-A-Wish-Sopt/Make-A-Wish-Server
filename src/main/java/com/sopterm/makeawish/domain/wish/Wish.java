@@ -34,16 +34,9 @@ public class Wish extends BaseEntity {
 
     private String presentImageUrl;
 
-    @Column(columnDefinition = "TEXT")
-    private String hint;
-
-    private String initial;
-
     private LocalDateTime startAt;
 
     private LocalDateTime endAt;
-
-    private int presentPrice;
 
     private int totalPrice;
 
@@ -57,15 +50,12 @@ public class Wish extends BaseEntity {
     private boolean wantsGift;
 
     @Builder
-    public Wish(String title, String presentImageUrl, String hint, String initial, LocalDateTime startAt,
-                LocalDateTime endAt, int presentPrice, User wisher, boolean wantsGift) {
+    public Wish(String title, String presentImageUrl, LocalDateTime startAt,
+                LocalDateTime endAt, User wisher, boolean wantsGift) {
         this.title = title;
         this.presentImageUrl = presentImageUrl;
-        this.hint = hint;
-        this.initial = initial;
         this.startAt = startAt;
         this.endAt = endAt;
-        this.presentPrice = presentPrice;
         this.totalPrice = 0;
         this.wantsGift = wantsGift;
         setWisher(wisher);
@@ -94,21 +84,12 @@ public class Wish extends BaseEntity {
         }
     }
 
-    public void updateContent(String imageUrl, Integer price, String title, String hint, String initial, boolean wantsGift) {
+    public void updateContent(String imageUrl, String title, boolean wantsGift) {
         if (nonNull(imageUrl)) {
             this.presentImageUrl = imageUrl;
         }
-        if (nonNull(price)) {
-            this.presentPrice = price;
-        }
         if (nonNull(title)) {
             this.title = title;
-        }
-        if (nonNull(hint)) {
-            this.hint = hint;
-        }
-        if (nonNull(initial)) {
-            this.initial = initial;
         }
         if(nonNull(wantsGift)) {
             this.wantsGift = wantsGift;

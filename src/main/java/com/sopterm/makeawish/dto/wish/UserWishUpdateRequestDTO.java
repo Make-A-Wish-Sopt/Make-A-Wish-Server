@@ -13,8 +13,6 @@ public record UserWishUpdateRequestDTO(
 	String imageUrl,
 	Integer price,
 	String title,
-	String hint,
-	String initial,
 	boolean wantsGift
 ) {
 }

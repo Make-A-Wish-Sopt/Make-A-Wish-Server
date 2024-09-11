@@ -147,9 +147,6 @@ class CakeServiceTest {
                 .wisher(user)
                 .presentImageUrl("image-url")
                 .title("소원 제목")
-                .hint("소원 힌트")
-                .initial("ㅅㅇ ㅈㅁ")
-                .presentPrice(50000)
                 .startAt(Util.convertToDate(getLocalDateTime(0)))
                 .endAt(Util.convertToDate(getLocalDateTime(7)))
                 .build();
