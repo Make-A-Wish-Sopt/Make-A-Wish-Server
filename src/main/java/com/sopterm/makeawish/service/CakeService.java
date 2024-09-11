@@ -161,7 +161,7 @@ public class CakeService {
                 .build();
         presentRepository.save(present);
         wish.updateTotalPrice(giftMenu.getPrice());
-        return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), wish.getWisher().getNickname());
+        return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getWisher().getNickname());
     }
 
     private GiftMenu getGiftMenuInfo(Long giftMenuId) {

@@ -6,8 +6,6 @@ import lombok.Builder;
 public record CakeCreateResponseDTO(
         Long cakeId,
         String imageUrl,
-        String hint,
-        String initial,
         String wisher
 ) {
 }
