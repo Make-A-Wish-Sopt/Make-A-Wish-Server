@@ -21,8 +21,6 @@ public record CakeResponseDTO(Long cakeId, String name, String imageUrl) {
 		return Cake.builder()
 				.id(cakeId)
 				.name(name)
-				.imageUrl(imageUrl)
-				.price(price)
 				.build();
 	}
 }
