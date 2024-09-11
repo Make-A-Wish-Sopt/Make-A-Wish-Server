@@ -40,13 +40,13 @@ public class CakeController {
     }
 
     @Operation(summary = "해당 소원에 대한 케이크 조회")
-    @GetMapping("/{wishId}/{cakeId}")
+    @GetMapping("/{wishId}/{presentId}")
     public ResponseEntity<ApiResponse> getEachPresent(
         @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
         @PathVariable("wishId") Long wishId,
-        @PathVariable("cakeId") Long cakeId
+        @PathVariable("presentId") Long presentId
     ) {
-        val response = cakeService.getEachPresent(memberDetails.getId(), wishId, cakeId);
+        val response = cakeService.getEachPresent(memberDetails.getId(), wishId, presentId);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_PRESENT_MESSAGE.getMessage(), response));
     }
 }

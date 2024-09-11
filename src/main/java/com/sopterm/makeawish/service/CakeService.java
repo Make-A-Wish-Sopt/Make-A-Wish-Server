@@ -124,24 +124,9 @@ public class CakeService {
         if (!isRightWisher(userId, wish))
             throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
 
-        val allCake = getAllCakes().stream().collect(
-                Collectors.toMap(
-                        CakeResponseDTO::toEntity,
-                        count -> 0L
-                ));
-
-        val cakes = getAllPresent(wish);
-        allCake.putAll(cakes);
-
-        return allCake.entrySet().stream()
-                .map(cake -> PresentDTO.from(cake.getKey(), cake.getValue()))
-                .sorted(Comparator.comparing(PresentDTO::cakeId))
-                .toList();
-    }
-
-    private Map<Cake, Long> getAllPresent(Wish wish) {
         return wish.getPresents().stream()
-                .collect(Collectors.groupingBy(Present::getCake, Collectors.counting()));
+                .map(present -> PresentDTO.from(present, present.getCake(), present.getName()))
+                .collect(Collectors.toList());
     }
 
     private boolean isRightWisher(Long userId, Wish wish) {
@@ -155,13 +140,13 @@ public class CakeService {
         return getCake(cakeId);
     }
 
-    public List<PresentResponseDTO> getEachPresent(Long userId, Long wishId, Long cakeId) {
+    public PresentResponseDTO getEachPresent(Long userId, Long wishId, Long presentId) {
         val wish = wishService.getWish(wishId);
         if (!isRightWisher(userId, wish)) {
             throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
         }
-        val presents = presentRepository.findPresentsByWishIdAndCakeId(wishId, cakeId);
-        return presents.stream().map(PresentResponseDTO::from).collect(Collectors.toList());
+        val present = presentRepository.findPresentByWishIdAndId(wishId, presentId);
+        return PresentResponseDTO.from(present);
     }
 
     @Transactional
