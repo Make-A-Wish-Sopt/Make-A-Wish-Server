@@ -16,8 +16,6 @@ public record MainWishResponseDTO(
 	Long wishId,
 	int cakeCount,
 	long dayCount,
-	int price,
-	int percent,
 	WishStatus status
 ) {
 
@@ -26,8 +24,6 @@ public record MainWishResponseDTO(
 			.wishId(wish.getId())
 			.cakeCount(wish.getPresents().size())
 			.dayCount(getRemainDay(wish))
-			.price(getPriceAppliedFee(wish.getTotalPrice()))
-			.percent(getPricePercent(wish.getTotalPrice(), wish.getPresentPrice()))
 			.status(wish.getStatus(0))
 			.build();
 	}
