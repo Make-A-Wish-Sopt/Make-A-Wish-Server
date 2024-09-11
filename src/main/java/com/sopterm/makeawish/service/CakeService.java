@@ -140,13 +140,13 @@ public class CakeService {
         return getCake(cakeId);
     }
 
-    public List<PresentResponseDTO> getEachPresent(Long userId, Long wishId, Long cakeId) {
+    public PresentResponseDTO getEachPresent(Long userId, Long wishId, Long presentId) {
         val wish = wishService.getWish(wishId);
         if (!isRightWisher(userId, wish)) {
             throw new IllegalArgumentException(INCORRECT_WISH.getMessage());
         }
-        val presents = presentRepository.findPresentsByWishIdAndCakeId(wishId, cakeId);
-        return presents.stream().map(PresentResponseDTO::from).collect(Collectors.toList());
+        val present = presentRepository.findPresentByWishIdAndId(wishId, presentId);
+        return PresentResponseDTO.from(present);
     }
 
     @Transactional

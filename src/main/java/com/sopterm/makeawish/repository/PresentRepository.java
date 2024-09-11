@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PresentRepository extends JpaRepository<Present, Long> {
-    List<Present> findPresentsByWishIdAndCakeId(Long wishId, Long cakeId);
+    Present findPresentByWishIdAndId(Long wishId, Long presentId);
 }
