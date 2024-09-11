@@ -40,6 +40,13 @@ public class PublicController {
 		return ResponseEntity.ok(ApiResponse.success(SUCCESS_GET_ALL_CAKE.getMessage(), response));
 	}
 
+	@Operation(summary = "선물 리스트 조회")
+	@GetMapping("/giftMenu")
+	public ResponseEntity<ApiResponse> getAllGiftMenu(){
+		val response = cakeService.getAllGiftMenu();
+		return ResponseEntity.ok(ApiResponse.success("선물 리스트 조회", response));
+	}
+
 	@Operation(summary = "소원 링크 조회")
 	@GetMapping("/wishes/{wishId}")
 	public ResponseEntity<ApiResponse> findWish(@PathVariable Long wishId) throws AccessDeniedException {

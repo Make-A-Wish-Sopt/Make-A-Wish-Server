@@ -169,4 +169,8 @@ public class CakeService {
     private GiftMenu getGiftMenuInfo(Long giftMenuId){
         return giftMenuRepository.findById(giftMenuId).orElseThrow(() -> new EntityNotFoundException(INVALID_GIFT_MENU.getMessage()));
     }
+
+    public List<GiftMenu> getAllGiftMenu(){
+        return giftMenuRepository.findAll();
+    }
 }
