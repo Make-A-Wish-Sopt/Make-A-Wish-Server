@@ -130,7 +130,7 @@ public class WishService {
 			wish.updateTerm(startDate, endDate);
 		}
 		if (status.equals(BEFORE) || status.equals(WHILE)) {
-			wish.updateContent(request.imageUrl(), request.price(), request.title(), request.hint(), request.initial(), request.wantsGift());
+			wish.updateContent(request.imageUrl(), request.title(), request.wantsGift());
 			wisher.updateProfile(request.name(), request.bankName(), request.account(), request.phone());
 		}
 
