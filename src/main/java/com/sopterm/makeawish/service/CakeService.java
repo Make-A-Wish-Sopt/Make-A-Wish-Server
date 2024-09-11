@@ -1,20 +1,20 @@
 package com.sopterm.makeawish.service;
 
 import com.sopterm.makeawish.common.KakaoPayProperties;
-import com.sopterm.makeawish.common.Util;
 import com.sopterm.makeawish.domain.Cake;
 import com.sopterm.makeawish.domain.GiftMenu;
 import com.sopterm.makeawish.domain.Present;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.cake.*;
+import com.sopterm.makeawish.dto.giftMenu.GiftMenuResponseDTO;
 import com.sopterm.makeawish.dto.present.PresentDTO;
 import com.sopterm.makeawish.dto.present.PresentResponseDTO;
 import com.sopterm.makeawish.repository.CakeRepository;
 import com.sopterm.makeawish.repository.GiftMenuRepository;
 import com.sopterm.makeawish.repository.PresentRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.*;
-import org.springframework.cache.annotation.Cacheable;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -24,9 +24,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.sopterm.makeawish.common.message.ErrorMessage.*;
@@ -166,11 +164,13 @@ public class CakeService {
         return new CakeCreateResponseDTO(cake.getId(), wish.getPresentImageUrl(), wish.getHint(), wish.getInitial(), wish.getWisher().getNickname());
     }
 
-    private GiftMenu getGiftMenuInfo(Long giftMenuId){
+    private GiftMenu getGiftMenuInfo(Long giftMenuId) {
         return giftMenuRepository.findById(giftMenuId).orElseThrow(() -> new EntityNotFoundException(INVALID_GIFT_MENU.getMessage()));
     }
 
-    public List<GiftMenu> getAllGiftMenu(){
-        return giftMenuRepository.findAll();
+    public List<GiftMenuResponseDTO> getAllGiftMenu() {
+        return giftMenuRepository.findAll().stream()
+                .map(GiftMenuResponseDTO::from)
+                .collect(Collectors.toList());
     }
 }
