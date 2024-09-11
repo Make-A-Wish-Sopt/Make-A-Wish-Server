@@ -169,7 +169,7 @@ public class CakeService {
     }
 
     public List<GiftMenuResponseDTO> getAllGiftMenu() {
-        return giftMenuRepository.findAll().stream()
+        return giftMenuRepository.findAllByOrderById().stream()
                 .map(GiftMenuResponseDTO::from)
                 .collect(Collectors.toList());
     }
