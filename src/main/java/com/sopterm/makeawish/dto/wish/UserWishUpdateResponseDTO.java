@@ -17,9 +17,6 @@ public record UserWishUpdateResponseDTO(
 	AccountInfo accountInfo,
 	String imageUrl,
 	String title,
-	int price,
-	String initial,
-	String hint,
 	WishStatus status
 ) {
 	public static UserWishUpdateResponseDTO of(User user, Wish wish) {
@@ -30,9 +27,6 @@ public record UserWishUpdateResponseDTO(
 			.accountInfo(nonNull(user.getAccount()) ? user.getAccount() : null)
 			.imageUrl(wish.getPresentImageUrl())
 			.title(wish.getTitle())
-			.price(wish.getPresentPrice())
-			.initial(wish.getInitial())
-			.hint(wish.getHint())
 			.status(wish.getStatus(0))
 			.build();
 	}
