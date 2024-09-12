@@ -149,6 +149,7 @@ class CakeServiceTest {
                 .title("소원 제목")
                 .startAt(Util.convertToDate(getLocalDateTime(0)))
                 .endAt(Util.convertToDate(getLocalDateTime(7)))
+                .wantsGift(true)
                 .build();
     }
 }
