@@ -153,6 +153,9 @@ public class CakeService {
         val cake = getCake(request.cakeId());
         val wish = wishService.getWish(request.wishId());
         val giftMenu = getGiftMenuInfo(request.giftMenuId());
+
+        checkGiftMenu(wish, giftMenu);
+
         val present = Present.builder()
                 .name(request.name())
                 .message(request.message())
@@ -173,5 +176,11 @@ public class CakeService {
         return giftMenuRepository.findAllByOrderById().stream()
                 .map(GiftMenuResponseDTO::from)
                 .collect(Collectors.toList());
+    }
+
+    private void checkGiftMenu(Wish wish, GiftMenu giftMenu){
+        if(!wish.isWantsGift() && !giftMenu.getId().equals(0L)){
+            throw new IllegalArgumentException(WRONG_GIFT.getMessage());
+        }
     }
 }

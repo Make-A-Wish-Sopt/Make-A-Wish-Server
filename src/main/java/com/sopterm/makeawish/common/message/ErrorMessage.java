@@ -47,6 +47,7 @@ public enum ErrorMessage {
 
 	/** gift menu **/
 	INVALID_GIFT_MENU("존재하지 않는 선물 종류입니다."),
+	WRONG_GIFT("잘못된 선물입니다."),
 	;
 
 	private final String message;
