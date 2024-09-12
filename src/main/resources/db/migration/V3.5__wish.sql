@@ -1,0 +1,1 @@
+alter table wish drop column present_price;
