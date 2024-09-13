@@ -11,7 +11,6 @@ public record UserWishUpdateRequestDTO(
 	String account,
 	String phone,
 	String imageUrl,
-	Integer price,
 	String title,
 	boolean wantsGift
 ) {
