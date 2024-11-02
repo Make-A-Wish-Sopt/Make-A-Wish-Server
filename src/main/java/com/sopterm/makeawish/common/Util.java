@@ -1,10 +1,12 @@
 package com.sopterm.makeawish.common;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 
 import lombok.val;
 
@@ -33,5 +35,12 @@ public class Util {
 
 	public static String calculateContribution(int price, int targetPrice) {
 		return String.format("%.0f", (double) price / targetPrice * 100);
+	}
+
+	public static String getCurrentTime(){
+		val pattern = "yyyyMMddHHmmss";
+		val dateFormat = new SimpleDateFormat(pattern);
+		val now = new Date();
+		return dateFormat.format(now);
 	}
 }
