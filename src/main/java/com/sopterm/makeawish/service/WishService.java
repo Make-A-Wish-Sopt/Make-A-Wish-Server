@@ -44,6 +44,7 @@ public class WishService {
 	private final UserRepository userRepository;
 	private final PresentRepository presentRepository;
 	private final SlackWishClient slackWishClient;
+	private final AlarmService alarmService;
 	private final ObjectMapper jsonMapper = new ObjectMapper();
 
 	private final int EXPIRY_DAY = 0;
@@ -66,6 +67,7 @@ public class WishService {
 		}
 		Long wishId = wishRepository.save(wish).getId();
 		presentRepository.save(Present.initAdminPresent(wish));
+		alarmService.sendAlarmTalk(wisher, "CREATE_WISH");
 		return wishId;
 	}
 

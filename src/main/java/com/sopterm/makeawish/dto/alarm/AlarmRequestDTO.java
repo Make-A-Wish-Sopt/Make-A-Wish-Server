@@ -1,15 +1,16 @@
 package com.sopterm.makeawish.dto.alarm;
 
 import com.popbill.api.kakao.KakaoButton;
-import com.sopterm.makeawish.common.Util;
 import com.sopterm.makeawish.domain.AlarmTemplate;
 import lombok.Builder;
+import org.apache.commons.lang3.StringUtils;
 
 @Builder
 public record AlarmRequestDTO(
-        String templateCode
+        String code
         , String senderNum
         , String content
+        , String altSubject
         , String altContent
         , String altSendType
         , KakaoButton[] kakaoButtons
@@ -17,11 +18,13 @@ public record AlarmRequestDTO(
     public static AlarmRequestDTO of(AlarmTemplate alarmTemplate){
         KakaoButton[] buttons = initButtons(alarmTemplate.getButton(), "WL" ,alarmTemplate.getButtonUrl());
         return AlarmRequestDTO.builder()
-                .templateCode(alarmTemplate.getCode())
+                .code(alarmTemplate.getCode())
                 .content(alarmTemplate.getContent())
-                .altContent()
-                .altSendType()
-                ;
+                .altSubject(StringUtils.EMPTY)
+                .altContent(StringUtils.EMPTY)
+                .altSendType("C")
+                .kakaoButtons(buttons)
+                .build();
 
     }
 
