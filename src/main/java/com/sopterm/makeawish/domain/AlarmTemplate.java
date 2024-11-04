@@ -14,7 +14,7 @@ public class AlarmTemplate {
     @Id
     @Column(name = "template_id")
     @GeneratedValue(strategy = IDENTITY)
-    private String id;
+    private Long id;
 
     @Column(name = "template_content")
     private String content;
