@@ -16,13 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class AlarmService {
-    @Value("corpNum")
+    @Value("popbill.corpNum")
     private String corpNum;
 
-    @Value("isUseAlarmTalk")
-    private boolean isUserAlarmTalk;
+    @Value("popbill.isUseKkoTalk")
+    private boolean isUserKkoTalk;
 
-    @Value("senderNum")
+    @Value("popbill.senderNum")
     private String senderNum;
     private final String requestNum = StringUtils.EMPTY;
 
@@ -31,7 +31,7 @@ public class AlarmService {
 
     @Transactional
     public void sendAlarmTalk(User user, String templateName) {
-        if(!isUserAlarmTalk) {
+        if(!isUserKkoTalk) {
             return;
         }
         AlarmRequestDTO template = AlarmRequestDTO.of(findByTemplateName(templateName));
