@@ -15,11 +15,11 @@ public record AlarmRequestDTO(
         , String altSendType
         , KakaoButton[] kakaoButtons
 ) {
-    public static AlarmRequestDTO of(AlarmTemplate alarmTemplate){
+    public static AlarmRequestDTO of(AlarmTemplate alarmTemplate, String...params){
         KakaoButton[] buttons = initButtons(alarmTemplate.getButton(), "WL" ,alarmTemplate.getButtonUrl());
         return AlarmRequestDTO.builder()
                 .code(alarmTemplate.getCode())
-                .content(alarmTemplate.getContent())
+                .content(alarmTemplate.replaceContent(params))
                 .altSubject(StringUtils.EMPTY)
                 .altContent(StringUtils.EMPTY)
                 .altSendType("C")

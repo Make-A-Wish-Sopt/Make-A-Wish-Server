@@ -67,7 +67,7 @@ public class WishService {
 		}
 		Long wishId = wishRepository.save(wish).getId();
 		presentRepository.save(Present.initAdminPresent(wish));
-		alarmService.sendAlarmTalk(wisher, "CREATE_WISH");
+		alarmService.sendAlarmTalk(wisher, "CREATE_WISH", wisher.getNickname());
 		return wishId;
 	}
 

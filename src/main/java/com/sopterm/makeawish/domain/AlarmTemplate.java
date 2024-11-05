@@ -1,5 +1,6 @@
 package com.sopterm.makeawish.domain;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,4 +37,16 @@ public class AlarmTemplate {
 
     @Column(name = "template_name")
     private String name;
+
+    public String replaceContent(String...params){
+        if(StringUtils.isEmpty(variables)){
+            return content;
+        }
+        int index = 0;
+        String[] replaceWords = variables.split(",");
+        for(String param: params) {
+            content = content.replace(replaceWords[index], param);
+        }
+        return content;
+    }
 }

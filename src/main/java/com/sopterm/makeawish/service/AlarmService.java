@@ -31,11 +31,11 @@ public class AlarmService {
     private final AlarmRepository alarmRepository;
 
     @Transactional
-    public void sendAlarmTalk(User user, String templateName) {
+    public void sendAlarmTalk(User user, String templateName, String...params) {
         if(isUseKkoTalk.equals("false")) {
             return;
         }
-        AlarmRequestDTO template = AlarmRequestDTO.of(findByTemplateName(templateName));
+        AlarmRequestDTO template = AlarmRequestDTO.of(findByTemplateName(templateName), params);
         try {
             String response = kakaoService.sendATS(corpNum, template.code(), senderNum, template.content(), template.altSubject(), template.altContent(), template.altSendType() ,user.getPhoneNumber(), user.getNickname(), Util.getCurrentTime(), linkId, user.getId()+"_"+ templateName + Util.getCurrentTime(), template.kakaoButtons());
         } catch(PopbillException e){
