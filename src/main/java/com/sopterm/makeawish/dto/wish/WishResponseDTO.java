@@ -12,7 +12,7 @@ import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 
 @Builder
-public record WishResponseDTO(String name, long dayCount, String title, String hint, String bank, String accountNumber, boolean wantsGift) {
+public record WishResponseDTO(String name, long dayCount, String title, String hint, String bank, String accountNumber, boolean wantsGift, String presentImageUrl) {
 
 	public static WishResponseDTO from(Wish wish) {
 		val name = nonNull(wish.getWisher().getAccount())
@@ -33,6 +33,7 @@ public record WishResponseDTO(String name, long dayCount, String title, String h
 			.dayCount(getRemainDayCount(wish.getEndAt()))
 			.title(wish.getTitle())
 			.wantsGift(wish.isWantsGift())
+			.presentImageUrl(wish.getPresentImageUrl())
 			.build();
 	}
 
