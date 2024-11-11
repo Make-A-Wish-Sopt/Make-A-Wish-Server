@@ -32,6 +32,7 @@ public record WishResponseDTO(String name, long dayCount, String title, String h
 			.bank(bank)
 			.dayCount(getRemainDayCount(wish.getEndAt()))
 			.title(wish.getTitle())
+			.hint(wish.getHint())
 			.wantsGift(wish.isWantsGift())
 			.presentImageUrl(wish.getPresentImageUrl())
 			.build();
