@@ -39,6 +39,7 @@ public class Wish extends BaseEntity {
     private LocalDateTime endAt;
 
     private int totalPrice;
+    private String hint;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
@@ -51,13 +52,14 @@ public class Wish extends BaseEntity {
 
     @Builder
     public Wish(String title, String presentImageUrl, LocalDateTime startAt,
-                LocalDateTime endAt, User wisher, boolean wantsGift) {
+                LocalDateTime endAt, User wisher, boolean wantsGift, String hint) {
         this.title = title;
         this.presentImageUrl = presentImageUrl;
         this.startAt = startAt;
         this.endAt = endAt;
         this.totalPrice = 0;
         this.wantsGift = wantsGift;
+        this.hint = hint;
         setWisher(wisher);
     }
 
