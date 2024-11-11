@@ -11,13 +11,15 @@ public record WishRequestDTO(
 	String startDate,
 	String endDate,
 	String phone,
-	boolean wantsGift
+	boolean wantsGift,
+	String hint
 ) {
 
 	public Wish toEntity(User wisher) {
 		wisher.updatePhoneNumber(phone);
 		return Wish.builder()
 			.presentImageUrl(imageUrl)
+			.hint(hint)
 			.title(title)
 			.startAt(convertToDate(startDate))
 			.endAt(convertToDate(endDate))
