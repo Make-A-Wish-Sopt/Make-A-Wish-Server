@@ -9,14 +9,12 @@ import lombok.Builder;
 @Builder
 public record UserAccountResponseDTO(
 	Long id,
-	AccountInfo accountInfo,
-	String phone
+	AccountInfo accountInfo
 ) {
 	public static UserAccountResponseDTO of(User user) {
 		return UserAccountResponseDTO.builder()
 			.id(user.getId())
 			.accountInfo(getUserAccount(user))
-			.phone(user.getPhoneNumber())
 			.build();
 	}
 

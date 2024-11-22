@@ -50,8 +50,6 @@ public class User {
     @Embedded
     private AccountInfo account;
 
-    private String phoneNumber;
-
     @OneToMany(mappedBy = "wisher")
     private final List<Wish> wishes = new ArrayList<>();
 
@@ -69,15 +67,8 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
-    public void updateProfile(String name, String bank, String account, String phoneNumber) {
-        updatePhoneNumber(phoneNumber);
+    public void updateProfile(String name, String bank, String account) {
         updateAccount(name, bank, account);
-    }
-
-    public void updatePhoneNumber(String phoneNumber) {
-        if (nonNull(phoneNumber)) {
-            this.phoneNumber = phoneNumber;
-        }
     }
 
     public void updateAccount(String name, String bank, String account) {

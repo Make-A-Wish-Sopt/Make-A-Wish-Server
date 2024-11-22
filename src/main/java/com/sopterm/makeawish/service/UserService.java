@@ -52,7 +52,6 @@ public class UserService {
                 requestDTO.accountInfo().getName(),
                 requestDTO.accountInfo().getBank(),
                 requestDTO.accountInfo().getAccount());
-        wisher.updatePhoneNumber(requestDTO.phone());
         return UserAccountResponseDTO.of(wisher);
     }
 
