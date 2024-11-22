@@ -129,7 +129,7 @@ public class WishService {
 		}
 		if (status.equals(BEFORE) || status.equals(WHILE)) {
 			wish.updateContent(request.imageUrl(), request.title(), request.wantsGift());
-			wisher.updateProfile(request.name(), request.bankName(), request.account());
+			wisher.updateProfile(request.name(), request.bankName(), request.account(), request.kakaoPayCode());
 		}
 
 		return UserWishUpdateResponseDTO.of(wisher, wish);

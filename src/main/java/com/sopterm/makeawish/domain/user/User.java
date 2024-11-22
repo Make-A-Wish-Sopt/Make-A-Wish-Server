@@ -60,21 +60,21 @@ public class User {
         this.socialId = authSignInRequestDto.socialId();
         this.nickname = authSignInRequestDto.nickname();
         this.createdAt = authSignInRequestDto.createdAt();
-        this.account = new AccountInfo(null, null, null);
+        this.account = new AccountInfo(null, null, null, null, false);
     }
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
-    public void updateProfile(String name, String bank, String account) {
-        updateAccount(name, bank, account);
+    public void updateProfile(String name, String bank, String account, String kakaoPayCode) {
+        updateAccount(name, bank, account, kakaoPayCode);
     }
 
-    public void updateAccount(String name, String bank, String account) {
+    public void updateAccount(String name, String bank, String account, String kakaoPayCode) {
         if (isNull(this.account)) {
-            this.account = new AccountInfo(null, null, null);
+            this.account = new AccountInfo(null, null, null, null, false);
         }
-        this.account.updateInfo(name, bank, account);
+        this.account.updateInfo(name, bank, account, kakaoPayCode);
     }
 }

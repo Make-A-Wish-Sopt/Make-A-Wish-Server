@@ -51,7 +51,8 @@ public class UserService {
         wisher.updateAccount(
                 requestDTO.accountInfo().getName(),
                 requestDTO.accountInfo().getBank(),
-                requestDTO.accountInfo().getAccount());
+                requestDTO.accountInfo().getAccount(),
+                requestDTO.accountInfo().getKakaoPayCode());
         return UserAccountResponseDTO.of(wisher);
     }
 

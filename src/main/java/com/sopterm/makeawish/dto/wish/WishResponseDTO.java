@@ -12,7 +12,7 @@ import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 
 @Builder
-public record WishResponseDTO(String name, long dayCount, String title, String hint, String bank, String accountNumber, boolean wantsGift, String presentImageUrl) {
+public record WishResponseDTO(String name, long dayCount, String title, String hint, String bank, String accountNumber, boolean wantsGift, String presentImageUrl, String kakaoPayCode, boolean forPayCode) {
 
 	public static WishResponseDTO from(Wish wish) {
 		val name = nonNull(wish.getWisher().getAccount())
@@ -26,10 +26,16 @@ public record WishResponseDTO(String name, long dayCount, String title, String h
 				? wish.getWisher().getAccount().getBank()
 				: StringUtils.EMPTY;
 
+		val kakaoPayCode = nonNull(wish.getWisher().getAccount().getKakaoPayCode())
+				? wish.getWisher().getAccount().getKakaoPayCode()
+				: StringUtils.EMPTY;
+
 		return WishResponseDTO.builder()
 			.name(name)
 			.accountNumber(account)
 			.bank(bank)
+			.kakaoPayCode(kakaoPayCode)
+			.forPayCode(wish.getWisher().getAccount().isForPayCode())
 			.dayCount(getRemainDayCount(wish.getEndAt()))
 			.title(wish.getTitle())
 			.hint(wish.getHint())
