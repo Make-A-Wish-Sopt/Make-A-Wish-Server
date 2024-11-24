@@ -20,6 +20,12 @@ public class AccountInfo {
 	private boolean forPayCode;
 
 	public AccountInfo updateInfo(String name, String bank, String account, String kakaoPayCode) {
+		if(nonNull(account) && !this.account.equals(account)) {
+			this.forPayCode = false;
+		}
+		if(nonNull(kakaoPayCode) && !this.kakaoPayCode.equals(kakaoPayCode)) {
+			this.forPayCode = true;
+		}
 		if (nonNull(name)) {
 			this.name = name;
 		}
