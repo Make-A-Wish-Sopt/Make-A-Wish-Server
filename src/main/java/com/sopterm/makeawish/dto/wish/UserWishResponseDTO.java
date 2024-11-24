@@ -16,7 +16,6 @@ public record UserWishResponseDTO(
 			.title(wish.getTitle())
 			.startAt(wish.getStartAt().toString())
 			.endAt(wish.getEndAt().toString())
-
 			.build();
 	}
 }

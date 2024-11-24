@@ -9,9 +9,9 @@ public record UserWishUpdateRequestDTO(
 	String name,
 	String bankName,
 	String account,
-	String phone,
 	String imageUrl,
 	String title,
-	boolean wantsGift
+	boolean wantsGift,
+	String kakaoPayCode
 ) {
 }

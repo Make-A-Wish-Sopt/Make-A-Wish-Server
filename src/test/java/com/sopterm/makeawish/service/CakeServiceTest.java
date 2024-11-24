@@ -131,7 +131,7 @@ class CakeServiceTest {
 
 
     private User createUser(){
-        AccountInfo accountInfo = new AccountInfo("김아무", "bank", "account");
+        AccountInfo accountInfo = new AccountInfo("김아무", "bank", "account", "kakaoPayCode", false);
         return User.builder()
                 .email("kim@email.com")
                 .socialType(SocialType.KAKAO)

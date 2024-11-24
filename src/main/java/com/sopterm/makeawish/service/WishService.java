@@ -64,9 +64,7 @@ public class WishService {
 		} catch (RuntimeException e) {
 			log.error(SlackErrorMessage.POST_REQUEST_ERROR.getMessage() + e.getMessage());
 		}
-		Long wishId = wishRepository.save(wish).getId();
-		presentRepository.save(Present.initAdminPresent(wish));
-		return wishId;
+		return wishRepository.save(wish).getId();
 	}
 
 	public WishResponseDTO findWish(Long wishId) throws AccessDeniedException {
@@ -131,7 +129,7 @@ public class WishService {
 		}
 		if (status.equals(BEFORE) || status.equals(WHILE)) {
 			wish.updateContent(request.imageUrl(), request.title(), request.wantsGift());
-			wisher.updateProfile(request.name(), request.bankName(), request.account(), request.phone());
+			wisher.updateProfile(request.name(), request.bankName(), request.account(), request.kakaoPayCode());
 		}
 
 		return UserWishUpdateResponseDTO.of(wisher, wish);

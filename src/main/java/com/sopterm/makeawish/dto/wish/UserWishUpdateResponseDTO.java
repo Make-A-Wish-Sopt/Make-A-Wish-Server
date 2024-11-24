@@ -13,7 +13,6 @@ import lombok.Builder;
 public record UserWishUpdateResponseDTO(
 	String startDate,
 	String endDate,
-	String phone,
 	AccountInfo accountInfo,
 	String imageUrl,
 	String title,
@@ -23,7 +22,6 @@ public record UserWishUpdateResponseDTO(
 		return UserWishUpdateResponseDTO.builder()
 			.startDate(wish.getStartAt().toString())
 			.endDate(wish.getEndAt().toString())
-			.phone(user.getPhoneNumber())
 			.accountInfo(nonNull(user.getAccount()) ? user.getAccount() : null)
 			.imageUrl(wish.getPresentImageUrl())
 			.title(wish.getTitle())
