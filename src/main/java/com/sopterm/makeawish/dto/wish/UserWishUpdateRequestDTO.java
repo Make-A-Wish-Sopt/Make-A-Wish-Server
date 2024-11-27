@@ -10,6 +10,7 @@ public record UserWishUpdateRequestDTO(
 	String imageUrl,
 	String title,
 	boolean wantsGift,
+	String hint,
 	TransferInfo transferInfo
 ) {
 }

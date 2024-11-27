@@ -15,7 +15,9 @@ public record UserWishUpdateResponseDTO(
         TransferInfo transferInfo,
         String imageUrl,
         String title,
-        WishStatus status
+        WishStatus status,
+        String hint,
+        boolean wantsGift
 ) {
     public static UserWishUpdateResponseDTO of(User user, Wish wish) {
         return UserWishUpdateResponseDTO.builder()
@@ -25,6 +27,8 @@ public record UserWishUpdateResponseDTO(
                 .imageUrl(wish.getPresentImageUrl())
                 .title(wish.getTitle())
                 .status(wish.getStatus(0))
+                .hint(wish.getHint())
+                .wantsGift(wish.isWantsGift())
                 .build();
     }
 }
