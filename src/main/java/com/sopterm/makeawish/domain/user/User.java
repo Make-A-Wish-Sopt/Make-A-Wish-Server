@@ -2,18 +2,15 @@ package com.sopterm.makeawish.domain.user;
 
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.dto.auth.AuthSignInRequestDTO;
+import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static java.util.Objects.*;
 
 @Entity
 @Getter
@@ -48,7 +45,7 @@ public class User {
     private LocalDateTime createdAt;
 
     @Embedded
-    private AccountInfo account;
+    private TransferInfo transferInfo;
 
     @OneToMany(mappedBy = "wisher")
     private final List<Wish> wishes = new ArrayList<>();
@@ -60,21 +57,19 @@ public class User {
         this.socialId = authSignInRequestDto.socialId();
         this.nickname = authSignInRequestDto.nickname();
         this.createdAt = authSignInRequestDto.createdAt();
-        this.account = new AccountInfo(null, null, null, null, false);
+        val account = new AccountInfo(null, null, null);
+        this.transferInfo = new TransferInfo(account, null, false);
     }
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
-    public void updateProfile(String name, String bank, String account, String kakaoPayCode) {
-        updateAccount(name, bank, account, kakaoPayCode);
+    public void updateProfile(TransferInfo userTransferInfo) {
+        updateTransferInfo(userTransferInfo);
     }
 
-    public void updateAccount(String name, String bank, String account, String kakaoPayCode) {
-        if (isNull(this.account)) {
-            this.account = new AccountInfo(null, null, null, null, false);
-        }
-        this.account.updateInfo(name, bank, account, kakaoPayCode);
+    public void updateTransferInfo(TransferInfo transferInfo){
+        this.transferInfo.updateTransferInfo(transferInfo.getAccountInfo(), transferInfo.getKakaoPayCode(), transferInfo.isForPayCode());
     }
 }

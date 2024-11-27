@@ -1,8 +1,10 @@
 package com.sopterm.makeawish.dto.user;
 
-import com.sopterm.makeawish.domain.user.UserTransferInfo;
+import com.sopterm.makeawish.domain.user.AccountInfo;
 
 public record UserAccountRequestDTO(
-	UserTransferInfo userTransferInfo
+        AccountInfo accountInfo,
+        String kakaoPayCode,
+        boolean forPayCode
 ) {
 }
