@@ -16,16 +16,8 @@ public class AccountInfo {
 	private String name;
 	private String bank;
 	private String account;
-	private String kakaoPayCode;
-	private boolean forPayCode;
 
-	public AccountInfo updateInfo(String name, String bank, String account, String kakaoPayCode) {
-		if(nonNull(account) && !this.account.equals(account)) {
-			this.forPayCode = false;
-		}
-		if(nonNull(kakaoPayCode) && !this.kakaoPayCode.equals(kakaoPayCode)) {
-			this.forPayCode = true;
-		}
+	public AccountInfo updateInfo(String name, String bank, String account) {
 		if (nonNull(name)) {
 			this.name = name;
 		}
@@ -33,14 +25,9 @@ public class AccountInfo {
 			this.bank = bank;
 		}
 		if (nonNull(account)) {
-			this.forPayCode = false;
 			this.account = account;
 		}
 
-		if(nonNull(kakaoPayCode)) {
-			this.forPayCode = true;
-			this.kakaoPayCode = kakaoPayCode;
-		}
 		return this;
 	}
 }

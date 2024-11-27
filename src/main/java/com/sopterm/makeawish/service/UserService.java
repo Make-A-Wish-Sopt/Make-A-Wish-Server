@@ -39,20 +39,16 @@ public class UserService {
 
     public UserAccountResponseDTO getUserAccount(Long userId) {
         val wisher = getUser(userId);
-        return nonNull(wisher.getAccount()) ? UserAccountResponseDTO.of(wisher) : null;
+        return nonNull(wisher.getUserTransferInfo().getAccountInfo()) || nonNull(wisher.getUserTransferInfo().getKakaoPayCode()) ? UserAccountResponseDTO.of(wisher) : null;
     }
 
     @Transactional
     public UserAccountResponseDTO updateUserAccount(Long userId, UserAccountRequestDTO requestDTO) {
         val wisher = getUser(userId);
-        if (isNull(requestDTO.accountInfo())) {
+        if (isNull(requestDTO.userTransferInfo().getKakaoPayCode()) || isNull(requestDTO.userTransferInfo().getAccountInfo())) {
             throw new IllegalArgumentException(NO_EXIST_USER_ACCOUNT.getMessage());
         }
-        wisher.updateAccount(
-                requestDTO.accountInfo().getName(),
-                requestDTO.accountInfo().getBank(),
-                requestDTO.accountInfo().getAccount(),
-                requestDTO.accountInfo().getKakaoPayCode());
+        wisher.updateTransferInfo(requestDTO.userTransferInfo());
         return UserAccountResponseDTO.of(wisher);
     }
 
