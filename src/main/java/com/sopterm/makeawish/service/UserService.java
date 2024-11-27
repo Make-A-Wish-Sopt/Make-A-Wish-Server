@@ -3,6 +3,7 @@ package com.sopterm.makeawish.service;
 import com.popbill.api.AccountCheckService;
 import com.popbill.api.PopbillException;
 import com.sopterm.makeawish.domain.abuse.AbuseLog;
+import com.sopterm.makeawish.domain.user.TransferInfo;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.dto.user.UserAccountRequestDTO;
 import com.sopterm.makeawish.dto.user.UserAccountResponseDTO;
@@ -39,20 +40,16 @@ public class UserService {
 
     public UserAccountResponseDTO getUserAccount(Long userId) {
         val wisher = getUser(userId);
-        return nonNull(wisher.getAccount()) ? UserAccountResponseDTO.of(wisher) : null;
+        return nonNull(wisher.getTransferInfo().getAccountInfo()) || nonNull(wisher.getTransferInfo().getKakaoPayCode()) ? UserAccountResponseDTO.of(wisher) : null;
     }
 
     @Transactional
     public UserAccountResponseDTO updateUserAccount(Long userId, UserAccountRequestDTO requestDTO) {
         val wisher = getUser(userId);
-        if (isNull(requestDTO.accountInfo())) {
+        if (isNull(requestDTO.kakaoPayCode()) && isNull(requestDTO.accountInfo())) {
             throw new IllegalArgumentException(NO_EXIST_USER_ACCOUNT.getMessage());
         }
-        wisher.updateAccount(
-                requestDTO.accountInfo().getName(),
-                requestDTO.accountInfo().getBank(),
-                requestDTO.accountInfo().getAccount(),
-                requestDTO.accountInfo().getKakaoPayCode());
+        wisher.updateTransferInfo(new TransferInfo(requestDTO));
         return UserAccountResponseDTO.of(wisher);
     }
 
