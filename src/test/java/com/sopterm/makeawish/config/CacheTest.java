@@ -3,6 +3,7 @@ package com.sopterm.makeawish.config;
 import com.sopterm.makeawish.common.Util;
 import com.sopterm.makeawish.domain.user.AccountInfo;
 import com.sopterm.makeawish.domain.user.SocialType;
+import com.sopterm.makeawish.domain.user.TransferInfo;
 import com.sopterm.makeawish.domain.user.User;
 import com.sopterm.makeawish.domain.wish.Wish;
 import com.sopterm.makeawish.repository.UserRepository;
@@ -57,14 +58,15 @@ public class CacheTest {
 
 
     private User createUser() {
-        AccountInfo accountInfo = new AccountInfo("김아무", "bank", "account", "kakaoPayCode", true);
+        AccountInfo accountInfo = new AccountInfo("김아무", "bank", "account");
+        TransferInfo transferInfo = new TransferInfo(accountInfo, "payCode", false);
         return User.builder()
                 .email("kim@email.com")
                 .socialType(SocialType.KAKAO)
                 .socialId("12345")
                 .nickname("김아무")
                 .createdAt(LocalDateTime.now())
-                .account(accountInfo)
+                .transferInfo(transferInfo)
                 .build();
     }
 
