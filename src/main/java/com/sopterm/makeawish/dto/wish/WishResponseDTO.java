@@ -11,26 +11,11 @@ import java.time.temporal.ChronoUnit;
 import static com.sopterm.makeawish.common.message.ErrorMessage.EXPIRE_WISH;
 
 @Builder
-public record WishResponseDTO(long dayCount, String title, String hint, boolean wantsGift, String presentImageUrl, TransferInfo transferInfo) {
+public record WishResponseDTO(long dayCount, String title, String hint, boolean wantsGift, String presentImageUrl, TransferInfo transferInfo, String nickname) {
 
 	public static WishResponseDTO from(Wish wish) {
-//		UserTransferInfo userTransferInfo = wish.getWisher().getUserTransferInfo();
-//		val name = nonNull(userTransferInfo.getAccountInfo().getName())
-//			? userTransferInfo.getAccountInfo().getName()
-//			: wish.getWisher().getNickname();
-//
-//		val account = nonNull(wish.getWisher().getUserTransferInfo().getAccountInfo().getAccount())
-//				? userTransferInfo.getAccountInfo().getAccount()
-//				: StringUtils.EMPTY;
-//		val bank = nonNull(wish.getWisher().getUserTransferInfo().)
-//				? userTransferInfo.getAccount().getBank()
-//				: StringUtils.EMPTY;
-//
-//		val kakaoPayCode = nonNull(wish.getWisher().getAccount().getKakaoPayCode())
-//				? userTransferInfo.getKakaoPayCode()
-//				: StringUtils.EMPTY;
-
 		return WishResponseDTO.builder()
+			.nickname(wish.getWisher().getNickname())
 			.transferInfo(wish.getWisher().getTransferInfo())
 			.dayCount(getRemainDayCount(wish.getEndAt()))
 			.title(wish.getTitle())
