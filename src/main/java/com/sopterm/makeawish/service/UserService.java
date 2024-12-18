@@ -34,6 +34,7 @@ public class UserService {
     private final AccountCheckService accountCheckService;
     private final AbuseService abuseService;
 
+
     @Value("${popbill.businessNumber}")
     private String corpNum;
     private static final int ABUSE_CAUTION_COUNT = 4;
@@ -60,6 +61,8 @@ public class UserService {
             wish.getPresents().forEach(presentRepository::delete);
             wishRepository.delete(wish);
         });
+        abuseService.deleteAbuseLogByUser(user);
+        abuseService.deleteAbuseUserByUser(user);
         userRepository.delete(user);
     }
 

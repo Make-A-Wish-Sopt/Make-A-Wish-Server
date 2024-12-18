@@ -54,4 +54,14 @@ public class AbuseService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(INVALID_USER.getMessage()));
     }
+
+    @Transactional
+    public void deleteAbuseLogByUser(User user){
+        abuseLogRepository.deleteByUser(user);
+    }
+
+    @Transactional
+    public void deleteAbuseUserByUser(User user){
+        abuseUserRepository.deleteByUser(user);
+    }
 }
