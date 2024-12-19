@@ -86,7 +86,7 @@ public class Wish extends BaseEntity {
         }
     }
 
-    public void updateContent(String imageUrl, String title, boolean wantsGift) {
+    public void updateContent(String imageUrl, String title, boolean wantsGift, String hint) {
         if (nonNull(imageUrl)) {
             this.presentImageUrl = imageUrl;
         }
@@ -95,6 +95,9 @@ public class Wish extends BaseEntity {
         }
         if(nonNull(wantsGift)) {
             this.wantsGift = wantsGift;
+        }
+        if(nonNull(hint)) {
+            this.hint = hint;
         }
     }
 
