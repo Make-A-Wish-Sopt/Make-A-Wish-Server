@@ -128,7 +128,7 @@ public class WishService {
 			wish.updateTerm(startDate, endDate);
 		}
 		if (status.equals(BEFORE) || status.equals(WHILE)) {
-			wish.updateContent(request.imageUrl(), request.title(), request.wantsGift());
+			wish.updateContent(request.imageUrl(), request.title(), request.wantsGift(), request.hint());
 			wisher.updateProfile(request.transferInfo());
 
 		}
