@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import static com.sopterm.makeawish.common.message.ErrorMessage.NOT_VALID_USER_ACCOUNT;
 import static com.sopterm.makeawish.common.message.ErrorMessage.NO_EXIST_USER_ACCOUNT;
 import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 import static java.util.Objects.nonNull;
@@ -30,7 +29,7 @@ public class UserController {
 
     private final UserService userService;
     private final AbuseService abuseService;
-    private static final int VERIFY_ACCOUNT_SUCCESS = 0;
+    private static final String VERIFY_ACCOUNT_SUCCESS = "100";
 
     @Operation(summary = "유저 계좌 정보 가져오기")
     @GetMapping("/account")
@@ -69,9 +68,9 @@ public class UserController {
             @Parameter(hidden = true) @AuthenticationPrincipal InternalMemberDetails memberDetails,
             @RequestBody UserAccountVerifyRequestDTO verifyRequestDTO) throws Exception {
         val response = userService.verifyUserAccount(memberDetails.getId(), verifyRequestDTO);
-        return response == VERIFY_ACCOUNT_SUCCESS
+        return response.getResult().equals(VERIFY_ACCOUNT_SUCCESS)
                 ? ResponseEntity.ok(ApiResponse.success(SUCCESS_VERIFY_USER_ACCOUNT.getMessage()))
-                : ResponseEntity.ok(ApiResponse.fail(NOT_VALID_USER_ACCOUNT.getMessage(), response));
+                : ResponseEntity.ok(ApiResponse.fail(response.getResultMessage()));
     }
 
     @Operation(summary = "어뷰징 유저 확인")

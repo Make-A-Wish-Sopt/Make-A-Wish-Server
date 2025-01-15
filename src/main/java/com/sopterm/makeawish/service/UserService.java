@@ -1,5 +1,6 @@
 package com.sopterm.makeawish.service;
 
+import com.popbill.api.AccountCheckInfo;
 import com.popbill.api.AccountCheckService;
 import com.popbill.api.PopbillException;
 import com.sopterm.makeawish.domain.abuse.AbuseLog;
@@ -17,6 +18,8 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.sopterm.makeawish.common.message.ErrorMessage.INVALID_USER;
 import static com.sopterm.makeawish.common.message.ErrorMessage.NO_EXIST_USER_ACCOUNT;
@@ -36,7 +39,7 @@ public class UserService {
 
     @Value("${popbill.businessNumber}")
     private String corpNum;
-    private static final int ABUSE_CAUTION_COUNT = 4;
+    private static final List<String> USER_FAIL_CODE = List.of("300", "301", "400", "801", "898", "899");
 
     public UserAccountResponseDTO getUserAccount(Long userId) {
         val wisher = getUser(userId);
@@ -69,21 +72,19 @@ public class UserService {
     }
 
     @Transactional
-    public Integer verifyUserAccount(Long userId, UserAccountVerifyRequestDTO verifyRequestDTO) throws PopbillException {
+    public AccountCheckInfo verifyUserAccount(Long userId, UserAccountVerifyRequestDTO verifyRequestDTO) throws PopbillException {
         abuseService.checkAbuseUser(userId);
-        var response = 0;
-        try {
-            val accountInfo = accountCheckService.CheckAccountInfo(corpNum, verifyRequestDTO.BankCode(), verifyRequestDTO.AccountNumber());
-            if (!verifyRequestDTO.name().equals(accountInfo.getAccountName())) {
-                val abuseLog = AbuseLog.builder()
-                        .user(getUser(userId))
-                        .build();
-                abuseService.createAbuseLog(abuseLog);
-                response = abuseService.countAbuseLogByUser(userId);
-            }
-        } catch (PopbillException e) {
-            throw new PopbillException(e.getCode(), e.getMessage());
+        val accountInfo = accountCheckService.CheckAccountInfo(corpNum, verifyRequestDTO.BankCode(), verifyRequestDTO.AccountNumber());
+        if (checkIsUserFail(accountInfo.getResult())) {
+            val abuseLog = AbuseLog.builder()
+                    .user(getUser(userId))
+                    .build();
+            abuseService.createAbuseLog(abuseLog);
         }
-        return response;
+        return accountInfo;
+    }
+
+    private boolean checkIsUserFail(String result) {
+        return USER_FAIL_CODE.contains(result);
     }
 }
