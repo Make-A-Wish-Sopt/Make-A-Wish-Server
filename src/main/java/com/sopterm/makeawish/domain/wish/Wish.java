@@ -46,6 +46,7 @@ public class Wish extends BaseEntity {
     private User wisher;
 
     @OneToMany(mappedBy = "wish")
+    @OrderBy("id desc")
     private final List<Present> presents = new ArrayList<>();
 
     private boolean wantsGift;
