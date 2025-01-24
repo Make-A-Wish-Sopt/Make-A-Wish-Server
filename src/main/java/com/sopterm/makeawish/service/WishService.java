@@ -69,8 +69,11 @@ public class WishService {
 
 	public WishResponseDTO findWish(Long wishId) throws AccessDeniedException {
 		val wish = getWish(wishId);
-		if (!wish.getStatus(0).equals(WHILE)) {
-			throw new AccessDeniedException(INVALID_WISH.getMessage());
+		if (wish.getStatus(0).equals(BEFORE)) {
+			throw new AccessDeniedException("해당 소원은 " + wish.getRestStartDayFromNow() +"일 뒤부터 활성화돼요!");
+		}
+		if(wish.getStatus(0).equals(END)) {
+			throw  new AccessDeniedException(ACCESS_END_WISH.getMessage());
 		}
 		return WishResponseDTO.from(wish);
 	}
