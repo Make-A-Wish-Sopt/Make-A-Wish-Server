@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,5 +110,10 @@ public class Wish extends BaseEntity {
         if (nonNull(endAt)) {
             this.endAt = endAt;
         }
+    }
+
+    public int getRestStartDayFromNow() {
+        val now = LocalDateTime.now().toLocalDate().atStartOfDay();
+        return (int) ChronoUnit.DAYS.between(now, this.startAt);
     }
 }
