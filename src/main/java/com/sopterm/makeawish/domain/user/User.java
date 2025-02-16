@@ -40,7 +40,7 @@ public class User {
     private String refreshToken;
 
     private String image;
-    private String birthDay;
+    private String birthday;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -58,7 +58,7 @@ public class User {
         this.socialId = authSignInRequestDto.socialId();
         this.nickname = authSignInRequestDto.nickname();
         this.createdAt = authSignInRequestDto.createdAt();
-        this.birthDay = authSignInRequestDto.birthDay();
+        this.birthday = authSignInRequestDto.birthDay();
         val account = new AccountInfo(null, null, null);
         this.transferInfo = new TransferInfo(account, null, false);
     }
