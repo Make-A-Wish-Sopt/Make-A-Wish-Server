@@ -19,7 +19,8 @@ public record AuthSignInRequestDTO(
 	@NonNull
 	String nickname,
 	@NonNull
-	LocalDateTime createdAt
+	LocalDateTime createdAt,
+	String birthDay
 ) {
 	public static AuthSignInRequestDTO to(
 		String email,

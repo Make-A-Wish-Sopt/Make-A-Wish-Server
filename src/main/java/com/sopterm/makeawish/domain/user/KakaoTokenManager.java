@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.sopterm.makeawish.dto.auth.AuthSignInRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,10 +92,11 @@ public class KakaoTokenManager {
 
     public AuthSignInRequestDTO getAccessTokenByCode(JsonElement element) {
         String email = validateEmail(element.getAsJsonObject().get("kakao_account"));
-        String name = element.getAsJsonObject().get("properties")
-                .getAsJsonObject().get("nickname").getAsString();
+        JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
+        String name = properties.get("nickname").getAsString();
+        String birthday = properties.has("birthday") ? properties.get("birthday").getAsString() : null;
         String socialId = element.getAsJsonObject().get("id").getAsString();
-        return new AuthSignInRequestDTO(email, SocialType.KAKAO, socialId, name, LocalDateTime.now());
+        return new AuthSignInRequestDTO(email, SocialType.KAKAO, socialId, name, LocalDateTime.now(), birthday);
     }
 
     private String validateEmail(JsonElement element) {
