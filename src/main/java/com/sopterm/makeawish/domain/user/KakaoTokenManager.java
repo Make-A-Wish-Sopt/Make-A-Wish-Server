@@ -1,5 +1,6 @@
 package com.sopterm.makeawish.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -92,9 +93,9 @@ public class KakaoTokenManager {
 
     public AuthSignInRequestDTO getAccessTokenByCode(JsonElement element) {
         String email = validateEmail(element.getAsJsonObject().get("kakao_account"));
+        String birthday = validateBirthday(element.getAsJsonObject().get("kakao_account"));
         JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
         String name = properties.get("nickname").getAsString();
-        String birthday = properties.has("birthday") ? properties.get("birthday").getAsString() : null;
         String socialId = element.getAsJsonObject().get("id").getAsString();
         return new AuthSignInRequestDTO(email, SocialType.KAKAO, socialId, name, LocalDateTime.now(), birthday);
     }
@@ -102,5 +103,9 @@ public class KakaoTokenManager {
     private String validateEmail(JsonElement element) {
         boolean ifEmailIsNotAgreed = element.getAsJsonObject().get("email_needs_agreement").getAsBoolean();
         return ifEmailIsNotAgreed ? null : element.getAsJsonObject().get("email").getAsString();
+    }
+    private String validateBirthday(JsonElement element) {
+        boolean ifBirthdayIsNotAgreed = element.getAsJsonObject().get("birthday_needs_agreement").getAsBoolean();
+        return ifBirthdayIsNotAgreed ? null : element.getAsJsonObject().get("birthday").getAsString();
     }
 }
