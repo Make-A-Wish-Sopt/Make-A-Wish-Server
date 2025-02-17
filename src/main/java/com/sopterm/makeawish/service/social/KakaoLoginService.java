@@ -60,7 +60,7 @@ public class KakaoLoginService implements SocialLoginService {
 
         try {
             if (Objects.equals(activeProfile, "dev")) {
-                val slackRequest = createSlackRequest(request.nickname(), request.email(), request.createdAt(), String.valueOf(request.socialType()));
+                val slackRequest = createSlackRequest(request.nickname(), request.email(), request.birthDay(), request.createdAt(), String.valueOf(request.socialType()));
                 slackClient.postMessage(slackRequest.toString());
             }
         } catch (RuntimeException ex) {
@@ -69,7 +69,7 @@ public class KakaoLoginService implements SocialLoginService {
         return userRepository.save(new User(request));
     }
 
-    private JsonNode createSlackRequest(String nickname, String email, LocalDateTime createdAt, String socialType) {
+    private JsonNode createSlackRequest(String nickname, String email, String birthday, LocalDateTime createdAt, String socialType) {
         val rootNode = jsonMapper.createObjectNode();
         rootNode.put("text", "새로운 유저가 가입했어요!");
         val blocks = jsonMapper.createArrayNode();
@@ -85,6 +85,7 @@ public class KakaoLoginService implements SocialLoginService {
         fields.add(createTextFieldNode("*이메일:*\n"+ email));
         fields.add(createTextFieldNode("*가입 시간:*\n" + createdAt));
         fields.add(createTextFieldNode("*소셜:*\n" + socialType));
+        fields.add(createTextFieldNode("*생일:*\n" + birthday));
         contentNode.set("fields", fields);
 
         blocks.add(textField);
