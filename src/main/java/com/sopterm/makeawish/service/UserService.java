@@ -37,6 +37,7 @@ public class UserService {
     private final AccountCheckService accountCheckService;
     private final AbuseService abuseService;
 
+
     @Value("${popbill.businessNumber}")
     private String corpNum;
     private static final List<String> USER_FAIL_CODE = List.of("300", "301", "400", "801", "898", "899");
@@ -63,6 +64,8 @@ public class UserService {
             wish.getPresents().forEach(presentRepository::delete);
             wishRepository.delete(wish);
         });
+        abuseService.deleteAbuseLogByUser(user);
+        abuseService.deleteAbuseUserByUser(user);
         userRepository.delete(user);
     }
 
