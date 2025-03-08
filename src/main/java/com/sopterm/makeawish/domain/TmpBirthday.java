@@ -1,5 +1,6 @@
 package com.sopterm.makeawish.domain;
 
+import com.sopterm.makeawish.dto.alarm.TmpBirthdayDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -14,6 +15,11 @@ public class TmpBirthday {
     private String birthDate;
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    public TmpBirthday(TmpBirthdayDto tmpBirthdayDto) {
+        this.birthDate = tmpBirthdayDto.birthDate();
+        this.phoneNumber = tmpBirthdayDto.phoneNumber();
+    }
 }
 
 
