@@ -4,8 +4,11 @@ import static com.sopterm.makeawish.common.message.SuccessMessage.*;
 
 import java.nio.file.AccessDeniedException;
 
+import com.sopterm.makeawish.dto.alarm.TmpBirthdayDto;
 import com.sopterm.makeawish.dto.cake.CakeCreateRequest;
+import com.sopterm.makeawish.service.AlarmService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +35,7 @@ public class PublicController {
 
 	private final CakeService cakeService;
 	private final WishService wishService;
+	private final AlarmService alarmService;
 
 	@Operation(summary = "케이크 리스트 조회")
 	@GetMapping("/cakes")
@@ -78,4 +82,11 @@ public class PublicController {
         val response = cakeService.createPresent(request);
         return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_CAKE.getMessage(), response));
     }
+
+	@Operation(summary = "생일 알림 발송 저장")
+	@PostMapping("/alarm")
+	public ResponseEntity<ApiResponse> create(@RequestBody @Valid TmpBirthdayDto request) {
+		alarmService.createBirthDayAlarm(request);
+		return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_ALARM.getMessage()));
+	}
 }
