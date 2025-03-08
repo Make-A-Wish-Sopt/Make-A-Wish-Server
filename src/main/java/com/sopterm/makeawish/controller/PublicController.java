@@ -87,6 +87,6 @@ public class PublicController {
 	@PostMapping("/alarm")
 	public ResponseEntity<ApiResponse> create(@RequestBody @Valid TmpBirthdayDto request) {
 		alarmService.createBirthDayAlarm(request);
-		return ResponseEntity.ok(ApiResponse.success("ok"));
+		return ResponseEntity.ok(ApiResponse.success(SUCCESS_CREATE_ALARM.getMessage()));
 	}
 }
